@@ -1,24 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>For You ❤️</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You ❤️</title>
+
+    <!-- CSS file link (FIXED) -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<audio id="bgMusic" loop autoplay>
-  <source src="music.mp3" type="audio/mpeg">
-</audio>
-<button class="music-btn" onclick="toggleMusic()">🎵</button>
+    <div class="container">
+        <h1>Something Beautiful Is Coming 💖</h1>
+        <p>Someone special has a birthday very soon…</p>
 
-<div class="card">
-  <h2 id="question">Ready for a small love game? ❤️</h2>
-  <div id="options" class="options">
-    <button onclick="next()">Yes 😄</button>
-  </div>
-</div>
+        <div id="countdown">
+            <span id="days">00</span> Days
+            <span id="hours">00</span> Hours
+            <span id="minutes">00</span> Minutes
+            <span id="seconds">00</span> Seconds
+        </div>
+    </div>
 
-<script src="script.js"></script>
+    <!-- JavaScript -->
+    <script>
+        const birthday = new Date("February 13, 2026 00:00:00").getTime();
+
+        setInterval(() => {
+            const now = new Date().getTime();
+            const diff = birthday - now;
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diff / (1000 * 60)) % 60);
+            const seconds = Math.floor((diff / 1000) % 60);
+
+            document.getElementById("days").innerText = days;
+            document.getElementById("hours").innerText = hours;
+            document.getElementById("minutes").innerText = minutes;
+            document.getElementById("seconds").innerText = seconds;
+        }, 1000);
+    </script>
+
 </body>
 </html>
+
