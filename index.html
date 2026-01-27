@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Something Special 💖</title>
+<title>For Violina 💖</title>
 
 <style>
 body{
@@ -20,10 +20,10 @@ body{
   margin:30px auto;
   padding:20px;
   background:rgba(255,255,255,0.18);
-  border-radius:20px;
+  border-radius:22px;
 }
 
-/* PHOTO CIRCLE */
+/* PHOTO */
 .photo{
   width:220px;
   height:220px;
@@ -42,18 +42,17 @@ body{
 /* DATE */
 .date{
   font-family:cursive;
-  font-size:28px;
-  text-shadow:0 0 10px #fff;
-  margin:10px 0;
+  font-size:30px;
+  text-shadow:0 0 12px white;
 }
 
 /* TIMER */
 #timer{
-  margin-top:10px;
-  font-size:18px;
+  margin-top:12px;
+  font-size:16px;
 }
 
-/* HEARTS */
+/* FLOATING HEARTS */
 .heart{
   position:fixed;
   bottom:-20px;
@@ -92,9 +91,9 @@ body{
 .popup-box{
   background:white;
   color:#ff4d6d;
-  padding:20px;
+  padding:22px;
   width:260px;
-  border-radius:15px;
+  border-radius:16px;
 }
 .popup-box input{
   width:100%;
@@ -104,6 +103,21 @@ body{
 .popup-box span{
   float:right;
   cursor:pointer;
+  color:red;
+}
+
+/* CONFETTI */
+.confetti{
+  position:fixed;
+  top:-10px;
+  animation:fall 3s linear forwards;
+  font-size:20px;
+}
+@keyframes fall{
+  to{
+    transform:translateY(110vh);
+    opacity:0;
+  }
 }
 </style>
 </head>
@@ -128,6 +142,7 @@ body{
   </div>
 </div>
 
+<!-- POPUP -->
 <div id="popup">
   <div class="popup-box">
     <span onclick="closeGift()">✖</span>
@@ -156,16 +171,19 @@ setInterval(()=>{
 const target=new Date("Feb 13, 2026 00:00:00").getTime();
 setInterval(()=>{
   const now=new Date().getTime();
-  const diff=target-now;
-  if(diff<0){
-    document.getElementById("timer").innerHTML="💖 IT'S HER DAY 💖";
+  const d=target-now;
+  if(d<0){
+    timer.innerHTML="💖 IT'S HER DAY 💖";
     return;
   }
-  const d=Math.floor(diff/(1000*60*60*24));
-  document.getElementById("timer").innerHTML=d+" days remaining ✨";
+  const days=Math.floor(d/(1000*60*60*24));
+  const hrs=Math.floor((d%(1000*60*60*24))/(1000*60*60));
+  const min=Math.floor((d%(1000*60*60))/(1000*60));
+  const sec=Math.floor((d%(1000*60))/1000);
+  timer.innerHTML=`${days}d ${hrs}h ${min}m ${sec}s`;
 },1000);
 
-/* HEARTS */
+/* BACKGROUND HEARTS */
 setInterval(()=>{
   const h=document.createElement("div");
   h.className="heart";
@@ -177,17 +195,31 @@ setInterval(()=>{
 
 /* GIFT */
 function openGift(){
-  document.getElementById("popup").style.display="flex";
+  popup.style.display="flex";
 }
 function closeGift(){
-  document.getElementById("popup").style.display="none";
+  popup.style.display="none";
 }
+
+/* CELEBRATION */
+function celebrate(){
+  for(let i=0;i<25;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.innerHTML=Math.random()>0.5?"🎉":"💖";
+    c.style.left=Math.random()*100+"vw";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+
+/* PASSCODE */
 function checkCode(){
-  const m=document.getElementById("msg");
-  if(document.getElementById("code").value==="SMILE-FIRST"){
-    m.innerHTML="🎉 TADA!<br>You make every ordinary day feel magical 💕";
+  if(code.value==="SMILE-FIRST"){
+    msg.innerHTML="🎉 TADA!<br>You make every ordinary day feel magical 💕";
+    celebrate();
   }else{
-    m.innerHTML="❌ Wrong code";
+    msg.innerHTML="❌ Wrong code";
   }
 }
 </script>
