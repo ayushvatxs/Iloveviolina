@@ -1,80 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Something Special 💖</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Something Special 💖</title>
+
+<style>
+body{
+  margin:0;
+  background:linear-gradient(180deg,#ff8fab,#ffb3c6);
+  font-family:'Segoe UI',sans-serif;
+  color:white;
+  text-align:center;
+  overflow-x:hidden;
+}
+
+/* CARD */
+.card{
+  max-width:380px;
+  margin:30px auto;
+  padding:20px;
+  background:rgba(255,255,255,0.18);
+  border-radius:20px;
+}
+
+/* PHOTO CIRCLE */
+.photo{
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  overflow:hidden;
+  margin:20px auto;
+  border:3px solid white;
+}
+.photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:opacity 1s ease;
+}
+
+/* DATE */
+.date{
+  font-family:cursive;
+  font-size:28px;
+  text-shadow:0 0 10px #fff;
+  margin:10px 0;
+}
+
+/* TIMER */
+#timer{
+  margin-top:10px;
+  font-size:18px;
+}
+
+/* HEARTS */
+.heart{
+  position:fixed;
+  bottom:-20px;
+  animation:float 6s linear forwards;
+  font-size:18px;
+}
+@keyframes float{
+  to{
+    transform:translateY(-120vh);
+    opacity:0;
+  }
+}
+
+/* GIFT */
+.gift-wrap{
+  margin-top:20px;
+}
+.arrow{
+  font-family:cursive;
+  font-size:16px;
+}
+.gift{
+  font-size:50px;
+  cursor:pointer;
+}
+
+/* POPUP */
+#popup{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  justify-content:center;
+  align-items:center;
+}
+.popup-box{
+  background:white;
+  color:#ff4d6d;
+  padding:20px;
+  width:260px;
+  border-radius:15px;
+}
+.popup-box input{
+  width:100%;
+  padding:8px;
+  margin:10px 0;
+}
+.popup-box span{
+  float:right;
+  cursor:pointer;
+}
+</style>
 </head>
+
 <body>
 
-<div class="hearts"></div>
-
 <div class="card">
-  <h1>✨ Something Beautiful Is On The Way ✨</h1>
+  <h2>✨ Something Beautiful Is On The Way ✨</h2>
+  <p>A very special soul will soon be celebrated.</p>
 
-  <p>
-    A very special day is approaching…<br>
-    A day the world quietly celebrates
-  </p>
+  <div class="date">13 February 💖</div>
 
-  <h2>13 February 💕</h2>
-
-  <!-- PHOTO SLIDER -->
   <div class="photo">
-    <img id="img" src="photo1.jpg">
+    <img id="pic" src="photo1.jpg">
   </div>
 
-  <!-- COUNTDOWN -->
   <div id="timer"></div>
 
-  <!-- GIFT -->
-  <div class="gift-area">
-    <span class="arrow">click here ↓</span>
+  <div class="gift-wrap">
+    <div class="arrow">click here ↓</div>
     <div class="gift" onclick="openGift()">🎁</div>
   </div>
 </div>
 
-<!-- GIFT POPUP -->
 <div id="popup">
   <div class="popup-box">
     <span onclick="closeGift()">✖</span>
     <h3>Only Violina 💖</h3>
     <input id="code" placeholder="Secret code">
-    <button onclick="checkCode()">Open Gift</button>
-    <p id="text"></p>
+    <button onclick="checkCode()">Open</button>
+    <p id="msg"></p>
   </div>
 </div>
 
 <script>
 /* IMAGE SLIDER */
-const pics = ["photo1.jpg","photo2.jpg","photo3.jpg"];
-let i = 0;
-setInterval(() => {
-  i = (i + 1) % pics.length;
-  document.getElementById("img").src = pics[i];
-}, 3500);
+const imgs=["photo1.jpg","photo2.jpg","photo3.jpg"];
+let idx=0;
+setInterval(()=>{
+  const img=document.getElementById("pic");
+  img.style.opacity=0;
+  setTimeout(()=>{
+    idx=(idx+1)%imgs.length;
+    img.src=imgs[idx];
+    img.style.opacity=1;
+  },500);
+},3500);
 
 /* COUNTDOWN */
-const date = new Date("Feb 13, 2026 00:00:00").getTime();
-setInterval(() => {
-  const now = new Date().getTime();
-  const d = date - now;
-  if(d < 0){
-    document.getElementById("timer").innerHTML = "💖 IT'S HER DAY 💖";
+const target=new Date("Feb 13, 2026 00:00:00").getTime();
+setInterval(()=>{
+  const now=new Date().getTime();
+  const diff=target-now;
+  if(diff<0){
+    document.getElementById("timer").innerHTML="💖 IT'S HER DAY 💖";
     return;
   }
-  const days = Math.floor(d / (1000*60*60*24));
-  document.getElementById("timer").innerHTML = days + " days to go ✨";
-}, 1000);
+  const d=Math.floor(diff/(1000*60*60*24));
+  document.getElementById("timer").innerHTML=d+" days remaining ✨";
+},1000);
 
-/* HEARTS (LIGHTWEIGHT) */
-setInterval(() => {
-  const h = document.createElement("div");
-  h.className = "heart";
-  h.style.left = Math.random() * 100 + "vw";
+/* HEARTS */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="💖";
+  h.style.left=Math.random()*100+"vw";
   document.body.appendChild(h);
-  setTimeout(() => h.remove(), 5000);
-}, 800);
+  setTimeout(()=>h.remove(),6000);
+},900);
 
 /* GIFT */
 function openGift(){
@@ -84,11 +183,11 @@ function closeGift(){
   document.getElementById("popup").style.display="none";
 }
 function checkCode(){
-  const msg = document.getElementById("text");
-  if(document.getElementById("code").value === "SMILE-FIRST"){
-    msg.innerHTML = "🎉 TADA 💖<br>You make everything brighter just by existing.";
-  } else {
-    msg.innerHTML = "❌ Wrong code";
+  const m=document.getElementById("msg");
+  if(document.getElementById("code").value==="SMILE-FIRST"){
+    m.innerHTML="🎉 TADA!<br>You make every ordinary day feel magical 💕";
+  }else{
+    m.innerHTML="❌ Wrong code";
   }
 }
 </script>
