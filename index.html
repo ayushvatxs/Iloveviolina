@@ -1,47 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For You ❤️</title>
+  <meta charset="UTF-8">
+  <title>Something Beautiful Is Coming ❤️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- CSS file link (FIXED) -->
-    <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ff6a88, #ff99ac);
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .container {
+      background: rgba(255,255,255,0.15);
+      padding: 35px;
+      border-radius: 30px;
+      backdrop-filter: blur(10px);
+      max-width: 90%;
+      z-index: 2;
+    }
+
+    h1 {
+      font-size: 2.2em;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.1em;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .timer {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .unit {
+      background: rgba(0,0,0,0.25);
+      padding: 15px;
+      border-radius: 15px;
+      min-width: 80px;
+      font-weight: bold;
+    }
+
+    .slideshow {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 20px auto;
+      border: 4px solid white;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 20px;
+      animation: float 6s linear infinite;
+      opacity: 0.6;
+    }
+
+    @keyframes float {
+      from { transform: translateY(110vh); }
+      to { transform: translateY(-10vh); }
+    }
+  </style>
 </head>
+
 <body>
 
-    <div class="container">
-        <h1>Something Beautiful Is Coming 💖</h1>
-        <p>Someone special has a birthday very soon…</p>
+<audio autoplay loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
 
-        <div id="countdown">
-            <span id="days">00</span> Days
-            <span id="hours">00</span> Hours
-            <span id="minutes">00</span> Minutes
-            <span id="seconds">00</span> Seconds
-        </div>
-    </div>
+<div class="container">
+  <h1>✨ A Special Day Is Approaching ✨</h1>
+  <p>
+    Somewhere in this world, a heart was born that makes everything brighter.<br><br>
+    In just a few days, that magic returns again…<br><br>
+    <b>13th February — a day worth waiting for 💖</b>
+  </p>
 
-    <!-- JavaScript -->
-    <script>
-        const birthday = new Date("February 13, 2026 00:00:00").getTime();
+  <img src="photo1.jpg" class="slideshow" id="slide">
 
-        setInterval(() => {
-            const now = new Date().getTime();
-            const diff = birthday - now;
+  <div class="timer">
+    <div class="unit"><span id="days">0</span><br>Days</div>
+    <div class="unit"><span id="hours">0</span><br>Hours</div>
+    <div class="unit"><span id="minutes">0</span><br>Minutes</div>
+    <div class="unit"><span id="seconds">0</span><br>Seconds</div>
+  </div>
+</div>
 
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-            const minutes = Math.floor((diff / (1000 * 60)) % 60);
-            const seconds = Math.floor((diff / 1000) % 60);
+<script>
+  // 🎂 countdown
+  const birthday = new Date("2026-02-13T00:00:00").getTime();
 
-            document.getElementById("days").innerText = days;
-            document.getElementById("hours").innerText = hours;
-            document.getElementById("minutes").innerText = minutes;
-            document.getElementById("seconds").innerText = seconds;
-        }, 1000);
-    </script>
+  function update() {
+    const now = new Date().getTime();
+    const diff = birthday - now;
+
+    document.getElementById("days").innerText = Math.floor(diff / (1000*60*60*24));
+    document.getElementById("hours").innerText = Math.floor((diff / (1000*60*60)) % 24);
+    document.getElementById("minutes").innerText = Math.floor((diff / (1000*60)) % 60);
+    document.getElementById("seconds").innerText = Math.floor((diff / 1000) % 60);
+  }
+  setInterval(update, 1000);
+  update();
+
+  // ❤️ floating hearts
+  setInterval(() => {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.innerHTML = "❤️";
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.fontSize = (Math.random() * 25 + 10) + "px";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 6000);
+  }, 300);
+
+  // 📸 slideshow
+  const photos = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
+  let i = 0;
+  setInterval(() => {
+    i = (i + 1) % photos.length;
+    document.getElementById("slide").src = photos[i];
+  }, 3000);
+</script>
 
 </body>
 </html>
+
 
