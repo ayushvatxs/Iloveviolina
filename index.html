@@ -1,126 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Something Beautiful 💖</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Secret Gift 💗</title>
 
 <style>
-* { box-sizing: border-box; font-family: Poppins, system-ui; }
-
-body {
-  margin: 0;
-  background: linear-gradient(135deg,#ffd6e7,#fff1f7);
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+:root{
+  --pink:#ffd6e8;
+  --soft:#fff5fa;
+  --glow:#ff9acb;
+  --dark:#222;
 }
 
-.card {
-  background: #fff;
-  padding: 30px;
-  border-radius: 28px;
-  text-align: center;
-  width: 360px;
-  box-shadow: 0 30px 80px rgba(255,105,180,.35);
+*{box-sizing:border-box;font-family:"Segoe UI",system-ui,sans-serif}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:linear-gradient(180deg,#fff,var(--pink));
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
-.date {
-  font-size: 24px;
-  color: #000;
-  text-shadow: 0 0 15px rgba(255,105,180,.9);
+.card{
+  width:92%;
+  max-width:420px;
+  background:white;
+  border-radius:22px;
+  padding:20px 18px 26px;
+  text-align:center;
+  box-shadow:0 20px 60px rgba(255,120,170,.25);
 }
 
-.timer {
-  display: flex;
-  justify-content: space-between;
-  margin: 20px 0;
+/* PHOTO */
+.photo{
+  width:140px;
+  height:140px;
+  margin:0 auto 10px;
+  border-radius:50%;
+  overflow:hidden;
+  border:5px solid #ffd1e5;
+}
+.photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  animation:fade 12s infinite;
+}
+@keyframes fade{
+  0%,33%{opacity:1}
+  34%,66%{opacity:0}
+  67%,100%{opacity:1}
 }
 
-.timer div {
-  background: #ffe4ee;
-  padding: 10px;
-  border-radius: 14px;
-  width: 70px;
+/* TEXT */
+h2{margin:10px 0 4px;font-weight:600}
+.sub{font-size:.95rem;color:#555}
+
+.date{
+  margin:6px 0 12px;
+  font-weight:600;
+  color:#000;
+  text-shadow:0 0 8px var(--glow);
 }
 
-.photo {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  border: 6px solid #ffc1da;
-  object-fit: cover;
-  display: block;
-  margin: 15px auto;
+/* TIMER */
+.timer{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  margin-bottom:10px;
+}
+.box{
+  background:var(--soft);
+  padding:8px 10px;
+  border-radius:10px;
+  min-width:54px;
+}
+.num{font-size:1.1rem;font-weight:700}
+.lbl{font-size:.65rem;color:#666}
+
+/* BIRTHDAY BUTTON */
+.bday{
+  margin:8px auto 12px;
+  padding:8px 16px;
+  border-radius:20px;
+  border:none;
+  background:#eee;
+  color:#999;
+  cursor:not-allowed;
 }
 
-.gift {
-  font-size: 40px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  animation: bounce 1.5s infinite;
+/* GIFT */
+.gift{
+  font-size:52px;
+  margin:8px 0;
+  cursor:pointer;
+  animation:float 2.6s ease-in-out infinite;
+}
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
 }
 
-@keyframes bounce {
-  50% { transform: translateY(-6px); }
+.note{font-size:.85rem;color:#444}
+
+/* PASSCODE */
+.modal{
+  position:fixed;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  background:rgba(255,200,225,.45);
+  backdrop-filter:blur(6px);
+  z-index:10;
+}
+.modalBox{
+  background:white;
+  padding:20px;
+  border-radius:18px;
+  width:80%;
+  max-width:300px;
+}
+input{
+  width:100%;
+  padding:10px;
+  font-size:1rem;
+  margin-bottom:10px;
+}
+button.open{
+  padding:8px 14px;
+  border-radius:14px;
+  border:none;
+  background:#ff8fbe;
+  color:white;
 }
 
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(255,182,193,.45);
-  backdrop-filter: blur(12px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 100;
+/* OVERLAY MESSAGE */
+.overlay{
+  position:fixed;
+  inset:0;
+  display:none;
+  background:rgba(255,210,230,.55);
+  backdrop-filter:blur(10px);
+  z-index:20;
+}
+.messageBox{
+  background:white;
+  width:85%;
+  max-width:360px;
+  margin:12vh auto;
+  padding:20px;
+  border-radius:20px;
+  position:relative;
+  box-shadow:0 30px 80px rgba(255,120,170,.3);
+}
+.close{
+  position:absolute;
+  right:12px;
+  top:10px;
+  cursor:pointer;
 }
 
-.hidden { display: none; }
-
-.modal {
-  background: #fff;
-  padding: 30px;
-  border-radius: 30px;
-  text-align: center;
-  position: relative;
-  animation: pop .4s ease;
+/* HEARTS */
+.heart{
+  position:absolute;
+  animation:rise 6s linear infinite;
+  opacity:.7;
+}
+@keyframes rise{
+  from{transform:translateY(0);opacity:.8}
+  to{transform:translateY(-120vh);opacity:0}
 }
 
-@keyframes pop {
-  from { transform: scale(.7); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-.close {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  border: none;
-  background: none;
-  font-size: 22px;
-  cursor: pointer;
-}
-
-#hearts span {
-  position: fixed;
-  bottom: -20px;
-  animation: floatUp linear forwards;
-}
-
-@keyframes floatUp {
-  to { transform: translateY(-120vh); opacity: 0; }
-}
-
-.big-heart {
-  font-size: 60px;
-  animation: pulse 1.2s infinite;
-}
-
-@keyframes pulse {
-  50% { transform: scale(1.3); }
+.openedText{
+  font-size:.85rem;
+  margin-top:6px;
+  color:#555;
 }
 </style>
 </head>
@@ -128,87 +187,137 @@ body {
 <body>
 
 <div class="card">
-  <h2>Someone very special’s birthday is coming 💗</h2>
+  <div class="photo">
+    <img id="img" src="photo1.jpg">
+  </div>
+
+  <h2>Secret Gift 💗</h2>
+  <div class="sub">Someone very special’s birthday is coming</div>
   <div class="date">13 February</div>
 
-  <div class="timer">
-    <div><span id="d">0</span><br>Days</div>
-    <div><span id="h">0</span><br>Hrs</div>
-    <div><span id="m">0</span><br>Min</div>
-    <div><span id="s">0</span><br>Sec</div>
-  </div>
+  <div class="timer" id="timer"></div>
 
-  <img id="photo" class="photo" src="photo1.jpg">
-  <button class="gift" onclick="openPass()">🎁</button>
-  <p>Only Violina can open this</p>
+  <button class="bday" id="bdayBtn">Happy Birthday 🎉</button>
+
+  <div class="gift" id="gift">🎁</div>
+  <div class="note" id="giftNote">Only Violina can open this</div>
 </div>
 
-<div id="pass" class="overlay hidden">
-  <div class="modal">
-    <button class="close" onclick="closePass()">✕</button>
+<!-- PASSCODE -->
+<div class="modal" id="passModal">
+  <div class="modalBox">
     <h3>Secret Gift 💕</h3>
-    <input id="code" placeholder="SMILE-FIRST">
-    <br><br>
-    <button onclick="unlock()">Open</button>
+    <input id="code" placeholder="Enter secret code"/>
+    <button class="open" onclick="checkCode()">Open</button>
   </div>
 </div>
 
-<div id="gift" class="overlay hidden">
-  <div id="hearts"></div>
-  <div class="modal">
-    <button class="close" onclick="closeGift()">✕</button>
-    <h2>You are my favorite feeling 💖</h2>
-    <p>Every heartbeat chooses you.</p>
-    <div class="big-heart">❤️</div>
+<!-- MESSAGE OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="messageBox">
+    <div class="close" onclick="closeOverlay()">❌</div>
+
+    <!-- ✨ EDIT THIS PARAGRAPH DAILY ✨ -->
+    <p>
+      You make ordinary days feel softer, warmer, and a little magical 💗
+    </p>
   </div>
 </div>
 
 <script>
+/* IMAGE ROTATION */
+const imgs=["photo1.jpg","photo2.jpg","photo3.jpg"];
+let i=0;
+setInterval(()=>{
+  i=(i+1)%imgs.length;
+  document.getElementById("img").src=imgs[i];
+},4000);
+
 /* TIMER */
-const target = new Date("Feb 13, 2026 00:00:00").getTime();
-setInterval(() => {
-  const diff = target - Date.now();
-  if (diff < 0) return;
-  d.textContent = Math.floor(diff / 86400000);
-  h.textContent = Math.floor(diff / 3600000) % 24;
-  m.textContent = Math.floor(diff / 60000) % 60;
-  s.textContent = Math.floor(diff / 1000) % 60;
-}, 1000);
+const target=new Date(new Date().getFullYear(),1,13,0,0,0);
+const timerEl=document.getElementById("timer");
+const bdayBtn=document.getElementById("bdayBtn");
 
-/* PHOTOS */
-let i = 1;
-setInterval(() => {
-  i = i === 3 ? 1 : i + 1;
-  photo.src = `photo${i}.jpg`;
-}, 3500);
+function tick(){
+  const now=new Date();
+  let diff=target-now;
 
-/* MODALS */
-function openPass() { pass.classList.remove("hidden"); }
-function closePass() { pass.classList.add("hidden"); }
+  if(diff<=0){
+    timerEl.innerHTML="<div class='box'><div class='num'>00</div><div class='lbl'>Done</div></div>";
+    bdayBtn.disabled=false;
+    bdayBtn.style.background="#ff8fbe";
+    bdayBtn.style.color="white";
+    bdayBtn.style.cursor="pointer";
+    return;
+  }
 
-function unlock() {
-  if (code.value === "SMILE-FIRST") {
-    pass.remove();
-    gift.classList.remove("hidden");
-    hearts();
-  } else alert("Wrong secret 💔");
+  const d=Math.floor(diff/86400000);
+  const h=Math.floor(diff%86400000/3600000);
+  const m=Math.floor(diff%3600000/60000);
+  const s=Math.floor(diff%60000/1000);
+
+  timerEl.innerHTML=`
+    <div class="box"><div class="num">${d}</div><div class="lbl">Days</div></div>
+    <div class="box"><div class="num">${h}</div><div class="lbl">Hrs</div></div>
+    <div class="box"><div class="num">${m}</div><div class="lbl">Min</div></div>
+    <div class="box"><div class="num">${s}</div><div class="lbl">Sec</div></div>`;
+}
+setInterval(tick,1000);tick();
+
+/* DAILY GIFT LOGIC */
+const today=new Date().toDateString();
+const openedDay=localStorage.getItem("openedDay");
+
+const gift=document.getElementById("gift");
+const giftNote=document.getElementById("giftNote");
+
+if(openedDay===today){
+  gift.textContent="🎀";
+  giftNote.innerHTML="Opened 💗<br>Come back tomorrow for the next gift";
 }
 
-function closeGift() { gift.classList.add("hidden"); }
+/* CLICK GIFT */
+gift.onclick=()=>{
+  if(openedDay===today){
+    document.getElementById("overlay").style.display="block";
+    spawnHearts();
+    return;
+  }
+  document.getElementById("passModal").style.display="flex";
+};
 
-/* HEARTS */
-function hearts() {
-  setInterval(() => {
-    const h = document.createElement("span");
-    h.textContent = "💖";
-    h.style.left = Math.random()*100+"vw";
-    h.style.fontSize = 14+Math.random()*20+"px";
-    h.style.animationDuration = 3+Math.random()*3+"s";
-    heartsDiv.appendChild(h);
-    setTimeout(()=>h.remove(),6000);
-  }, 250);
+/* CHECK CODE */
+function checkCode(){
+  const v=document.getElementById("code").value.trim();
+  if(v==="SMILE-FIRST"){
+    localStorage.setItem("openedDay",today);
+    document.getElementById("passModal").style.display="none";
+    gift.textContent="🎀";
+    giftNote.innerHTML="Opened 💗<br>Come back tomorrow for the next gift";
+    document.getElementById("overlay").style.display="block";
+    spawnHearts();
+  }
 }
-const heartsDiv = document.getElementById("hearts");
+
+/* OVERLAY */
+function closeOverlay(){
+  document.getElementById("overlay").style.display="none";
+}
+
+/* HEART EFFECT */
+function spawnHearts(){
+  for(let i=0;i<18;i++){
+    const h=document.createElement("div");
+    h.className="heart";
+    h.textContent="💗";
+    h.style.left=Math.random()*100+"vw";
+    h.style.bottom="-20px";
+    h.style.fontSize=14+Math.random()*16+"px";
+    h.style.animationDuration=4+Math.random()*4+"s";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),7000);
+  }
+}
 </script>
 
 </body>
