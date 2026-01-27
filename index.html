@@ -1,27 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Secret Gift 💗</title>
 
 <style>
-:root{
-  --pink:#ffd6e8;
-  --soft:#fff5fa;
-  --glow:#ff9acb;
-  --dark:#222;
-}
-
-*{box-sizing:border-box;font-family:"Segoe UI",system-ui,sans-serif}
-
 body{
   margin:0;
   min-height:100vh;
-  background:linear-gradient(180deg,#fff,var(--pink));
+  background:linear-gradient(180deg,#fff,#ffd6e8);
   display:flex;
   justify-content:center;
   align-items:center;
+  font-family:"Segoe UI",system-ui;
 }
 
 .card{
@@ -29,41 +21,39 @@ body{
   max-width:420px;
   background:white;
   border-radius:22px;
-  padding:20px 18px 26px;
+  padding:22px;
   text-align:center;
   box-shadow:0 20px 60px rgba(255,120,170,.25);
 }
 
-/* PHOTO */
+/* SMOOTH IMAGE FADE */
 .photo{
   width:140px;
   height:140px;
-  margin:0 auto 10px;
+  margin:0 auto 12px;
   border-radius:50%;
   overflow:hidden;
+  position:relative;
   border:5px solid #ffd1e5;
 }
 .photo img{
+  position:absolute;
+  inset:0;
   width:100%;
   height:100%;
   object-fit:cover;
-  animation:fade 12s infinite;
+  opacity:0;
+  transition:opacity 1.6s ease;
 }
-@keyframes fade{
-  0%,33%{opacity:1}
-  34%,66%{opacity:0}
-  67%,100%{opacity:1}
-}
+.photo img.active{opacity:1}
 
-/* TEXT */
-h2{margin:10px 0 4px;font-weight:600}
+h2{margin:10px 0 4px}
 .sub{font-size:.95rem;color:#555}
-
 .date{
-  margin:6px 0 12px;
   font-weight:600;
-  color:#000;
-  text-shadow:0 0 8px var(--glow);
+  margin:6px 0 10px;
+  color:black;
+  text-shadow:0 0 10px #ff9acb;
 }
 
 /* TIMER */
@@ -74,17 +64,17 @@ h2{margin:10px 0 4px;font-weight:600}
   margin-bottom:10px;
 }
 .box{
-  background:var(--soft);
+  background:#fff5fa;
   padding:8px 10px;
   border-radius:10px;
   min-width:54px;
 }
-.num{font-size:1.1rem;font-weight:700}
+.num{font-weight:700}
 .lbl{font-size:.65rem;color:#666}
 
-/* BIRTHDAY BUTTON */
+/* BDAY BUTTON */
 .bday{
-  margin:8px auto 12px;
+  margin:6px auto 12px;
   padding:8px 16px;
   border-radius:20px;
   border:none;
@@ -96,16 +86,14 @@ h2{margin:10px 0 4px;font-weight:600}
 /* GIFT */
 .gift{
   font-size:52px;
-  margin:8px 0;
   cursor:pointer;
   animation:float 2.6s ease-in-out infinite;
 }
 @keyframes float{
-  0%,100%{transform:translateY(0)}
   50%{transform:translateY(-6px)}
 }
 
-.note{font-size:.85rem;color:#444}
+.note{font-size:.85rem;color:#444;margin-top:6px}
 
 /* PASSCODE */
 .modal{
@@ -139,7 +127,7 @@ button.open{
   color:white;
 }
 
-/* OVERLAY MESSAGE */
+/* MESSAGE OVERLAY */
 .overlay{
   position:fixed;
   inset:0;
@@ -153,33 +141,27 @@ button.open{
   width:85%;
   max-width:360px;
   margin:12vh auto;
-  padding:20px;
+  padding:22px;
   border-radius:20px;
   position:relative;
-  box-shadow:0 30px 80px rgba(255,120,170,.3);
+  box-shadow:0 30px 80px rgba(255,120,170,.35);
+  overflow:hidden;
 }
 .close{
   position:absolute;
-  right:12px;
   top:10px;
+  right:12px;
   cursor:pointer;
 }
 
-/* HEARTS */
+/* HEARTS (INSIDE BOX) */
 .heart{
   position:absolute;
-  animation:rise 6s linear infinite;
-  opacity:.7;
+  bottom:-20px;
+  animation:rise 5s linear forwards;
 }
 @keyframes rise{
-  from{transform:translateY(0);opacity:.8}
-  to{transform:translateY(-120vh);opacity:0}
-}
-
-.openedText{
-  font-size:.85rem;
-  margin-top:6px;
-  color:#555;
+  to{transform:translateY(-260px);opacity:0}
 }
 </style>
 </head>
@@ -188,7 +170,9 @@ button.open{
 
 <div class="card">
   <div class="photo">
-    <img id="img" src="photo1.jpg">
+    <img src="photo1.jpg" class="active">
+    <img src="photo2.jpg">
+    <img src="photo3.jpg">
   </div>
 
   <h2>Secret Gift 💗</h2>
@@ -207,80 +191,70 @@ button.open{
 <div class="modal" id="passModal">
   <div class="modalBox">
     <h3>Secret Gift 💕</h3>
-    <input id="code" placeholder="Enter secret code"/>
+    <input id="code" placeholder="Enter secret code">
     <button class="open" onclick="checkCode()">Open</button>
   </div>
 </div>
 
-<!-- MESSAGE OVERLAY -->
+<!-- MESSAGE -->
 <div class="overlay" id="overlay">
-  <div class="messageBox">
+  <div class="messageBox" id="msgBox">
     <div class="close" onclick="closeOverlay()">❌</div>
-
-    <!-- ✨ EDIT THIS PARAGRAPH DAILY ✨ -->
-    <p>
-      You make ordinary days feel softer, warmer, and a little magical 💗
-    </p>
+    <p>You make ordinary days feel softer, warmer, and a little magical 💗</p>
   </div>
 </div>
 
 <script>
-/* IMAGE ROTATION */
-const imgs=["photo1.jpg","photo2.jpg","photo3.jpg"];
-let i=0;
+/* SMOOTH IMAGE ROTATION */
+const imgs=document.querySelectorAll(".photo img");
+let idx=0;
 setInterval(()=>{
-  i=(i+1)%imgs.length;
-  document.getElementById("img").src=imgs[i];
+  imgs[idx].classList.remove("active");
+  idx=(idx+1)%imgs.length;
+  imgs[idx].classList.add("active");
 },4000);
 
 /* TIMER */
-const target=new Date(new Date().getFullYear(),1,13,0,0,0);
-const timerEl=document.getElementById("timer");
+const target=new Date(new Date().getFullYear(),1,13);
+const timer=document.getElementById("timer");
 const bdayBtn=document.getElementById("bdayBtn");
 
-function tick(){
-  const now=new Date();
-  let diff=target-now;
-
+setInterval(()=>{
+  const diff=target-new Date();
   if(diff<=0){
-    timerEl.innerHTML="<div class='box'><div class='num'>00</div><div class='lbl'>Done</div></div>";
+    timer.innerHTML="<div class='box'><div class='num'>00</div><div class='lbl'>Done</div></div>";
     bdayBtn.disabled=false;
     bdayBtn.style.background="#ff8fbe";
     bdayBtn.style.color="white";
     bdayBtn.style.cursor="pointer";
     return;
   }
-
   const d=Math.floor(diff/86400000);
-  const h=Math.floor(diff%86400000/3600000);
-  const m=Math.floor(diff%3600000/60000);
-  const s=Math.floor(diff%60000/1000);
+  const h=Math.floor(diff/3600000)%24;
+  const m=Math.floor(diff/60000)%60;
+  const s=Math.floor(diff/1000)%60;
+  timer.innerHTML=`
+  <div class="box"><div class="num">${d}</div><div class="lbl">Days</div></div>
+  <div class="box"><div class="num">${h}</div><div class="lbl">Hrs</div></div>
+  <div class="box"><div class="num">${m}</div><div class="lbl">Min</div></div>
+  <div class="box"><div class="num">${s}</div><div class="lbl">Sec</div></div>`;
+},1000);
 
-  timerEl.innerHTML=`
-    <div class="box"><div class="num">${d}</div><div class="lbl">Days</div></div>
-    <div class="box"><div class="num">${h}</div><div class="lbl">Hrs</div></div>
-    <div class="box"><div class="num">${m}</div><div class="lbl">Min</div></div>
-    <div class="box"><div class="num">${s}</div><div class="lbl">Sec</div></div>`;
-}
-setInterval(tick,1000);tick();
-
-/* DAILY GIFT LOGIC */
+/* DAILY STATE */
 const today=new Date().toDateString();
 const openedDay=localStorage.getItem("openedDay");
-
 const gift=document.getElementById("gift");
-const giftNote=document.getElementById("giftNote");
+const note=document.getElementById("giftNote");
 
 if(openedDay===today){
   gift.textContent="🎀";
-  giftNote.innerHTML="Opened 💗<br>Come back tomorrow for the next gift";
+  note.innerHTML="Opened 💗<br>Come back tomorrow 💗";
 }
 
-/* CLICK GIFT */
+/* GIFT CLICK */
 gift.onclick=()=>{
   if(openedDay===today){
-    document.getElementById("overlay").style.display="block";
-    spawnHearts();
+    openMessage();
     return;
   }
   document.getElementById("passModal").style.display="flex";
@@ -288,35 +262,31 @@ gift.onclick=()=>{
 
 /* CHECK CODE */
 function checkCode(){
-  const v=document.getElementById("code").value.trim();
-  if(v==="SMILE-FIRST"){
+  if(document.getElementById("code").value==="SMILE-FIRST"){
     localStorage.setItem("openedDay",today);
     document.getElementById("passModal").style.display="none";
     gift.textContent="🎀";
-    giftNote.innerHTML="Opened 💗<br>Come back tomorrow for the next gift";
-    document.getElementById("overlay").style.display="block";
-    spawnHearts();
+    note.innerHTML="Opened 💗<br>Come back tomorrow 💗";
+    openMessage();
   }
 }
 
-/* OVERLAY */
-function closeOverlay(){
-  document.getElementById("overlay").style.display="none";
-}
-
-/* HEART EFFECT */
-function spawnHearts(){
-  for(let i=0;i<18;i++){
+/* MESSAGE + HEARTS */
+function openMessage(){
+  const box=document.getElementById("msgBox");
+  document.getElementById("overlay").style.display="block";
+  for(let i=0;i<14;i++){
     const h=document.createElement("div");
     h.className="heart";
     h.textContent="💗";
-    h.style.left=Math.random()*100+"vw";
-    h.style.bottom="-20px";
-    h.style.fontSize=14+Math.random()*16+"px";
-    h.style.animationDuration=4+Math.random()*4+"s";
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),7000);
+    h.style.left=Math.random()*90+"%";
+    h.style.fontSize=14+Math.random()*14+"px";
+    box.appendChild(h);
+    setTimeout(()=>h.remove(),5000);
   }
+}
+function closeOverlay(){
+  document.getElementById("overlay").style.display="none";
 }
 </script>
 
