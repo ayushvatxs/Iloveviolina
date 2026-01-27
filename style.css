@@ -3,37 +3,141 @@ body {
     min-height: 100vh;
     background: linear-gradient(135deg, #ff758c, #ff7eb3);
     font-family: 'Poppins', sans-serif;
-    color: white;
     display: flex;
     justify-content: center;
     align-items: center;
+    color: white;
     text-align: center;
-    overflow: hidden;
 }
 
 .container {
-    background: rgba(0, 0, 0, 0.25);
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 0 30px rgba(0,0,0,0.3);
+    background: rgba(0, 0, 0, 0.28);
+    padding: 45px;
+    border-radius: 25px;
+    max-width: 520px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.35);
 }
 
-h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-}
+h1 { font-size: 2.2rem; }
 
-p {
-    font-size: 1.2rem;
-    margin-bottom: 25px;
+.message { line-height: 1.6; }
+
+.date {
+    font-family: 'Great Vibes', cursive;
+    font-size: 2.6rem;
+    margin: 20px 0;
 }
 
 #countdown {
-    font-size: 1.3rem;
-    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
 }
 
-#countdown span {
-    font-size: 2rem;
-    margin: 0 5px;
+#countdown div {
+    background: rgba(255,255,255,0.15);
+    padding: 15px;
+    border-radius: 15px;
+    width: 22%;
+}
+
+button {
+    padding: 14px 28px;
+    border-radius: 30px;
+    border: none;
+    background: #ff4d6d;
+    color: white;
+    cursor: pointer;
+}
+
+button:disabled {
+    background: gray;
+    cursor: not-allowed;
+}
+
+/* 🎁 Gift */
+#giftIcon {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    font-size: 2.6rem;
+    cursor: pointer;
+    animation: float 2s ease-in-out infinite;
+}
+
+#giftIcon.opened {
+    opacity: 0.6;
+}
+
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+    100% { transform: translateY(0); }
+}
+
+/* Arrow */
+.gift-hint {
+    position: fixed;
+    bottom: 85px;
+    right: 35px;
+    font-size: 0.9rem;
+    animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+/* Modals */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.modal-box {
+    background: white;
+    color: black;
+    padding: 30px;
+    border-radius: 20px;
+    max-width: 420px;
+    position: relative;
+}
+
+.celebration {
+    animation: pop 0.5s ease;
+}
+
+@keyframes pop {
+    from { transform: scale(0.8); }
+    to { transform: scale(1); }
+}
+
+.close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Confetti */
+.confetti {
+    position: fixed;
+    top: -10px;
+    width: 8px;
+    height: 8px;
+    background: white;
+    animation: fall linear forwards;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(110vh) rotate(360deg);
+    }
 }
