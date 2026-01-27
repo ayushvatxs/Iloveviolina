@@ -14,16 +14,15 @@ body{
   overflow-x:hidden;
 }
 
-/* CARD */
 .card{
   max-width:380px;
   margin:30px auto;
   padding:20px;
   background:rgba(255,255,255,0.18);
-  border-radius:22px;
+  border-radius:24px;
+  box-shadow:0 10px 30px rgba(0,0,0,.2);
 }
 
-/* PHOTO */
 .photo{
   width:220px;
   height:220px;
@@ -39,44 +38,61 @@ body{
   transition:opacity 1s ease;
 }
 
-/* DATE */
 .date{
   font-family:cursive;
   font-size:30px;
-  text-shadow:0 0 12px white;
+  text-shadow:0 0 14px white;
 }
 
 /* TIMER */
-#timer{
-  margin-top:12px;
-  font-size:16px;
+.timer{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin-top:15px;
 }
-
-/* FLOATING HEARTS */
-.heart{
-  position:fixed;
-  bottom:-20px;
-  animation:float 6s linear forwards;
+.time-box{
+  background:rgba(255,255,255,0.25);
+  padding:8px 10px;
+  border-radius:12px;
+  font-size:14px;
+}
+.time-box span{
+  display:block;
   font-size:18px;
-}
-@keyframes float{
-  to{
-    transform:translateY(-120vh);
-    opacity:0;
-  }
+  font-weight:bold;
 }
 
 /* GIFT */
 .gift-wrap{
-  margin-top:20px;
+  margin-top:25px;
 }
 .arrow{
   font-family:cursive;
   font-size:16px;
 }
 .gift{
-  font-size:50px;
+  font-size:52px;
   cursor:pointer;
+  animation:floatGift 2s ease-in-out infinite;
+}
+@keyframes floatGift{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+}
+
+/* HEARTS */
+.heart{
+  position:fixed;
+  bottom:-20px;
+  font-size:18px;
+  animation:floatUp 6s linear forwards;
+}
+@keyframes floatUp{
+  to{
+    transform:translateY(-120vh);
+    opacity:0;
+  }
 }
 
 /* POPUP */
@@ -84,7 +100,7 @@ body{
   display:none;
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.6);
+  background:rgba(0,0,0,.6);
   justify-content:center;
   align-items:center;
 }
@@ -93,7 +109,7 @@ body{
   color:#ff4d6d;
   padding:22px;
   width:260px;
-  border-radius:16px;
+  border-radius:18px;
 }
 .popup-box input{
   width:100%;
@@ -110,8 +126,8 @@ body{
 .confetti{
   position:fixed;
   top:-10px;
-  animation:fall 3s linear forwards;
   font-size:20px;
+  animation:fall 3s linear forwards;
 }
 @keyframes fall{
   to{
@@ -134,7 +150,12 @@ body{
     <img id="pic" src="photo1.jpg">
   </div>
 
-  <div id="timer"></div>
+  <div class="timer">
+    <div class="time-box"><span id="d">0</span>Days</div>
+    <div class="time-box"><span id="h">0</span>Hours</div>
+    <div class="time-box"><span id="m">0</span>Min</div>
+    <div class="time-box"><span id="s">0</span>Sec</div>
+  </div>
 
   <div class="gift-wrap">
     <div class="arrow">click here ↓</div>
@@ -171,27 +192,23 @@ setInterval(()=>{
 const target=new Date("Feb 13, 2026 00:00:00").getTime();
 setInterval(()=>{
   const now=new Date().getTime();
-  const d=target-now;
-  if(d<0){
-    timer.innerHTML="💖 IT'S HER DAY 💖";
-    return;
-  }
-  const days=Math.floor(d/(1000*60*60*24));
-  const hrs=Math.floor((d%(1000*60*60*24))/(1000*60*60));
-  const min=Math.floor((d%(1000*60*60))/(1000*60));
-  const sec=Math.floor((d%(1000*60))/1000);
-  timer.innerHTML=`${days}d ${hrs}h ${min}m ${sec}s`;
+  const diff=target-now;
+  if(diff<0) return;
+  d.innerText=Math.floor(diff/(1000*60*60*24));
+  h.innerText=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+  m.innerText=Math.floor((diff%(1000*60*60))/(1000*60));
+  s.innerText=Math.floor((diff%(1000*60))/1000);
 },1000);
 
 /* BACKGROUND HEARTS */
 setInterval(()=>{
-  const h=document.createElement("div");
-  h.className="heart";
-  h.innerHTML="💖";
-  h.style.left=Math.random()*100+"vw";
-  document.body.appendChild(h);
-  setTimeout(()=>h.remove(),6000);
-},900);
+  const hrt=document.createElement("div");
+  hrt.className="heart";
+  hrt.innerHTML="💖";
+  hrt.style.left=Math.random()*100+"vw";
+  document.body.appendChild(hrt);
+  setTimeout(()=>hrt.remove(),6000);
+},1000);
 
 /* GIFT */
 function openGift(){
@@ -201,23 +218,23 @@ function closeGift(){
   popup.style.display="none";
 }
 
-/* CELEBRATION */
-function celebrate(){
-  for(let i=0;i<25;i++){
-    const c=document.createElement("div");
-    c.className="confetti";
-    c.innerHTML=Math.random()>0.5?"🎉":"💖";
-    c.style.left=Math.random()*100+"vw";
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),3000);
+/* LOVE EFFECTS */
+function loveExplosion(){
+  for(let i=0;i<40;i++){
+    const e=document.createElement("div");
+    e.className=Math.random()>0.5?"confetti":"heart";
+    e.innerHTML=Math.random()>0.5?"🎉":"💖";
+    e.style.left=Math.random()*100+"vw";
+    document.body.appendChild(e);
+    setTimeout(()=>e.remove(),4000);
   }
 }
 
 /* PASSCODE */
 function checkCode(){
   if(code.value==="SMILE-FIRST"){
-    msg.innerHTML="🎉 <br>You make every ordinary day feel magical 💕";
-    celebrate();
+    msg.innerHTML="💖 You make every ordinary day feel magical 💖";
+    loveExplosion();
   }else{
     msg.innerHTML="❌ Wrong code";
   }
