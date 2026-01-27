@@ -16,20 +16,23 @@ body{
   font-family: 'Segoe UI', sans-serif;
 }
 
+/* MAIN CARD */
 .card{
   background:rgba(255,255,255,0.35);
-  backdrop-filter: blur(15px);
-  padding:25px;
+  backdrop-filter: blur(18px);
+  padding:28px 22px;
   width:90%;
   max-width:380px;
-  border-radius:25px;
+  border-radius:26px;
   text-align:center;
-  box-shadow:0 20px 40px rgba(0,0,0,.15);
+  box-shadow:0 25px 50px rgba(0,0,0,.18);
 }
 
+/* TEXT */
 h1{
   color:white;
-  font-size:1.4rem;
+  font-size:1.45rem;
+  margin-bottom:5px;
 }
 
 .sub{
@@ -37,19 +40,24 @@ h1{
   font-size:.9rem;
 }
 
+/* DATE */
 .date{
-  margin:10px 0;
-  font-size:1.2rem;
-  color:white;
+  margin:12px 0 8px;
+  font-size:1.35rem;
+  color:#111;
   font-family:cursive;
+  text-shadow:
+    0 0 6px rgba(255,255,255,0.8),
+    0 0 14px rgba(255,105,180,0.8);
 }
 
+/* PHOTO */
 .photo{
   width:160px;
   height:160px;
   border-radius:50%;
   overflow:hidden;
-  margin:15px auto;
+  margin:15px auto 18px;
   border:4px solid white;
 }
 
@@ -60,16 +68,31 @@ h1{
   transition:opacity 1s ease;
 }
 
+/* TIMER */
 .timer{
-  display:flex;
-  justify-content:space-between;
-  color:white;
-  margin-top:15px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
 }
 
-.timer div span{
+.time-box{
+  background:rgba(255,255,255,0.4);
+  backdrop-filter: blur(10px);
+  border-radius:14px;
+  padding:10px 5px;
+  box-shadow:0 8px 20px rgba(0,0,0,.15);
+}
+
+.time-box span{
   display:block;
-  font-size:1.1rem;
+  font-size:1.3rem;
+  color:#111;
+  font-weight:600;
+}
+
+.time-box small{
+  font-size:.7rem;
+  color:#333;
 }
 </style>
 </head>
@@ -79,6 +102,7 @@ h1{
 <div class="card">
   <h1>✨ Something Beautiful Is On The Way ✨</h1>
   <p class="sub">A very special soul will soon be celebrated</p>
+
   <div class="date">13 February 💖</div>
 
   <div class="photo">
@@ -86,10 +110,10 @@ h1{
   </div>
 
   <div class="timer">
-    <div><span id="d">0</span>Days</div>
-    <div><span id="h">0</span>Hours</div>
-    <div><span id="m">0</span>Min</div>
-    <div><span id="s">0</span>Sec</div>
+    <div class="time-box"><span id="d">0</span><small>Days</small></div>
+    <div class="time-box"><span id="h">0</span><small>Hours</small></div>
+    <div class="time-box"><span id="m">0</span><small>Minutes</small></div>
+    <div class="time-box"><span id="s">0</span><small>Seconds</small></div>
   </div>
 </div>
 
@@ -113,6 +137,7 @@ setInterval(()=>{
   const now=new Date().getTime();
   const diff=target-now;
   if(diff<0) return;
+
   d.innerText=Math.floor(diff/(1000*60*60*24));
   h.innerText=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
   m.innerText=Math.floor((diff%(1000*60*60))/(1000*60));
