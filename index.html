@@ -208,7 +208,11 @@ input{
 <div id="effects"></div>
 
 <script>
-/* PHOTO FADE */
+// 🎵 Background music
+const bgMusic = document.getElementById("bgMusic");
+bgMusic.volume = 0.25; // soft romantic volume
+
+  /* PHOTO FADE */
 const imgs=document.querySelectorAll(".photo img");
 let p=0;
 setInterval(()=>{
@@ -275,6 +279,7 @@ function checkCode(){
 
 /* MESSAGE + PREMIUM EFFECT */
 function openMessage(){
+  bgMusic.play().catch(()=>{});
   document.getElementById("overlay").style.display="flex";
   const fx=document.getElementById("effects");
   let count=0;
@@ -300,8 +305,6 @@ function closeOverlay(){
 <!-- Background Music -->
 <audio id="bgMusic" src="bg-music.mp3" loop></audio>
 
-<!-- Sparkle Sound -->
-<audio id="sparkleSound" src="sparkle.mp3"></audio>
 
 </body>
 </html>
