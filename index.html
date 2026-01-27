@@ -3,17 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Secret Gift 💗</title>
+<title>For Violina 💗</title>
 
 <style>
+*{box-sizing:border-box}
 body{
   margin:0;
   min-height:100vh;
-  background:linear-gradient(180deg,#fff,#ffd6e8);
   display:flex;
   justify-content:center;
   align-items:center;
+  background:linear-gradient(180deg,#fff,#ffd6e8);
   font-family:"Segoe UI",system-ui;
+  overflow:hidden;
 }
 
 .card{
@@ -23,18 +25,19 @@ body{
   border-radius:22px;
   padding:22px;
   text-align:center;
-  box-shadow:0 20px 60px rgba(255,120,170,.25);
+  box-shadow:0 25px 70px rgba(255,120,170,.3);
+  z-index:2;
 }
 
-/* SMOOTH IMAGE FADE */
+/* PHOTO FADE */
 .photo{
   width:140px;
   height:140px;
   margin:0 auto 12px;
   border-radius:50%;
   overflow:hidden;
-  position:relative;
   border:5px solid #ffd1e5;
+  position:relative;
 }
 .photo img{
   position:absolute;
@@ -47,13 +50,12 @@ body{
 }
 .photo img.active{opacity:1}
 
-h2{margin:10px 0 4px}
 .sub{font-size:.95rem;color:#555}
 .date{
-  font-weight:600;
   margin:6px 0 10px;
+  font-weight:600;
   color:black;
-  text-shadow:0 0 10px #ff9acb;
+  text-shadow:0 0 12px #ff9acb;
 }
 
 /* TIMER */
@@ -72,10 +74,9 @@ h2{margin:10px 0 4px}
 .num{font-weight:700}
 .lbl{font-size:.65rem;color:#666}
 
-/* BDAY BUTTON */
 .bday{
   margin:6px auto 12px;
-  padding:8px 16px;
+  padding:8px 18px;
   border-radius:20px;
   border:none;
   background:#eee;
@@ -87,15 +88,14 @@ h2{margin:10px 0 4px}
 .gift{
   font-size:52px;
   cursor:pointer;
-  animation:float 2.6s ease-in-out infinite;
+  animation:float 2.8s ease-in-out infinite;
 }
 @keyframes float{
   50%{transform:translateY(-6px)}
 }
-
 .note{font-size:.85rem;color:#444;margin-top:6px}
 
-/* PASSCODE */
+/* PASSCODE MODAL */
 .modal{
   position:fixed;
   inset:0;
@@ -104,11 +104,11 @@ h2{margin:10px 0 4px}
   align-items:center;
   background:rgba(255,200,225,.45);
   backdrop-filter:blur(6px);
-  z-index:10;
+  z-index:5;
 }
 .modalBox{
   background:white;
-  padding:20px;
+  padding:22px;
   border-radius:18px;
   width:80%;
   max-width:300px;
@@ -119,22 +119,15 @@ input{
   font-size:1rem;
   margin-bottom:10px;
 }
-button.open{
-  padding:8px 14px;
-  border-radius:14px;
-  border:none;
-  background:#ff8fbe;
-  color:white;
-}
 
-/* MESSAGE OVERLAY */
+/* OVERLAY */
 .overlay{
   position:fixed;
   inset:0;
   display:none;
   background:rgba(255,210,230,.55);
   backdrop-filter:blur(10px);
-  z-index:20;
+  z-index:10;
 }
 .messageBox{
   background:white;
@@ -145,7 +138,6 @@ button.open{
   border-radius:20px;
   position:relative;
   box-shadow:0 30px 80px rgba(255,120,170,.35);
-  overflow:hidden;
 }
 .close{
   position:absolute;
@@ -154,14 +146,21 @@ button.open{
   cursor:pointer;
 }
 
-/* HEARTS (INSIDE BOX) */
-.heart{
+/* EFFECT LAYER */
+#effects{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:15;
+}
+.particle{
   position:absolute;
-  bottom:-20px;
-  animation:rise 5s linear forwards;
+  animation:rise linear forwards;
 }
 @keyframes rise{
-  to{transform:translateY(-260px);opacity:0}
+  from{transform:translateY(40px) scale(.6);opacity:0}
+  30%{opacity:1}
+  to{transform:translateY(-120vh) scale(1.2);opacity:0}
 }
 </style>
 </head>
@@ -184,34 +183,37 @@ button.open{
   <button class="bday" id="bdayBtn">Happy Birthday 🎉</button>
 
   <div class="gift" id="gift">🎁</div>
-  <div class="note" id="giftNote">Only Violina can open this</div>
+  <div class="note" id="note">Only Violina can open this</div>
 </div>
 
-<!-- PASSCODE -->
-<div class="modal" id="passModal">
+<div class="modal" id="modal">
   <div class="modalBox">
-    <h3>Secret Gift 💕</h3>
-    <input id="code" placeholder="Enter secret code">
-    <button class="open" onclick="checkCode()">Open</button>
+    <h3>Secret Code 💕</h3>
+    <input id="code" placeholder="Enter secret code" autocomplete="off">
+    <button onclick="checkCode()">Open</button>
   </div>
 </div>
 
-<!-- MESSAGE -->
 <div class="overlay" id="overlay">
-  <div class="messageBox" id="msgBox">
+  <div class="messageBox">
     <div class="close" onclick="closeOverlay()">❌</div>
-    <p>You make ordinary days feel softer, warmer, and a little magical 💗</p>
+    <p>
+      You make ordinary days feel softer, warmer,
+      and a little magical 💗
+    </p>
   </div>
 </div>
+
+<div id="effects"></div>
 
 <script>
-/* SMOOTH IMAGE ROTATION */
+/* PHOTO FADE */
 const imgs=document.querySelectorAll(".photo img");
-let idx=0;
+let p=0;
 setInterval(()=>{
-  imgs[idx].classList.remove("active");
-  idx=(idx+1)%imgs.length;
-  imgs[idx].classList.add("active");
+  imgs[p].classList.remove("active");
+  p=(p+1)%imgs.length;
+  imgs[p].classList.add("active");
 },4000);
 
 /* TIMER */
@@ -225,7 +227,7 @@ setInterval(()=>{
     timer.innerHTML="<div class='box'><div class='num'>00</div><div class='lbl'>Done</div></div>";
     bdayBtn.disabled=false;
     bdayBtn.style.background="#ff8fbe";
-    bdayBtn.style.color="white";
+    bdayBtn.style.color="#fff";
     bdayBtn.style.cursor="pointer";
     return;
   }
@@ -240,51 +242,55 @@ setInterval(()=>{
   <div class="box"><div class="num">${s}</div><div class="lbl">Sec</div></div>`;
 },1000);
 
-/* DAILY STATE */
+/* GIFT STATE */
 const today=new Date().toDateString();
-const openedDay=localStorage.getItem("openedDay");
-const gift=document.getElementById("gift");
-const note=document.getElementById("giftNote");
+let giftOpened=localStorage.getItem("openedDay")===today;
 
-if(openedDay===today){
+const gift=document.getElementById("gift");
+const note=document.getElementById("note");
+
+if(giftOpened){
   gift.textContent="🎀";
-  note.innerHTML="Opened 💗<br>Come back tomorrow 💗";
+  gift.style.animation="none";
+  note.innerHTML="Opened 💗<br>Come back tomorrow";
 }
 
-/* GIFT CLICK */
+/* CLICK */
 gift.onclick=()=>{
-  if(openedDay===today){
-    openMessage();
-    return;
-  }
-  document.getElementById("passModal").style.display="flex";
+  if(giftOpened){openMessage();return;}
+  document.getElementById("modal").style.display="flex";
 };
 
-/* CHECK CODE */
 function checkCode(){
-  if(document.getElementById("code").value==="SMILE-FIRST"){
-    localStorage.setItem("openedDay",today);
-    document.getElementById("passModal").style.display="none";
-    gift.textContent="🎀";
-    note.innerHTML="Opened 💗<br>Come back tomorrow 💗";
-    openMessage();
-  }
+  if(document.getElementById("code").value!=="SMILE-FIRST")return;
+  giftOpened=true;
+  localStorage.setItem("openedDay",today);
+  document.getElementById("modal").remove();
+  gift.textContent="🎀";
+  gift.style.animation="none";
+  note.innerHTML="Opened 💗<br>Come back tomorrow";
+  openMessage();
 }
 
-/* MESSAGE + HEARTS */
+/* MESSAGE + PREMIUM EFFECT */
 function openMessage(){
-  const box=document.getElementById("msgBox");
   document.getElementById("overlay").style.display="block";
-  for(let i=0;i<14;i++){
-    const h=document.createElement("div");
-    h.className="heart";
-    h.textContent="💗";
-    h.style.left=Math.random()*90+"%";
-    h.style.fontSize=14+Math.random()*14+"px";
-    box.appendChild(h);
-    setTimeout(()=>h.remove(),5000);
-  }
+  const fx=document.getElementById("effects");
+  let count=0;
+  const emit=setInterval(()=>{
+    if(count++>45){clearInterval(emit);return;}
+    const p=document.createElement("div");
+    p.className="particle";
+    p.textContent=Math.random()>.7?"✨":"💗";
+    p.style.left=Math.random()*100+"%";
+    p.style.bottom="-20px";
+    p.style.fontSize=12+Math.random()*22+"px";
+    p.style.animationDuration=6+Math.random()*4+"s";
+    fx.appendChild(p);
+    setTimeout(()=>p.remove(),10000);
+  },120);
 }
+
 function closeOverlay(){
   document.getElementById("overlay").style.display="none";
 }
