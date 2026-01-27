@@ -2,183 +2,181 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>A Very Special Day 💗</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Very Special Day</title>
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+<!-- Premium Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&family=Pacifico&display=swap" rel="stylesheet">
 
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-
-body {
-  background: linear-gradient(135deg, #ff8fb1, #ffb3c6);
-  min-height: 100vh;
-  overflow-x: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+  font-family:'Poppins',sans-serif;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
-/* Floating Hearts */
-.heart {
-  position: fixed;
-  bottom: -10px;
-  font-size: 20px;
-  animation: floatUp linear infinite;
-  opacity: 0.8;
+/* Floating hearts */
+.heart{
+  position:fixed;
+  bottom:-20px;
+  font-size:18px;
+  animation:floatUp linear infinite;
+  opacity:.7;
 }
-@keyframes floatUp {
-  0% { transform: translateY(0) scale(1); opacity: 0; }
-  20% { opacity: 1; }
-  100% { transform: translateY(-110vh) scale(1.4); opacity: 0; }
+@keyframes floatUp{
+  0%{transform:translateY(0) scale(.8);opacity:.8}
+  100%{transform:translateY(-110vh) scale(1.3);opacity:0}
 }
 
 /* Main Card */
-.card {
-  background: rgba(255,255,255,0.18);
-  backdrop-filter: blur(12px);
-  border-radius: 30px;
-  padding: 36px;
-  width: 90%;
-  max-width: 420px;
-  text-align: center;
-  box-shadow: 0 30px 70px rgba(255,0,100,0.35);
+.card{
+  width:360px;
+  background:rgba(255,255,255,.25);
+  backdrop-filter:blur(12px);
+  border-radius:30px;
+  padding:28px;
+  text-align:center;
+  box-shadow:0 25px 50px rgba(0,0,0,.25);
 }
 
-/* Headings */
-h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 26px;
-  color: white;
+/* Title */
+h1{
+  font-weight:600;
+  color:#fff;
+}
+.subtitle{
+  color:#fff;
+  margin-top:10px;
+  font-size:14px;
 }
 
-.message {
-  margin-top: 14px;
-  font-size: 14px;
-  color: #fff;
-  opacity: 0.95;
+/* Photo circle */
+.photo-frame{
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  margin:25px auto;
+  overflow:hidden;
+  border:5px solid rgba(255,255,255,.6);
+  box-shadow:0 0 30px rgba(255,105,135,.6);
 }
+.photo-frame img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  position:absolute;
+  opacity:0;
+  transition:opacity 1.5s ease;
+}
+.photo-frame img.active{opacity:1}
 
-/* Date */
-.date {
-  font-family: 'Great Vibes', cursive;
-  font-size: 40px;
-  margin: 18px 0;
-  color: #fff;
+/* Date glow */
+.date{
+  font-family:'Great Vibes',cursive;
+  font-size:42px;
+  color:#fff;
+  margin:15px 0;
+  text-shadow:0 0 12px rgba(255,255,255,.9);
+  animation:glow 2s infinite alternate;
+}
+@keyframes glow{
+  from{text-shadow:0 0 10px #fff}
+  to{text-shadow:0 0 22px #ff6f91}
 }
 
 /* Countdown */
-.countdown {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
+.timer{
+  display:flex;
+  justify-content:space-between;
+  margin:20px 0;
 }
-.time {
-  background: rgba(255,255,255,0.25);
-  padding: 10px 14px;
-  border-radius: 14px;
-  color: white;
-  font-size: 13px;
-}
-
-/* Photo Slider */
-.photo-frame {
-  width: 230px;
-  height: 300px;
-  margin: 20px auto;
-  border-radius: 24px;
-  overflow: hidden;
-  position: relative;
-  box-shadow: 0 18px 40px rgba(255, 90, 150, 0.45);
+.time-box{
+  background:rgba(255,255,255,.35);
+  padding:10px;
+  border-radius:12px;
+  width:22%;
+  color:#fff;
+  font-size:13px;
 }
 
-.photo-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transform: scale(1.08);
-  transition: opacity 1.2s ease, transform 1.2s ease;
+/* Button */
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:30px;
+  font-size:16px;
+  cursor:not-allowed;
+  background:rgba(255,255,255,.5);
+  color:#fff;
+  font-weight:600;
+  animation:pulse 1.8s infinite;
 }
-
-.photo-frame img.active {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* Birthday Button */
-button {
-  margin-top: 20px;
-  padding: 14px 26px;
-  border-radius: 30px;
-  border: none;
-  font-size: 16px;
-  font-weight: 600;
-  background: linear-gradient(135deg, #ff5f9e, #ff86b3);
-  color: white;
-  cursor: not-allowed;
-  opacity: 0.6;
+@keyframes pulse{
+  0%{box-shadow:0 0 0 rgba(255,105,135,.5)}
+  70%{box-shadow:0 0 25px rgba(255,105,135,.9)}
+  100%{box-shadow:0 0 0 rgba(255,105,135,.5)}
 }
 
 /* Gift */
-.gift {
-  position: fixed;
-  bottom: 25px;
-  right: 25px;
-  font-size: 46px;
-  cursor: pointer;
-  animation: pulse 1.8s infinite;
+.gift{
+  position:fixed;
+  bottom:30px;
+  right:30px;
+  font-size:45px;
+  cursor:pointer;
+}
+.arrow{
+  position:fixed;
+  bottom:85px;
+  right:90px;
+  font-family:'Pacifico',cursive;
+  color:#fff;
+  animation:bounce 1.3s infinite;
+}
+@keyframes bounce{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
 }
 
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.15); }
-  100% { transform: scale(1); }
+/* Popup */
+.popup{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  justify-content:center;
+  align-items:center;
 }
-
-/* Modal */
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
-  display: none;
-  justify-content: center;
-  align-items: center;
+.popup-content{
+  background:#fff;
+  padding:25px;
+  border-radius:20px;
+  width:80%;
+  max-width:350px;
+  text-align:center;
+  position:relative;
 }
-
-.modal-content {
-  background: white;
-  padding: 30px;
-  border-radius: 24px;
-  max-width: 300px;
-  text-align: center;
-  position: relative;
-}
-
-.close {
-  position: absolute;
-  top: 10px;
-  right: 14px;
-  font-size: 18px;
-  cursor: pointer;
+.close{
+  position:absolute;
+  top:10px;
+  right:15px;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<!-- Main Card -->
+<!-- Card -->
 <div class="card">
   <h1>✨ A Very Special Day Is Approaching ✨</h1>
-  <p class="message">
-    Somewhere in this world, a soul that makes everything softer and brighter
-    is about to be celebrated.
-  </p>
+  <p class="subtitle">Somewhere in this world, a soul that makes everything softer is about to be celebrated.</p>
 
-  <!-- Photo Slider -->
   <div class="photo-frame">
     <img src="photo1.jpg" class="active">
     <img src="photo2.jpg">
@@ -187,68 +185,70 @@ button {
 
   <div class="date">13 February 💖</div>
 
-  <div class="countdown">
-    <div class="time" id="days">-- Days</div>
-    <div class="time" id="hours">-- Hrs</div>
-    <div class="time" id="minutes">-- Min</div>
-    <div class="time" id="seconds">-- Sec</div>
+  <div class="timer">
+    <div class="time-box" id="days">-- Days</div>
+    <div class="time-box" id="hours">-- Hrs</div>
+    <div class="time-box" id="minutes">-- Min</div>
+    <div class="time-box" id="seconds">-- Sec</div>
   </div>
 
-  <button>🎂 Happy Birthday 🎂</button>
+  <button disabled>🎂 Happy Birthday 🎂</button>
 </div>
 
-<!-- Gift -->
 <div class="gift" onclick="openGift()">🎁</div>
+<div class="arrow">click here ↓</div>
 
-<!-- Gift Modal -->
-<div class="modal" id="giftModal">
-  <div class="modal-content">
-    <span class="close" onclick="closeGift()">✖</span>
-    <p style="font-size:16px;">
-      You are the kind of person whose presence feels like home.
-      Never forget how deeply special you are. 💖
-    </p>
+<div class="popup" id="popup">
+  <div class="popup-content">
+    <span class="close" onclick="closePopup()">✖</span>
+    <p id="giftText"></p>
   </div>
 </div>
 
 <script>
-/* HEART GENERATOR */
-setInterval(() => {
-  const heart = document.createElement("div");
-  heart.className = "heart";
-  heart.innerHTML = "💗";
-  heart.style.left = Math.random() * 100 + "vw";
-  heart.style.animationDuration = 4 + Math.random() * 3 + "s";
-  document.body.appendChild(heart);
-  setTimeout(() => heart.remove(), 7000);
-}, 400);
+/* Hearts */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="💖";
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=3+Math.random()*3+"s";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+},350);
 
-/* COUNTDOWN */
-const target = new Date("Feb 13, 2026 00:00:00").getTime();
-setInterval(() => {
-  const now = new Date().getTime();
-  const d = target - now;
-  document.getElementById("days").innerText = Math.floor(d / (1000*60*60*24)) + " Days";
-  document.getElementById("hours").innerText = Math.floor((d%(1000*60*60*24))/(1000*60*60)) + " Hrs";
-  document.getElementById("minutes").innerText = Math.floor((d%(1000*60*60))/(1000*60)) + " Min";
-  document.getElementById("seconds").innerText = Math.floor((d%(1000*60))/1000) + " Sec";
-}, 1000);
+/* Photo slideshow */
+let imgs=document.querySelectorAll(".photo-frame img");
+let i=0;
+setInterval(()=>{
+  imgs[i].classList.remove("active");
+  i=(i+1)%imgs.length;
+  imgs[i].classList.add("active");
+},3500);
 
-/* PHOTO SLIDER */
-const photos = document.querySelectorAll(".photo-frame img");
-let index = 0;
-setInterval(() => {
-  photos[index].classList.remove("active");
-  index = (index + 1) % photos.length;
-  photos[index].classList.add("active");
-}, 3500);
+/* Countdown */
+const target=new Date("Feb 13, 2026 00:00:00").getTime();
+setInterval(()=>{
+  const now=Date.now();
+  const d=target-now;
+  if(d<=0)return;
+  document.getElementById("days").innerText=Math.floor(d/86400000)+" Days";
+  document.getElementById("hours").innerText=Math.floor(d%86400000/3600000)+" Hrs";
+  document.getElementById("minutes").innerText=Math.floor(d%3600000/60000)+" Min";
+  document.getElementById("seconds").innerText=Math.floor(d%60000/1000)+" Sec";
+},1000);
 
-/* GIFT */
-function openGift() {
-  document.getElementById("giftModal").style.display = "flex";
+/* Gift */
+function openGift(){
+  const pass=prompt("Enter secret passcode 💌");
+  if(pass==="SMILE-FIRST"){
+    document.getElementById("giftText").innerHTML=
+    "You are deeply loved, admired, and cherished 💞✨<br><br>Never forget how special you truly are 💗🎉";
+    document.getElementById("popup").style.display="flex";
+  }else alert("Wrong passcode 💔");
 }
-function closeGift() {
-  document.getElementById("giftModal").style.display = "none";
+function closePopup(){
+  document.getElementById("popup").style.display="none";
 }
 </script>
 
