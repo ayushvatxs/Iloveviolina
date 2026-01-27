@@ -1,245 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>For Violina 💖</title>
-
-<style>
-body{
-  margin:0;
-  background:linear-gradient(180deg,#ff8fab,#ffb3c6);
-  font-family:'Segoe UI',sans-serif;
-  color:white;
-  text-align:center;
-  overflow-x:hidden;
-}
-
-.card{
-  max-width:380px;
-  margin:30px auto;
-  padding:20px;
-  background:rgba(255,255,255,0.18);
-  border-radius:24px;
-  box-shadow:0 10px 30px rgba(0,0,0,.2);
-}
-
-.photo{
-  width:220px;
-  height:220px;
-  border-radius:50%;
-  overflow:hidden;
-  margin:20px auto;
-  border:3px solid white;
-}
-.photo img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  transition:opacity 1s ease;
-}
-
-.date{
-  font-family:cursive;
-  font-size:30px;
-  text-shadow:0 0 14px white;
-}
-
-/* TIMER */
-.timer{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  margin-top:15px;
-}
-.time-box{
-  background:rgba(255,255,255,0.25);
-  padding:8px 10px;
-  border-radius:12px;
-  font-size:14px;
-}
-.time-box span{
-  display:block;
-  font-size:18px;
-  font-weight:bold;
-}
-
-/* GIFT */
-.gift-wrap{
-  margin-top:25px;
-}
-.arrow{
-  font-family:cursive;
-  font-size:16px;
-}
-.gift{
-  font-size:52px;
-  cursor:pointer;
-  animation:floatGift 2s ease-in-out infinite;
-}
-@keyframes floatGift{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-8px)}
-}
-
-/* HEARTS */
-.heart{
-  position:fixed;
-  bottom:-20px;
-  font-size:18px;
-  animation:floatUp 6s linear forwards;
-}
-@keyframes floatUp{
-  to{
-    transform:translateY(-120vh);
-    opacity:0;
-  }
-}
-
-/* POPUP */
-#popup{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  justify-content:center;
-  align-items:center;
-}
-.popup-box{
-  background:white;
-  color:#ff4d6d;
-  padding:22px;
-  width:260px;
-  border-radius:18px;
-}
-.popup-box input{
-  width:100%;
-  padding:8px;
-  margin:10px 0;
-}
-.popup-box span{
-  float:right;
-  cursor:pointer;
-  color:red;
-}
-
-/* CONFETTI */
-.confetti{
-  position:fixed;
-  top:-10px;
-  font-size:20px;
-  animation:fall 3s linear forwards;
-}
-@keyframes fall{
-  to{
-    transform:translateY(110vh);
-    opacity:0;
-  }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Something Beautiful 💗</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="card">
-  <h2>✨ Something Beautiful Is On The Way ✨</h2>
-  <p>A very special soul will soon be celebrated.</p>
+  <!-- AUDIO -->
+  <audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
 
-  <div class="date">13 February 💖</div>
+  <audio id="sparkleSound">
+    <source src="sparkle.mp3" type="audio/mpeg">
+  </audio>
 
-  <div class="photo">
-    <img id="pic" src="photo1.jpg">
+  <!-- MAIN CARD -->
+  <div class="page">
+    <div class="card">
+
+      <h1>✨ Something Beautiful Is On The Way ✨</h1>
+      <p class="sub">A very special soul will soon be celebrated</p>
+      <div class="date">13 February 💖</div>
+
+      <!-- PHOTO SLIDER -->
+      <div class="photo-frame">
+        <img id="slider" src="photo1.jpg">
+      </div>
+
+      <!-- COUNTDOWN -->
+      <div class="countdown">
+        <div><span id="days">00</span>Days</div>
+        <div><span id="hours">00</span>Hrs</div>
+        <div><span id="mins">00</span>Min</div>
+        <div><span id="secs">00</span>Sec</div>
+      </div>
+
+      <!-- GIFT -->
+      <div class="gift-area">
+        <div class="arrow">click here</div>
+        <div id="gift">🎁</div>
+      </div>
+
+    </div>
   </div>
 
-  <div class="timer">
-    <div class="time-box"><span id="d">0</span>Days</div>
-    <div class="time-box"><span id="h">0</span>Hours</div>
-    <div class="time-box"><span id="m">0</span>Min</div>
-    <div class="time-box"><span id="s">0</span>Sec</div>
+  <!-- OVERLAY -->
+  <div id="overlay">
+    <div class="overlay-bg"></div>
+
+    <div class="overlay-box">
+      <button class="close" onclick="closeOverlay()">✖</button>
+
+      <div class="overlay-hearts"></div>
+
+      <div class="message-card">
+        <h2>For Violina 💗</h2>
+        <p id="loveText"></p>
+      </div>
+    </div>
   </div>
 
-  <div class="gift-wrap">
-    <div class="arrow">click here ↓</div>
-    <div class="gift" onclick="openGift()">🎁</div>
-  </div>
-</div>
-
-<!-- POPUP -->
-<div id="popup">
-  <div class="popup-box">
-    <span onclick="closeGift()">✖</span>
-    <h3>Only Violina 💖</h3>
-    <input id="code" placeholder="Secret code">
-    <button onclick="checkCode()">Open</button>
-    <p id="msg"></p>
-  </div>
-</div>
-
-<script>
-/* IMAGE SLIDER */
-const imgs=["photo1.jpg","photo2.jpg","photo3.jpg"];
-let idx=0;
-setInterval(()=>{
-  const img=document.getElementById("pic");
-  img.style.opacity=0;
-  setTimeout(()=>{
-    idx=(idx+1)%imgs.length;
-    img.src=imgs[idx];
-    img.style.opacity=1;
-  },500);
-},3500);
-
-/* COUNTDOWN */
-const target=new Date("Feb 13, 2026 00:00:00").getTime();
-setInterval(()=>{
-  const now=new Date().getTime();
-  const diff=target-now;
-  if(diff<0) return;
-  d.innerText=Math.floor(diff/(1000*60*60*24));
-  h.innerText=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
-  m.innerText=Math.floor((diff%(1000*60*60))/(1000*60));
-  s.innerText=Math.floor((diff%(1000*60))/1000);
-},1000);
-
-/* BACKGROUND HEARTS */
-setInterval(()=>{
-  const hrt=document.createElement("div");
-  hrt.className="heart";
-  hrt.innerHTML="💖";
-  hrt.style.left=Math.random()*100+"vw";
-  document.body.appendChild(hrt);
-  setTimeout(()=>hrt.remove(),6000);
-},1000);
-
-/* GIFT */
-function openGift(){
-  popup.style.display="flex";
-}
-function closeGift(){
-  popup.style.display="none";
-}
-
-/* LOVE EFFECTS */
-function loveExplosion(){
-  for(let i=0;i<40;i++){
-    const e=document.createElement("div");
-    e.className=Math.random()>0.5?"confetti":"heart";
-    e.innerHTML=Math.random()>0.5?"🎉":"💖";
-    e.style.left=Math.random()*100+"vw";
-    document.body.appendChild(e);
-    setTimeout(()=>e.remove(),4000);
-  }
-}
-
-/* PASSCODE */
-function checkCode(){
-  if(code.value==="SMILE-FIRST"){
-    msg.innerHTML="💖 You make every ordinary day feel magical 💖";
-    loveExplosion();
-  }else{
-    msg.innerHTML="❌ Wrong code";
-  }
-}
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>
