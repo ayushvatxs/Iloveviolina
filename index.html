@@ -1,259 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Her Birthday Countdown</title>
-
-<style>
-*{
-  box-sizing:border-box;
-  font-family:'Segoe UI',sans-serif;
-}
-
-body{
-  margin:0;
-  min-height:100vh;
-  background:linear-gradient(135deg,#ffe4ec,#fff6fa);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  overflow:hidden;
-}
-
-.container{
-  width:90%;
-  max-width:380px;
-  background:white;
-  border-radius:22px;
-  padding:22px;
-  text-align:center;
-  box-shadow:0 18px 50px rgba(255,100,150,0.25);
-  position:relative;
-}
-
-h1{
-  margin:6px 0;
-  font-size:1.4rem;
-}
-
-.date{
-  margin:10px 0;
-  font-size:1.45rem;
-  font-weight:700;
-  color:#000;
-  text-shadow:
-    0 0 6px #fff,
-    0 0 12px #ff8fb1,
-    0 0 22px #ff4f8b;
-  animation:glow 2.5s infinite alternate;
-}
-
-@keyframes glow{
-  from{
-    text-shadow:
-      0 0 6px #fff,
-      0 0 12px #ff8fb1,
-      0 0 22px #ff4f8b;
-  }
-  to{
-    text-shadow:
-      0 0 10px #fff,
-      0 0 20px #ff9fc6,
-      0 0 32px #ff2f78;
-  }
-}
-
-.timer{
-  display:flex;
-  justify-content:space-between;
-  margin:16px 0;
-}
-
-.time-box{
-  background:#fff0f6;
-  border-radius:14px;
-  padding:10px;
-  width:22%;
-  box-shadow:0 6px 14px rgba(255,105,180,0.25);
-}
-
-.time-box span{
-  font-size:1.3rem;
-  font-weight:700;
-  display:block;
-}
-
-.photo{
-  width:160px;
-  height:160px;
-  border-radius:50%;
-  margin:16px auto;
-  overflow:hidden;
-  border:6px solid #ffd1e4;
-}
-
-.photo img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  animation:fade 6s infinite;
-}
-
-@keyframes fade{
-  0%,100%{opacity:1}
-  33%{opacity:0.4}
-}
-
-.gift{
-  font-size:48px;
-  cursor:pointer;
-  animation:bounce 1.6s infinite;
-}
-
-@keyframes bounce{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-8px)}
-}
-
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(255,192,203,0.4);
-  backdrop-filter:blur(8px);
-  display:none;
-  justify-content:center;
-  align-items:center;
-}
-
-.card{
-  background:white;
-  width:85%;
-  max-width:340px;
-  padding:22px;
-  border-radius:20px;
-  position:relative;
-  text-align:center;
-  box-shadow:0 20px 40px rgba(255,80,120,0.35);
-}
-
-.close{
-  position:absolute;
-  right:14px;
-  top:10px;
-  font-size:22px;
-  cursor:pointer;
-}
-
-input{
-  padding:10px;
-  width:80%;
-  border-radius:10px;
-  border:1px solid #ccc;
-}
-
-button{
-  margin-top:12px;
-  padding:10px 18px;
-  border:none;
-  border-radius:12px;
-  background:#ff6fa5;
-  color:white;
-  font-size:1rem;
-  cursor:pointer;
-}
-
-.hearts span{
-  position:fixed;
-  bottom:-20px;
-  animation:float 6s linear infinite;
-  color:#ff5f9e;
-}
-
-@keyframes float{
-  from{transform:translateY(0);opacity:1}
-  to{transform:translateY(-110vh);opacity:0}
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Something Beautiful 💗</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<div class="container">
-  <h1>Someone very special’s birthday is coming 💗</h1>
-  <div class="date">13 February</div>
+<div class="page">
 
-  <div class="timer">
-    <div class="time-box"><span id="d">0</span>Days</div>
-    <div class="time-box"><span id="h">0</span>Hrs</div>
-    <div class="time-box"><span id="m">0</span>Min</div>
-    <div class="time-box"><span id="s">0</span>Sec</div>
-  </div>
-
-  <div class="photo">
-    <img id="img" src="photo1.jpg">
-  </div>
-
-  <div class="gift" onclick="openGift()">🎁</div>
-  <p>Only Violina can open this</p>
-</div>
-
-<div class="overlay" id="overlay">
+  <!-- MAIN CARD -->
   <div class="card">
-    <div class="close" onclick="closeGift()">❌</div>
-    <h2>Secret Gift 💖</h2>
-    <input id="code" placeholder="Enter secret code">
-    <button onclick="checkCode()">Open</button>
-    <p id="msg"></p>
+    <h1>Someone very special’s birthday is coming 💗</h1>
+
+    <h2 class="date-glow">13 February</h2>
+
+    <!-- TIMER -->
+    <div class="timer">
+      <div><span id="days">0</span><small>Days</small></div>
+      <div><span id="hours">0</span><small>Hrs</small></div>
+      <div><span id="minutes">0</span><small>Min</small></div>
+      <div><span id="seconds">0</span><small>Sec</small></div>
+    </div>
+
+    <div class="photo">
+      <img id="photo" src="photo1.jpg">
+    </div>
+
+    <button class="gift-btn" onclick="openPasscode()">🎁</button>
+    <p class="note">Only Violina can open this</p>
+  </div>
+
+</div>
+
+<!-- PASSCODE MODAL -->
+<div class="overlay hidden" id="passOverlay">
+  <div class="modal">
+    <button class="close" onclick="closePasscode()">✕</button>
+    <h3>Secret Gift 💖</h3>
+    <input id="passInput" placeholder="Enter secret code">
+    <button onclick="checkPass()">Open</button>
+    <p class="hint">You make every day feel magical 💗</p>
   </div>
 </div>
 
-<script>
-const target = new Date("Feb 13, 2026 00:00:00").getTime();
-setInterval(()=>{
-  const now = new Date().getTime();
-  const diff = target - now;
-  document.getElementById("d").innerText=Math.max(0,Math.floor(diff/86400000));
-  document.getElementById("h").innerText=Math.max(0,Math.floor(diff%86400000/3600000));
-  document.getElementById("m").innerText=Math.max(0,Math.floor(diff%3600000/60000));
-  document.getElementById("s").innerText=Math.max(0,Math.floor(diff%60000/1000));
-},1000);
+<!-- GIFT POPUP -->
+<div class="overlay hidden" id="giftOverlay">
+  <div class="hearts-bg"></div>
 
-let i=1;
-setInterval(()=>{
-  i=i%3+1;
-  document.getElementById("img").src=`photo${i}.jpg`;
-},4000);
+  <div class="gift-box">
+    <button class="close" onclick="closeGift()">✕</button>
+    <h2>You are my favorite feeling 💕</h2>
+    <p>
+      Every smile of yours is my happiness.  
+      Happy Birthday, my love 💗
+    </p>
+    <div class="pulse-heart">❤️</div>
+  </div>
+</div>
 
-function openGift(){
-  document.getElementById("overlay").style.display="flex";
-}
-
-function closeGift(){
-  document.getElementById("overlay").style.display="none";
-}
-
-function checkCode(){
-  if(document.getElementById("code").value==="SMILE-FIRST"){
-    document.getElementById("msg").innerText="You make every day feel magical 💗";
-    spawnHearts();
-  }else{
-    document.getElementById("msg").innerText="Wrong code 💔";
-  }
-}
-
-function spawnHearts(){
-  for(let i=0;i<25;i++){
-    let h=document.createElement("span");
-    h.innerText="❤";
-    h.style.left=Math.random()*100+"vw";
-    h.style.fontSize=12+Math.random()*20+"px";
-    document.body.appendChild(h);
-    h.className="hearts";
-    setTimeout(()=>h.remove(),6000);
-  }
-}
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
