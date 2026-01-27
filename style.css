@@ -1,1 +1,139 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg,#ff9fbf,#ffd1dc);
+  overflow-x: hidden;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  background: rgba(255,255,255,0.35);
+  backdrop-filter: blur(15px);
+  border-radius: 25px;
+  padding: 25px;
+  width: 90%;
+  max-width: 380px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+h1 {
+  font-size: 1.4rem;
+  color: #fff;
+}
+
+.sub {
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.date {
+  font-family: 'cursive';
+  font-size: 1.2rem;
+  margin: 10px 0;
+}
+
+.photo-frame {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 15px auto;
+  border: 4px solid #fff;
+}
+
+.photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.countdown {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+  color: #fff;
+}
+
+.countdown div span {
+  display: block;
+  font-size: 1.1rem;
+}
+
+.gift-area {
+  margin-top: 15px;
+}
+
+#gift {
+  font-size: 45px;
+  cursor: pointer;
+  animation: float 2s infinite ease-in-out;
+}
+
+.arrow {
+  font-size: 0.8rem;
+  color: #fff;
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* OVERLAY */
+#overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.overlay-bg {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,105,180,0.3);
+  backdrop-filter: blur(8px);
+}
+
+.overlay-box {
+  position: relative;
+  background: rgba(255,255,255,0.9);
+  border-radius: 25px;
+  padding: 30px;
+  width: 85%;
+  max-width: 350px;
+  z-index: 2;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  border: none;
+  background: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.message-card h2 {
+  color: #ff4f8b;
+}
+
+#loveText {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
 
