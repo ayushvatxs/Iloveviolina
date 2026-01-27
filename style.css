@@ -1,1 +1,171 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(135deg, #ffd6e7, #ffeaf3);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.page {
+  padding: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  background: white;
+  border-radius: 25px;
+  padding: 30px;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(255,105,180,.25);
+}
+
+.card h1 {
+  font-size: 20px;
+}
+
+.date-glow {
+  font-size: 26px;
+  margin: 10px 0;
+  color: #000;
+  text-shadow: 0 0 12px rgba(255,105,180,.8);
+}
+
+.timer {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.timer div {
+  background: #ffe6ef;
+  padding: 10px;
+  border-radius: 15px;
+  width: 70px;
+}
+
+.timer span {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.photo img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 6px solid #ffc0d9;
+}
+
+.gift-btn {
+  margin-top: 15px;
+  font-size: 34px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.note {
+  font-size: 13px;
+  opacity: .7;
+}
+
+/* OVERLAYS */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,192,203,.4);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.hidden {
+  display: none;
+}
+
+/* PASSCODE MODAL */
+.modal {
+  background: white;
+  padding: 30px;
+  border-radius: 25px;
+  text-align: center;
+  width: 90%;
+  max-width: 350px;
+  position: relative;
+}
+
+.modal input {
+  width: 100%;
+  padding: 12px;
+  margin: 15px 0;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+}
+
+.modal button {
+  background: #ff7aa2;
+  border: none;
+  color: white;
+  padding: 10px 25px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.close {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* GIFT OVERLAY */
+.hearts-bg::before {
+  content: "💗 💕 💖 💞 💓";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  font-size: 30px;
+  animation: float 6s linear infinite;
+  opacity: .25;
+}
+
+@keyframes float {
+  from { transform: translateY(0); }
+  to { transform: translateY(-200px); }
+}
+
+.gift-box {
+  background: white;
+  padding: 35px;
+  border-radius: 30px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 30px 80px rgba(255,105,180,.4);
+}
+
+.pulse-heart {
+  font-size: 50px;
+  animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
 
