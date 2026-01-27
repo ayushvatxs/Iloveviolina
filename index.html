@@ -1,156 +1,300 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Something Beautiful Is Coming 💖</title>
+<meta charset="UTF-8" />
+<title>A Very Special Day</title>
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&family=Poppins:wght@300;500;700&family=Great+Vibes&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css">
+<style>
+*{box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{
+margin:0;
+height:100vh;
+background:linear-gradient(135deg,#ff7aa2,#ff9bbd);
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+}
+
+/* Floating Hearts */
+.heart{
+position:absolute;
+width:14px;
+height:14px;
+background:#ff3b6f;
+transform:rotate(45deg);
+animation:float 10s linear infinite;
+opacity:.6;
+}
+.heart::before,.heart::after{
+content:'';
+position:absolute;
+width:14px;
+height:14px;
+background:#ff3b6f;
+border-radius:50%;
+}
+.heart::before{top:-7px;left:0}
+.heart::after{left:-7px;top:0}
+@keyframes float{
+0%{transform:translateY(100vh) rotate(45deg);opacity:0}
+20%{opacity:.6}
+100%{transform:translateY(-10vh) rotate(45deg);opacity:0}
+}
+
+/* Card */
+.card{
+background:rgba(0,0,0,.25);
+padding:40px;
+border-radius:28px;
+width:420px;
+text-align:center;
+color:white;
+backdrop-filter:blur(10px);
+box-shadow:0 25px 60px rgba(0,0,0,.3);
+position:relative;
+}
+
+/* Photo Slider */
+.photo-frame{
+width:140px;
+height:140px;
+margin:0 auto 20px;
+border-radius:50%;
+overflow:hidden;
+border:4px solid rgba(255,255,255,.5);
+box-shadow:0 0 20px rgba(255,255,255,.4);
+}
+.photo-frame img{
+width:100%;
+height:100%;
+object-fit:cover;
+position:absolute;
+opacity:0;
+transform:scale(1.05);
+transition:opacity 1.5s ease, transform 1.5s ease;
+}
+.photo-frame img.active{
+opacity:1;
+transform:scale(1);
+}
+
+/* Headings */
+h1{font-size:26px;margin-bottom:10px}
+.message{font-size:14px;opacity:.9}
+
+/* Date */
+.date{
+font-family:'Great Vibes',cursive;
+font-size:48px;
+margin:20px 0;
+text-shadow:0 0 15px rgba(255,255,255,.6);
+}
+
+/* Countdown */
+.timer{
+display:flex;
+justify-content:space-between;
+margin:20px 0;
+}
+.time-box{
+background:rgba(255,255,255,.2);
+padding:10px;
+border-radius:14px;
+width:23%;
+font-weight:600;
+}
+
+/* Birthday Button */
+#birthdayBtn{
+margin-top:20px;
+padding:14px;
+border:none;
+border-radius:30px;
+width:100%;
+font-size:16px;
+background:linear-gradient(135deg,#888,#aaa);
+color:white;
+cursor:not-allowed;
+opacity:.7;
+animation:pulse 2s infinite;
+}
+@keyframes pulse{
+0%{transform:scale(1)}
+50%{transform:scale(1.05)}
+100%{transform:scale(1)}
+}
+
+/* Gift */
+.gift{
+position:absolute;
+bottom:25px;
+right:25px;
+font-size:48px;
+cursor:pointer;
+animation:bounce 2s infinite;
+}
+@keyframes bounce{
+0%,100%{transform:translateY(0)}
+50%{transform:translateY(-10px)}
+}
+.arrow{
+position:absolute;
+bottom:90px;
+right:25px;
+font-size:14px;
+color:white;
+opacity:.9;
+}
+
+/* Modal */
+.modal{
+display:none;
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,.6);
+align-items:center;
+justify-content:center;
+z-index:10;
+}
+.modal-content{
+background:white;
+color:#333;
+padding:30px;
+border-radius:22px;
+width:340px;
+position:relative;
+text-align:center;
+}
+.close{
+position:absolute;
+top:10px;
+right:15px;
+font-size:22px;
+cursor:pointer;
+}
+
+/* Confetti */
+.confetti{
+position:absolute;
+width:10px;
+height:10px;
+animation:confetti 2s linear infinite;
+}
+@keyframes confetti{
+0%{transform:translateY(0) rotate(0deg)}
+100%{transform:translateY(600px) rotate(360deg)}
+}
+</style>
 </head>
+
 <body>
 
-<div class="container">
-    <h1>💫 A Very Special Day Is Approaching 💫</h1>
+<div class="card">
 
-    <p class="message">
-        Somewhere in this world, a soul that makes everything softer,
-        brighter, and kinder is about to be celebrated.  
-        <br><br>
-        This is not just a countdown —  
-        it’s a quiet promise of something beautiful.
-    </p>
-
-    <p class="date">13 February 💕</p>
-
-    <div id="countdown">
-        <div><span id="days">00</span><small>Days</small></div>
-        <div><span id="hours">00</span><small>Hours</small></div>
-        <div><span id="minutes">00</span><small>Minutes</small></div>
-        <div><span id="seconds">00</span><small>Seconds</small></div>
-    </div>
-
-    <button id="birthdayBtn" disabled>🎂 Happy Birthday 🎂</button>
+<div class="photo-frame">
+<img src="photo1.jpg" class="active">
+<img src="photo2.jpg">
+<img src="photo3.jpg">
 </div>
 
-<!-- Gift Arrow -->
-<div class="gift-hint">
-    <span>click here</span>
-    ⬇️
+<h1>✨ A Very Special Day Is Approaching ✨</h1>
+<p class="message">
+Somewhere in this world, a soul that makes everything warmer and softer
+is about to be celebrated.
+<br><br>
+This is not just a countdown — it’s a promise.
+</p>
+
+<div class="date">13 February 💖</div>
+
+<div class="timer">
+<div class="time-box" id="days">00</div>
+<div class="time-box" id="hours">00</div>
+<div class="time-box" id="mins">00</div>
+<div class="time-box" id="secs">00</div>
 </div>
 
-<!-- Gift Icon -->
-<div id="giftIcon">🎁</div>
-
-<!-- Passcode Modal -->
-<div id="passcodeModal" class="modal">
-    <div class="modal-box">
-        <span class="close" onclick="closePasscode()">×</span>
-        <h2>Only for Violina 💖</h2>
-        <input type="password" id="passInput" placeholder="Enter secret passcode">
-        <button onclick="checkPasscode()">Open Gift</button>
-        <p id="errorText"></p>
-    </div>
+<button id="birthdayBtn">🎂 Happy Birthday 🎂</button>
 </div>
 
-<!-- Gift Message Modal -->
-<div id="giftModal" class="modal">
-    <div class="modal-box celebration">
-        <span class="close" onclick="closeGift()">×</span>
-        <h2>🎉 TADA 🎉</h2>
-        <p id="giftMessage"></p>
-    </div>
+<div class="arrow">click here ↓</div>
+<div class="gift" onclick="openGift()">🎁</div>
+
+<div class="modal" id="giftModal">
+<div class="modal-content">
+<span class="close" onclick="closeGift()">×</span>
+<p id="giftText"></p>
+</div>
 </div>
 
 <script>
-/* COUNTDOWN */
-const birthday = new Date("February 13, 2026 00:00:00").getTime();
-const button = document.getElementById("birthdayBtn");
+/* Floating hearts */
+for(let i=0;i<25;i++){
+let h=document.createElement('div');
+h.className='heart';
+h.style.left=Math.random()*100+'vw';
+h.style.animationDelay=Math.random()*10+'s';
+document.body.appendChild(h);
+}
 
-setInterval(() => {
-    const now = new Date().getTime();
-    const diff = birthday - now;
+/* Photo slider */
+const photos=document.querySelectorAll('.photo-frame img');
+let index=0;
+setInterval(()=>{
+photos[index].classList.remove('active');
+index=(index+1)%photos.length;
+photos[index].classList.add('active');
+},4000);
 
-    if (diff <= 0) {
-        button.disabled = false;
-        button.innerText = "🎉 Enter the Surprise 🎉";
-        button.onclick = () => window.location.href = "birthday.html";
-        return;
-    }
+/* Countdown */
+const target=new Date('Feb 13, 2026 00:00:00').getTime();
+setInterval(()=>{
+const now=new Date().getTime();
+const diff=target-now;
+document.getElementById('days').innerText=Math.floor(diff/(1000*60*60*24))+' Days';
+document.getElementById('hours').innerText=Math.floor(diff/(1000*60*60)%24)+' Hrs';
+document.getElementById('mins').innerText=Math.floor(diff/(1000*60)%60)+' Min';
+document.getElementById('secs').innerText=Math.floor(diff/1000%60)+' Sec';
+},1000);
 
-    document.getElementById("days").innerText = Math.floor(diff / (1000*60*60*24));
-    document.getElementById("hours").innerText = Math.floor((diff / (1000*60*60)) % 24);
-    document.getElementById("minutes").innerText = Math.floor((diff / (1000*60)) % 60);
-    document.getElementById("seconds").innerText = Math.floor((diff / 1000) % 60);
-}, 1000);
-
-/* 🎁 GIFT LOGIC */
-const PASSCODE = "SMILE-FIRST";
-
-const dailyMessages = [
-    "You are the kind of person whose presence alone feels like comfort. Never forget how deeply special you are. 💖",
-    "Some people make the world feel lighter just by existing — you are one of them. 🌸",
-    "If today ever feels heavy, remember: you are loved more than you know. ❤️"
+/* Gift logic */
+const pass="SMILE-FIRST";
+const dailyMessages=[
+"You are the kind of presence that turns ordinary moments into warmth. 💞✨"
 ];
 
-const today = new Date().toDateString();
-const openedDate = localStorage.getItem("giftOpenedDate");
-const giftIcon = document.getElementById("giftIcon");
-
-if (openedDate === today) {
-    giftIcon.classList.add("opened");
+function openGift(){
+let today=new Date().toDateString();
+if(localStorage.getItem('opened')===today){
+alert("You've already opened today's gift 💗");
+return;
+}
+let code=prompt("Enter secret code 💌");
+if(code===pass){
+localStorage.setItem('opened',today);
+showConfetti();
+document.getElementById('giftText').innerText=dailyMessages[0];
+document.getElementById('giftModal').style.display='flex';
+}
 }
 
-giftIcon.onclick = () => {
-    if (openedDate === today) {
-        openGift();
-    } else {
-        document.getElementById("passcodeModal").style.display = "flex";
-    }
-};
-
-function checkPasscode() {
-    const input = document.getElementById("passInput").value;
-    if (input === PASSCODE) {
-        localStorage.setItem("giftOpenedDate", today);
-        giftIcon.classList.add("opened");
-        closePasscode();
-        openGift();
-    } else {
-        document.getElementById("errorText").innerText = "Wrong passcode 💔";
-    }
+function closeGift(){
+document.getElementById('giftModal').style.display='none';
 }
 
-function openGift() {
-    launchConfetti();
-
-    const index = Math.floor(Math.random() * dailyMessages.length);
-    document.getElementById("giftMessage").innerText = dailyMessages[index];
-    document.getElementById("giftModal").style.display = "flex";
+function showConfetti(){
+for(let i=0;i<40;i++){
+let c=document.createElement('div');
+c.className='confetti';
+c.style.left=Math.random()*100+'vw';
+c.style.background=`hsl(${Math.random()*360},100%,60%)`;
+document.body.appendChild(c);
+setTimeout(()=>c.remove(),2000);
 }
-
-function closeGift() {
-    document.getElementById("giftModal").style.display = "none";
-}
-
-function closePasscode() {
-    document.getElementById("passcodeModal").style.display = "none";
-    document.getElementById("passInput").value = "";
-    document.getElementById("errorText").innerText = "";
-}
-
-/* 🎉 Confetti Effect */
-function launchConfetti() {
-    for (let i = 0; i < 30; i++) {
-        const confetti = document.createElement("div");
-        confetti.className = "confetti";
-        confetti.style.left = Math.random() * 100 + "vw";
-        confetti.style.animationDuration = Math.random() * 2 + 2 + "s";
-        document.body.appendChild(confetti);
-        setTimeout(() => confetti.remove(), 3000);
-    }
 }
 </script>
 
