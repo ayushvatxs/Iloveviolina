@@ -1,69 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Something Beautiful 💗</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Something Beautiful 💗</title>
+
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(180deg,#ff9fbf,#ffd1dc);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.card{
+  background:rgba(255,255,255,0.35);
+  backdrop-filter: blur(15px);
+  padding:25px;
+  width:90%;
+  max-width:380px;
+  border-radius:25px;
+  text-align:center;
+  box-shadow:0 20px 40px rgba(0,0,0,.15);
+}
+
+h1{
+  color:white;
+  font-size:1.4rem;
+}
+
+.sub{
+  color:white;
+  font-size:.9rem;
+}
+
+.date{
+  margin:10px 0;
+  font-size:1.2rem;
+  color:white;
+  font-family:cursive;
+}
+
+.photo{
+  width:160px;
+  height:160px;
+  border-radius:50%;
+  overflow:hidden;
+  margin:15px auto;
+  border:4px solid white;
+}
+
+.photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:opacity 1s ease;
+}
+
+.timer{
+  display:flex;
+  justify-content:space-between;
+  color:white;
+  margin-top:15px;
+}
+
+.timer div span{
+  display:block;
+  font-size:1.1rem;
+}
+</style>
 </head>
 
 <body>
 
-  <!-- AUDIO -->
-  <audio id="bgMusic" loop>
-    <source src="music.mp3" type="audio/mpeg">
-  </audio>
+<div class="card">
+  <h1>✨ Something Beautiful Is On The Way ✨</h1>
+  <p class="sub">A very special soul will soon be celebrated</p>
+  <div class="date">13 February 💖</div>
 
-  <audio id="sparkleSound">
-    <source src="sparkle.mp3" type="audio/mpeg">
-  </audio>
-
-  <!-- MAIN CARD -->
-  <div class="page">
-    <div class="card">
-
-      <h1>✨ Something Beautiful Is On The Way ✨</h1>
-      <p class="sub">A very special soul will soon be celebrated</p>
-      <div class="date">13 February 💖</div>
-
-      <!-- PHOTO SLIDER -->
-      <div class="photo-frame">
-        <img id="slider" src="photo1.jpg">
-      </div>
-
-      <!-- COUNTDOWN -->
-      <div class="countdown">
-        <div><span id="days">00</span>Days</div>
-        <div><span id="hours">00</span>Hrs</div>
-        <div><span id="mins">00</span>Min</div>
-        <div><span id="secs">00</span>Sec</div>
-      </div>
-
-      <!-- GIFT -->
-      <div class="gift-area">
-        <div class="arrow">click here</div>
-        <div id="gift">🎁</div>
-      </div>
-
-    </div>
+  <div class="photo">
+    <img id="slider" src="photo1.jpg">
   </div>
 
-  <!-- OVERLAY -->
-  <div id="overlay">
-    <div class="overlay-bg"></div>
-
-    <div class="overlay-box">
-      <button class="close" onclick="closeOverlay()">✖</button>
-
-      <div class="overlay-hearts"></div>
-
-      <div class="message-card">
-        <h2>For Violina 💗</h2>
-        <p id="loveText"></p>
-      </div>
-    </div>
+  <div class="timer">
+    <div><span id="d">0</span>Days</div>
+    <div><span id="h">0</span>Hours</div>
+    <div><span id="m">0</span>Min</div>
+    <div><span id="s">0</span>Sec</div>
   </div>
+</div>
 
-  <script src="script.js"></script>
+<script>
+/* IMAGE SLIDER */
+const images=["photo1.jpg","photo2.jpg","photo3.jpg"];
+let i=0;
+setInterval(()=>{
+  const img=document.getElementById("slider");
+  img.style.opacity=0;
+  setTimeout(()=>{
+    i=(i+1)%images.length;
+    img.src=images[i];
+    img.style.opacity=1;
+  },500);
+},3500);
+
+/* COUNTDOWN */
+const target=new Date("Feb 13, 2026 00:00:00").getTime();
+setInterval(()=>{
+  const now=new Date().getTime();
+  const diff=target-now;
+  if(diff<0) return;
+  d.innerText=Math.floor(diff/(1000*60*60*24));
+  h.innerText=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+  m.innerText=Math.floor((diff%(1000*60*60))/(1000*60));
+  s.innerText=Math.floor((diff%(1000*60))/1000);
+},1000);
+</script>
+
 </body>
 </html>
