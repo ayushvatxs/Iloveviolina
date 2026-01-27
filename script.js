@@ -1,44 +1,56 @@
-const targetDate = new Date("February 13, 2026 00:00:00").getTime();
-
+/* TIMER */
+const target = new Date("Feb 13, 2026 00:00:00").getTime();
 setInterval(() => {
-  const now = new Date().getTime();
-  const diff = targetDate - now;
+  const now = Date.now();
+  const diff = target - now;
+  if (diff < 0) return;
 
-  if (diff <= 0) return;
-
-  document.getElementById("days").innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
-  document.getElementById("hours").innerText = Math.floor((diff / (1000 * 60 * 60)) % 24);
-  document.getElementById("minutes").innerText = Math.floor((diff / (1000 * 60)) % 60);
-  document.getElementById("seconds").innerText = Math.floor((diff / 1000) % 60);
+  d.textContent = Math.floor(diff / 86400000);
+  h.textContent = Math.floor(diff / 3600000) % 24;
+  m.textContent = Math.floor(diff / 60000) % 60;
+  s.textContent = Math.floor(diff / 1000) % 60;
 }, 1000);
 
 /* IMAGE ROTATION */
-let imgIndex = 1;
+let i = 1;
 setInterval(() => {
-  imgIndex = imgIndex === 3 ? 1 : imgIndex + 1;
-  document.getElementById("photo").src = `photo${imgIndex}.jpg`;
-}, 4000);
+  i = i === 3 ? 1 : i + 1;
+  photo.src = `photo${i}.jpg`;
+}, 3500);
 
-/* PASSCODE */
-function openPasscode() {
-  document.getElementById("passOverlay").classList.remove("hidden");
+/* PASSCODE FLOW */
+function openPass() {
+  if (sessionStorage.getItem("opened")) return;
+  passModal.classList.remove("hidden");
 }
 
-function closePasscode() {
-  document.getElementById("passOverlay").classList.add("hidden");
+function closePass() {
+  passModal.classList.add("hidden");
 }
 
-function checkPass() {
-  const val = document.getElementById("passInput").value.trim();
-  if (val === "SMILE-FIRST") {
-    document.getElementById("passOverlay").classList.add("hidden");
-    document.getElementById("giftOverlay").classList.remove("hidden");
+function unlockGift() {
+  if (pass.value === "SMILE-FIRST") {
+    sessionStorage.setItem("opened", "yes");
+    passModal.remove();
+    giftOverlay.classList.remove("hidden");
+    startHearts();
   } else {
     alert("Wrong secret 💔");
   }
 }
 
 function closeGift() {
-  document.getElementById("giftOverlay").classList.add("hidden");
+  giftOverlay.classList.add("hidden");
 }
 
+/* HEART PARTICLES */
+function startHearts() {
+  setInterval(() => {
+    const heart = document.createElement("span");
+    heart.innerHTML = "💖";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = 3 + Math.random() * 3 + "s";
+    document.getElementById("heartContainer").appendChild(heart);
+    setTimeout(() => heart.remove(), 6000);
+  }, 250);
+}
