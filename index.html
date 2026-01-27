@@ -1,254 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>A Very Special Day</title>
-
-<!-- Premium Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&family=Pacifico&display=swap" rel="stylesheet">
-
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-  min-height:100vh;
-  background:linear-gradient(135deg,#ff9a9e,#fad0c4);
-  font-family:'Poppins',sans-serif;
-  overflow:hidden;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-/* Floating hearts */
-.heart{
-  position:fixed;
-  bottom:-20px;
-  font-size:18px;
-  animation:floatUp linear infinite;
-  opacity:.7;
-}
-@keyframes floatUp{
-  0%{transform:translateY(0) scale(.8);opacity:.8}
-  100%{transform:translateY(-110vh) scale(1.3);opacity:0}
-}
-
-/* Main Card */
-.card{
-  width:360px;
-  background:rgba(255,255,255,.25);
-  backdrop-filter:blur(12px);
-  border-radius:30px;
-  padding:28px;
-  text-align:center;
-  box-shadow:0 25px 50px rgba(0,0,0,.25);
-}
-
-/* Title */
-h1{
-  font-weight:600;
-  color:#fff;
-}
-.subtitle{
-  color:#fff;
-  margin-top:10px;
-  font-size:14px;
-}
-
-/* Photo circle */
-.photo-frame{
-  width:220px;
-  height:220px;
-  border-radius:50%;
-  margin:25px auto;
-  overflow:hidden;
-  border:5px solid rgba(255,255,255,.6);
-  box-shadow:0 0 30px rgba(255,105,135,.6);
-}
-.photo-frame img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  position:absolute;
-  opacity:0;
-  transition:opacity 1.5s ease;
-}
-.photo-frame img.active{opacity:1}
-
-/* Date glow */
-.date{
-  font-family:'Great Vibes',cursive;
-  font-size:42px;
-  color:#fff;
-  margin:15px 0;
-  text-shadow:0 0 12px rgba(255,255,255,.9);
-  animation:glow 2s infinite alternate;
-}
-@keyframes glow{
-  from{text-shadow:0 0 10px #fff}
-  to{text-shadow:0 0 22px #ff6f91}
-}
-
-/* Countdown */
-.timer{
-  display:flex;
-  justify-content:space-between;
-  margin:20px 0;
-}
-.time-box{
-  background:rgba(255,255,255,.35);
-  padding:10px;
-  border-radius:12px;
-  width:22%;
-  color:#fff;
-  font-size:13px;
-}
-
-/* Button */
-button{
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:30px;
-  font-size:16px;
-  cursor:not-allowed;
-  background:rgba(255,255,255,.5);
-  color:#fff;
-  font-weight:600;
-  animation:pulse 1.8s infinite;
-}
-@keyframes pulse{
-  0%{box-shadow:0 0 0 rgba(255,105,135,.5)}
-  70%{box-shadow:0 0 25px rgba(255,105,135,.9)}
-  100%{box-shadow:0 0 0 rgba(255,105,135,.5)}
-}
-
-/* Gift */
-.gift{
-  position:fixed;
-  bottom:30px;
-  right:30px;
-  font-size:45px;
-  cursor:pointer;
-}
-.arrow{
-  position:fixed;
-  bottom:85px;
-  right:90px;
-  font-family:'Pacifico',cursive;
-  color:#fff;
-  animation:bounce 1.3s infinite;
-}
-@keyframes bounce{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-10px)}
-}
-
-/* Popup */
-.popup{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  justify-content:center;
-  align-items:center;
-}
-.popup-content{
-  background:#fff;
-  padding:25px;
-  border-radius:20px;
-  width:80%;
-  max-width:350px;
-  text-align:center;
-  position:relative;
-}
-.close{
-  position:absolute;
-  top:10px;
-  right:15px;
-  cursor:pointer;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Something Special Is Coming 💖</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<!-- Card -->
-<div class="card">
-  <h1>✨ A Very Special Day Is Approaching ✨</h1>
-  <p class="subtitle">Somewhere in this world, a soul that makes everything softer is about to be celebrated.</p>
+<!-- Floating Hearts -->
+<div class="hearts"></div>
 
+<div class="container">
+  <h1>✨ Something Beautiful Is On The Way ✨</h1>
+
+  <p class="message">
+    A very special day is approaching…  
+    A day when the world quietly celebrates  
+    <span class="date">13 February</span> 💕
+  </p>
+
+  <!-- Photo Slideshow -->
   <div class="photo-frame">
-    <img src="photo1.jpg" class="active">
-    <img src="photo2.jpg">
-    <img src="photo3.jpg">
+    <img id="photo" src="photo1.jpg" alt="Her Smile 💖">
   </div>
 
-  <div class="date">13 February 💖</div>
+  <!-- Countdown -->
+  <div id="countdown">Loading countdown...</div>
 
-  <div class="timer">
-    <div class="time-box" id="days">-- Days</div>
-    <div class="time-box" id="hours">-- Hrs</div>
-    <div class="time-box" id="minutes">-- Min</div>
-    <div class="time-box" id="seconds">-- Sec</div>
+  <!-- Happy Birthday Button -->
+  <button id="birthdayBtn" disabled>🎉 Happy Birthday 🎉</button>
+
+  <!-- Gift Section -->
+  <div class="gift-section">
+    <div class="arrow">⬇ Click Here ⬇</div>
+    <div id="gift" class="gift">🎁</div>
   </div>
-
-  <button disabled>🎂 Happy Birthday 🎂</button>
 </div>
 
-<div class="gift" onclick="openGift()">🎁</div>
-<div class="arrow">click here ↓</div>
-
-<div class="popup" id="popup">
-  <div class="popup-content">
-    <span class="close" onclick="closePopup()">✖</span>
-    <p id="giftText"></p>
+<!-- Gift Modal -->
+<div id="giftModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Only Violina Can Open This 💖</h2>
+    <input type="password" id="passcode" placeholder="Enter Secret Code">
+    <button onclick="openGift()">Open Gift 🎉</button>
+    <p id="giftMessage"></p>
   </div>
 </div>
 
 <script>
-/* Hearts */
-setInterval(()=>{
-  const h=document.createElement("div");
-  h.className="heart";
-  h.innerHTML="💖";
-  h.style.left=Math.random()*100+"vw";
-  h.style.animationDuration=3+Math.random()*3+"s";
-  document.body.appendChild(h);
-  setTimeout(()=>h.remove(),6000);
-},350);
+/* PHOTO SLIDESHOW */
+const photos = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
+let index = 0;
+const photoEl = document.getElementById("photo");
 
-/* Photo slideshow */
-let imgs=document.querySelectorAll(".photo-frame img");
-let i=0;
-setInterval(()=>{
-  imgs[i].classList.remove("active");
-  i=(i+1)%imgs.length;
-  imgs[i].classList.add("active");
-},3500);
+setInterval(() => {
+  photoEl.classList.remove("show");
+  setTimeout(() => {
+    index = (index + 1) % photos.length;
+    photoEl.src = photos[index];
+    photoEl.classList.add("show");
+  }, 500);
+}, 3000);
 
-/* Countdown */
-const target=new Date("Feb 13, 2026 00:00:00").getTime();
-setInterval(()=>{
-  const now=Date.now();
-  const d=target-now;
-  if(d<=0)return;
-  document.getElementById("days").innerText=Math.floor(d/86400000)+" Days";
-  document.getElementById("hours").innerText=Math.floor(d%86400000/3600000)+" Hrs";
-  document.getElementById("minutes").innerText=Math.floor(d%3600000/60000)+" Min";
-  document.getElementById("seconds").innerText=Math.floor(d%60000/1000)+" Sec";
-},1000);
+/* COUNTDOWN */
+const birthday = new Date("Feb 13, 2026 00:00:00").getTime();
+const countdownEl = document.getElementById("countdown");
+const birthdayBtn = document.getElementById("birthdayBtn");
 
-/* Gift */
-function openGift(){
-  const pass=prompt("Enter secret passcode 💌");
-  if(pass==="SMILE-FIRST"){
-    document.getElementById("giftText").innerHTML=
-    "You are deeply loved, admired, and cherished 💞✨<br><br>Never forget how special you truly are 💗🎉";
-    document.getElementById("popup").style.display="flex";
-  }else alert("Wrong passcode 💔");
-}
-function closePopup(){
-  document.getElementById("popup").style.display="none";
+setInterval(() => {
+  const now = new Date().getTime();
+  const diff = birthday - now;
+
+  if (diff <= 0) {
+    countdownEl.innerHTML = "💖 IT'S HER DAY 💖";
+    birthdayBtn.disabled = false;
+    return;
+  }
+
+  const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const m = Math.floor((diff / (1000 * 60)) % 60);
+  const s = Math.floor((diff / 1000) % 60);
+
+  countdownEl.innerHTML = `${d} Days ${h} Hours ${m} Minutes ${s} Seconds`;
+}, 1000);
+
+/* HEARTS */
+const heartsContainer = document.querySelector(".hearts");
+setInterval(() => {
+  const heart = document.createElement("span");
+  heart.innerHTML = "💖";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.animationDuration = 4 + Math.random() * 3 + "s";
+  heartsContainer.appendChild(heart);
+  setTimeout(() => heart.remove(), 7000);
+}, 300);
+
+/* GIFT LOGIC */
+const modal = document.getElementById("giftModal");
+document.getElementById("gift").onclick = () => modal.style.display = "flex";
+document.querySelector(".close").onclick = () => modal.style.display = "none";
+
+function openGift() {
+  const code = document.getElementById("passcode").value;
+  const msg = document.getElementById("giftMessage");
+
+  if (code === "SMILE-FIRST") {
+    msg.innerHTML = "🎉 TADA! 💖<br>You make every ordinary day feel magical. Never forget how special you are.";
+    msg.classList.add("celebrate");
+  } else {
+    msg.innerHTML = "❌ Wrong code, try again 💕";
+  }
 }
 </script>
 
