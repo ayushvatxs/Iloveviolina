@@ -2,115 +2,93 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Something Special Is Coming 💖</title>
+  <title>Something Special 💖</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- Floating Hearts -->
 <div class="hearts"></div>
 
-<div class="container">
+<div class="card">
   <h1>✨ Something Beautiful Is On The Way ✨</h1>
 
-  <p class="message">
-    A very special day is approaching…  
-    A day when the world quietly celebrates  
-    <span class="date">13 February</span> 💕
+  <p>
+    A very special day is approaching…<br>
+    A day the world quietly celebrates
   </p>
 
-  <!-- Photo Slideshow -->
-  <div class="photo-frame">
-    <img id="photo" src="photo1.jpg" alt="Her Smile 💖">
+  <h2>13 February 💕</h2>
+
+  <!-- PHOTO SLIDER -->
+  <div class="photo">
+    <img id="img" src="photo1.jpg">
   </div>
 
-  <!-- Countdown -->
-  <div id="countdown">Loading countdown...</div>
+  <!-- COUNTDOWN -->
+  <div id="timer"></div>
 
-  <!-- Happy Birthday Button -->
-  <button id="birthdayBtn" disabled>🎉 Happy Birthday 🎉</button>
-
-  <!-- Gift Section -->
-  <div class="gift-section">
-    <div class="arrow">⬇ Click Here ⬇</div>
-    <div id="gift" class="gift">🎁</div>
+  <!-- GIFT -->
+  <div class="gift-area">
+    <span class="arrow">click here ↓</span>
+    <div class="gift" onclick="openGift()">🎁</div>
   </div>
 </div>
 
-<!-- Gift Modal -->
-<div id="giftModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h2>Only Violina Can Open This 💖</h2>
-    <input type="password" id="passcode" placeholder="Enter Secret Code">
-    <button onclick="openGift()">Open Gift 🎉</button>
-    <p id="giftMessage"></p>
+<!-- GIFT POPUP -->
+<div id="popup">
+  <div class="popup-box">
+    <span onclick="closeGift()">✖</span>
+    <h3>Only Violina 💖</h3>
+    <input id="code" placeholder="Secret code">
+    <button onclick="checkCode()">Open Gift</button>
+    <p id="text"></p>
   </div>
 </div>
 
 <script>
-/* PHOTO SLIDESHOW */
-const photos = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
-let index = 0;
-const photoEl = document.getElementById("photo");
-
+/* IMAGE SLIDER */
+const pics = ["photo1.jpg","photo2.jpg","photo3.jpg"];
+let i = 0;
 setInterval(() => {
-  photoEl.classList.remove("show");
-  setTimeout(() => {
-    index = (index + 1) % photos.length;
-    photoEl.src = photos[index];
-    photoEl.classList.add("show");
-  }, 500);
-}, 3000);
+  i = (i + 1) % pics.length;
+  document.getElementById("img").src = pics[i];
+}, 3500);
 
 /* COUNTDOWN */
-const birthday = new Date("Feb 13, 2026 00:00:00").getTime();
-const countdownEl = document.getElementById("countdown");
-const birthdayBtn = document.getElementById("birthdayBtn");
-
+const date = new Date("Feb 13, 2026 00:00:00").getTime();
 setInterval(() => {
   const now = new Date().getTime();
-  const diff = birthday - now;
-
-  if (diff <= 0) {
-    countdownEl.innerHTML = "💖 IT'S HER DAY 💖";
-    birthdayBtn.disabled = false;
+  const d = date - now;
+  if(d < 0){
+    document.getElementById("timer").innerHTML = "💖 IT'S HER DAY 💖";
     return;
   }
-
-  const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-  const m = Math.floor((diff / (1000 * 60)) % 60);
-  const s = Math.floor((diff / 1000) % 60);
-
-  countdownEl.innerHTML = `${d} Days ${h} Hours ${m} Minutes ${s} Seconds`;
+  const days = Math.floor(d / (1000*60*60*24));
+  document.getElementById("timer").innerHTML = days + " days to go ✨";
 }, 1000);
 
-/* HEARTS */
-const heartsContainer = document.querySelector(".hearts");
+/* HEARTS (LIGHTWEIGHT) */
 setInterval(() => {
-  const heart = document.createElement("span");
-  heart.innerHTML = "💖";
-  heart.style.left = Math.random() * 100 + "vw";
-  heart.style.animationDuration = 4 + Math.random() * 3 + "s";
-  heartsContainer.appendChild(heart);
-  setTimeout(() => heart.remove(), 7000);
-}, 300);
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.style.left = Math.random() * 100 + "vw";
+  document.body.appendChild(h);
+  setTimeout(() => h.remove(), 5000);
+}, 800);
 
-/* GIFT LOGIC */
-const modal = document.getElementById("giftModal");
-document.getElementById("gift").onclick = () => modal.style.display = "flex";
-document.querySelector(".close").onclick = () => modal.style.display = "none";
-
-function openGift() {
-  const code = document.getElementById("passcode").value;
-  const msg = document.getElementById("giftMessage");
-
-  if (code === "SMILE-FIRST") {
-    msg.innerHTML = "🎉 TADA! 💖<br>You make every ordinary day feel magical. Never forget how special you are.";
-    msg.classList.add("celebrate");
+/* GIFT */
+function openGift(){
+  document.getElementById("popup").style.display="flex";
+}
+function closeGift(){
+  document.getElementById("popup").style.display="none";
+}
+function checkCode(){
+  const msg = document.getElementById("text");
+  if(document.getElementById("code").value === "SMILE-FIRST"){
+    msg.innerHTML = "🎉 TADA 💖<br>You make everything brighter just by existing.";
   } else {
-    msg.innerHTML = "❌ Wrong code, try again 💕";
+    msg.innerHTML = "❌ Wrong code";
   }
 }
 </script>
