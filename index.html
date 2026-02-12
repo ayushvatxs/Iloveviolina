@@ -111,7 +111,17 @@ h2 { margin: 10px 0 5px; font-size: 1.6rem; color: #111; font-weight: 800; }
 }
 @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 80% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); } }
 
-.time-msg, .time-sub, .queen-sub, #giftLayer, #queenCrown { display: none; }
+.time-msg, .time-sub, .queen-sub, #queenCrown { display: none; }
+
+/* GIFT LAYER (Initially Visible for Code Input) */
+#giftLayer {
+    display: block; /* DEFAULT VISIBLE */
+    margin-top: 15px;
+}
+
+.gift { font-size:48px; cursor:pointer; margin-top:5px; animation: giftFloat 3s ease-in-out infinite; }
+#giftText { margin-top:5px; font-size:.9rem; color:#ff4f9a; font-weight:600; }
+@keyframes giftFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
 .bday {
   margin:10px auto; padding:14px 40px; border-radius:50px; border:none; 
@@ -187,7 +197,7 @@ body.party-mode { background: #ffe6f2; }
   </div>
 
   <div id="codeModal"><div class="codeCard"><span id="closeModal">✖</span><h3>Secret Code 💕</h3><input type="password" id="secretInput" placeholder="Enter code"><button id="openGiftBtn">Open</button></div></div>
-  <div id="messageBox"><div class="codeCard"><span id="closeMsg">✖</span><p style="text-align:left;color:#555;">Ayoo 😭 only a few days left...</p></div></div>
+  <div id="messageBox"><div class="codeCard"><span id="closeMsg">✖</span><p style="text-align:left;color:#555;">Ayoo 😭 only a few days left and I genuinely don’t know how to act normal anymore. My brain is already in celebration mode and my heart is clearly ahead of schedule 🥰💖</p></div></div>
   
   <audio id="popSound" src="confetti-pop.mp3"></audio> 
   <audio id="loudMusic" src="happy-birthday.mp3"></audio>
@@ -195,7 +205,7 @@ body.party-mode { background: #ffe6f2; }
 
 <script>
 // ==========================================
-// 🟢 TEST MODE: True = Starts Timer at 10 Seconds
+// 🟢 TEST MODE: Set to TRUE to test 10s countdown
 const TEST_MODE = false; 
 // ==========================================
 
@@ -205,7 +215,7 @@ let targetDate = new Date("February 13, 2026 00:00:00").getTime();
 // If Testing, override to 10 seconds from now
 if (TEST_MODE) {
     const now = new Date().getTime();
-    targetDate = now + 10500; // 10.5 seconds buffer
+    targetDate = now + 10500; 
 }
 
 const timerEl = document.getElementById("timer");
@@ -235,7 +245,6 @@ function toggleSound(checkbox) {
 
     if(checkbox.checked) {
         audioEnabled = true;
-        // Unlock ALL audio contexts immediately so they play on time
         [m, t, p].forEach(audio => {
             audio.play().then(() => {
                 audio.pause();
@@ -316,7 +325,7 @@ function launchBirthdayParty() {
     document.body.classList.add("party-mode");
     timerEl.style.display = "none";
     preText.style.display = "none";
-    giftLayer.style.display = "none";
+    giftLayer.style.display = "none"; // Hide Gift ONLY when party starts
 
     // Show Party Elements
     bTitle.style.display = "block";
