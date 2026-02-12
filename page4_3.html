@@ -47,7 +47,7 @@
             stroke-linecap: round;
             stroke-linejoin: round;
             filter: drop-shadow(0 0 8px rgba(255, 77, 109, 0.8));
-            /* Removed transitions to prevent "flying line" effect */
+            /* No transitions on dashoffset to prevent glitches */
         }
 
         /* --- TEXT CONTAINERS --- */
@@ -114,7 +114,7 @@
 
     <div class="svg-container">
         <svg id="svgLine" width="100%" height="100%" preserveAspectRatio="none">
-            <path id="heartPath" d="" stroke-dasharray="1000000" stroke-dashoffset="1000000" />
+            <path id="heartPath" d="" stroke-dasharray="999999" stroke-dashoffset="999999" />
         </svg>
     </div>
 
@@ -292,14 +292,12 @@
             const path = document.getElementById('heartPath');
             const btn = document.getElementById('nextBtn');
             
-            // Get positions
             const btnRect = btn.getBoundingClientRect();
-            const absoluteBtnTop = btnRect.top + window.scrollY;
+            // Use Math.max to avoid negative values
+            const absoluteBtnTop = Math.max(0, btnRect.top + window.scrollY);
             
-            // Set SVG container height
             svg.setAttribute('height', absoluteBtnTop);
 
-            // Generate Path String (D)
             const width = window.innerWidth;
             const center = width / 2;
             let d = `M ${center} 0 `; 
@@ -323,15 +321,10 @@
 
             path.setAttribute('d', d);
             
-            // Get the REAL length now that the path is drawn
             const totalLength = path.getTotalLength();
             
-            // Apply the real length to CSS immediately
+            // Re-apply dash array to match REAL length
             path.style.strokeDasharray = totalLength;
-            path.style.strokeDashoffset = totalLength;
-            
-            // Force a browser repaint to ensure it takes effect
-            path.getBoundingClientRect(); 
             
             return totalLength;
         }
@@ -340,7 +333,7 @@
             const scrollTop = window.scrollY;
             const docHeight = document.body.scrollHeight - window.innerHeight;
             
-            // SAFEGUARD: If at top, force hidden
+            // iPad Safety: If near top, FORCE HIDDEN
             if (scrollTop <= 10) {
                  path.style.strokeDashoffset = totalLength;
                  return;
@@ -351,9 +344,7 @@
                 scrollPercent = scrollTop / docHeight;
             }
 
-            // Clamp
             if(scrollPercent > 1) scrollPercent = 1;
-            if(scrollPercent < 0) scrollPercent = 0;
             
             const drawLength = totalLength * scrollPercent;
             path.style.strokeDashoffset = totalLength - drawLength;
@@ -363,15 +354,16 @@
             }
         }
 
-        // --- MASTER INITIALIZATION ---
         let pathLength = 0;
         
+        // Wait for EVERYTHING to load
         window.addEventListener('load', () => {
-            // 1. Calculate and hide
             pathLength = initHeartbeat();
             
-            // 2. Set initial position based on scroll (in case user reloads halfway down)
             const path = document.getElementById('heartPath');
+            
+            // Set initial hidden state based on logic
+            path.style.strokeDashoffset = pathLength;
             updateScroll(path, pathLength);
         });
 
@@ -386,7 +378,7 @@
             }
         });
 
-        // --- Text Animations ---
+        // Animations
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -399,7 +391,7 @@
             observer.observe(el);
         });
 
-        // --- Audio ---
+        // Audio
         const audio = document.getElementById('bgMusic');
         audio.volume = 0.5;
 
