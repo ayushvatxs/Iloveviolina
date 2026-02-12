@@ -37,8 +37,6 @@
             position: absolute; 
             top: 0; left: 0; width: 100%; z-index: 0;
             pointer-events: none;
-            /* TRANSITION FOR SMOOTH REVEAL */
-            transition: opacity 0.5s ease-in;
         }
 
         /* The Glowing Line */
@@ -49,6 +47,10 @@
             stroke-linecap: round;
             stroke-linejoin: round;
             filter: drop-shadow(0 0 8px rgba(255, 77, 109, 0.8));
+            
+            /* CRITICAL FIX: Start completely invisible */
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
         }
 
         /* --- TEXT CONTAINERS --- */
@@ -113,7 +115,7 @@
         <source src="heartbeat.mp3" type="audio/mpeg">
     </audio>
 
-    <div class="svg-container" id="mainSvgContainer" style="opacity: 0;">
+    <div class="svg-container">
         <svg id="svgLine" width="100%" height="100%" preserveAspectRatio="none">
             <path id="heartPath" d="" />
         </svg>
@@ -288,14 +290,15 @@
     </div>
 
     <script>
+        // --- 1. DYNAMIC PATH GENERATOR ---
         function initHeartbeat() {
             const svg = document.getElementById('svgLine');
             const path = document.getElementById('heartPath');
             const btn = document.getElementById('nextBtn');
-            const container = document.getElementById('mainSvgContainer');
             
+            // Get positions
             const btnRect = btn.getBoundingClientRect();
-            // Use Math.max to avoid negative values
+            // Use Math.max to handle potential loading glitches
             const absoluteBtnTop = Math.max(0, btnRect.top + window.scrollY);
             
             svg.setAttribute('height', absoluteBtnTop);
@@ -323,21 +326,14 @@
 
             path.setAttribute('d', d);
             
-            // Get REAL length
             const totalLength = path.getTotalLength();
             
             // HIDE LINE
             path.style.strokeDasharray = totalLength;
             path.style.strokeDashoffset = totalLength;
             
-            // SYNC POSITION
-            updateScroll(path, totalLength);
-
-            // NOW REVEAL THE CONTAINER (The Nuclear Reveal)
-            // We use setTimeout to ensure the DOM has painted the 'hidden' state first
-            setTimeout(() => {
-                container.style.opacity = '1';
-            }, 100);
+            // Force browser repaint
+            path.getBoundingClientRect();
 
             return totalLength;
         }
@@ -346,7 +342,7 @@
             const scrollTop = window.scrollY;
             const docHeight = document.body.scrollHeight - window.innerHeight;
             
-            // If near top, FORCE HIDDEN
+            // SAFETY: Force hide if at top
             if (scrollTop <= 10) {
                  path.style.strokeDashoffset = totalLength;
                  return;
@@ -357,7 +353,6 @@
                 scrollPercent = scrollTop / docHeight;
             }
 
-            // Clamp
             if(scrollPercent > 1) scrollPercent = 1;
             if(scrollPercent < 0) scrollPercent = 0;
             
@@ -371,10 +366,19 @@
 
         let pathLength = 0;
         
-        // --- MASTER INITIALIZATION ---
-        // We wait for window load (images/styles ready)
         window.addEventListener('load', () => {
+            // 1. Calculate geometry (Path is currently invisible via CSS)
             pathLength = initHeartbeat();
+            
+            const path = document.getElementById('heartPath');
+            
+            // 2. Sync to current scroll position (still invisible)
+            updateScroll(path, pathLength);
+            
+            // 3. REVEAL: Wait 100ms to ensure the "Hidden" state is painted first
+            setTimeout(() => {
+                path.style.opacity = '1';
+            }, 100);
         });
 
         window.addEventListener('resize', () => {
@@ -388,7 +392,6 @@
             }
         });
 
-        // Animations
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -401,7 +404,6 @@
             observer.observe(el);
         });
 
-        // Audio
         const audio = document.getElementById('bgMusic');
         audio.volume = 0.5;
 
