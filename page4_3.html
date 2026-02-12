@@ -24,7 +24,6 @@
             position: relative;
         }
 
-        /* Ambient Grain */
         .noise-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -36,132 +35,75 @@
         /* --- THE DYNAMIC HEARTBEAT LINE --- */
         .svg-container {
             position: absolute; 
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 0;
+            top: 0; left: 0; width: 100%; z-index: 0;
             pointer-events: none;
         }
 
         /* The Glowing Line */
         path {
             fill: none;
-            stroke: #ffbdc9;
+            /* Start Invisible */
+            stroke: transparent; 
             stroke-width: 3;
             stroke-linecap: round;
             stroke-linejoin: round;
             filter: drop-shadow(0 0 8px rgba(255, 77, 109, 0.8));
             
-            /* --- IPAD FIX: START HIDDEN --- */
-            opacity: 0; 
-            will-change: stroke-dashoffset, opacity;
-            transform: translateZ(0); /* Hardware Acceleration */
-            -webkit-transform: translateZ(0);
+            /* --- FIXED: REMOVED TRANSLATEZ TO FIX IPAD GLITCH --- */
+            /* No hardware acceleration prevents GPU memory overflow on long pages */
         }
 
         /* --- TEXT CONTAINERS --- */
         .story-container {
-            position: relative;
-            z-index: 5;
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            padding-top: 100px; 
+            position: relative; z-index: 5; width: 100%; max-width: 600px;
+            margin: 0 auto; padding-top: 100px; 
         }
 
         .chapter {
             min-height: 80vh; 
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 1s ease-out;
-            padding: 0 20px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; opacity: 0; transform: translateY(30px);
+            transition: all 1s ease-out; padding: 0 20px;
         }
 
-        .chapter.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .chapter.visible { opacity: 1; transform: translateY(0); }
 
         /* Typography */
         .script-text {
-            font-family: 'Pinyon Script', cursive;
-            font-size: 2.8rem;
-            color: #ff4d6d;
-            margin-bottom: 20px;
-            text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
+            font-family: 'Pinyon Script', cursive; font-size: 2.8rem; color: #ff4d6d;
+            margin-bottom: 20px; text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
         }
 
         .body-text {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #e0e0e0;
-            font-weight: 300;
-            max-width: 85%;
+            font-size: 1.1rem; line-height: 1.8; color: #e0e0e0;
+            font-weight: 300; max-width: 85%;
         }
 
         .highlight {
-            color: #ffd700;
-            font-weight: 500;
-            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+            color: #ffd700; font-weight: 500; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
         }
 
-        /* --- NEXT BUTTON SECTION --- */
+        /* --- NEXT BUTTON --- */
         .final-cta-container {
-            width: 100%;
-            height: 200px; 
-            display: flex;
-            align-items: flex-start; 
-            justify-content: center;
-            position: relative;
-            z-index: 10;
-            padding-top: 20px; 
+            width: 100%; height: 200px; display: flex; align-items: flex-start; 
+            justify-content: center; position: relative; z-index: 10; padding-top: 20px; 
         }
 
         .btn-gold {
-            background: #000; 
-            border: 1px solid #ffd700;
-            color: #ffd700;
-            padding: 15px 40px;
-            font-family: 'Cinzel', serif;
-            font-size: 1rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            text-decoration: none;
-            transition: all 0.3s;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
-            opacity: 0; 
-            transform: translateY(20px);
-            position: relative;
-            z-index: 20;
+            background: #000; border: 1px solid #ffd700; color: #ffd700;
+            padding: 15px 40px; font-family: 'Cinzel', serif; font-size: 1rem;
+            letter-spacing: 3px; text-transform: uppercase; text-decoration: none;
+            transition: all 0.3s; box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
+            opacity: 0; transform: translateY(20px); position: relative; z-index: 20;
         }
 
-        .btn-gold.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .btn-gold:hover {
-            background: #ffd700;
-            color: #000;
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
-        }
+        .btn-gold.visible { opacity: 1; transform: translateY(0); }
+        .btn-gold:hover { background: #ffd700; color: #000; box-shadow: 0 0 40px rgba(255, 215, 0, 0.6); }
 
         .audio-hint {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            color: rgba(255,255,255,0.3);
-            font-size: 0.7rem;
-            z-index: 10;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            position: fixed; bottom: 20px; left: 20px; color: rgba(255,255,255,0.3);
+            font-size: 0.7rem; z-index: 10; text-transform: uppercase; letter-spacing: 2px;
         }
-
     </style>
 </head>
 <body>
@@ -211,135 +153,135 @@
         </div>
 
     <div class="chapter">
-    <div class="script-text">Future Dr. Violina</div>
-    <div class="body-text">
-        I already see you in that white coat.<br>
-        Saving lives, leading the way.<br>
-        <br>
-        But remember:<br>
-        While you take care of the world,<br>
-        I will be right here <span class="highlight">taking care of you</span>.
+        <div class="script-text">Future Dr. Violina</div>
+        <div class="body-text">
+            I already see you in that white coat.<br>
+            Saving lives, leading the way.<br>
+            <br>
+            But remember:<br>
+            While you take care of the world,<br>
+            I will be right here <span class="highlight">taking care of you</span>.
+        </div>
     </div>
-</div>
 
     <div class="chapter">
-    <div class="script-text">I Notice Everything</div>
-    <div class="body-text">
-        I notice how your voice changes when you're sleepy.<br>
-        I notice the sparkle when you talk about your dreams.<br>
-        <br>
-        You think I forget?<br>
-        I am <span class="highlight">memorizing</span> every version of you.
+        <div class="script-text">I Notice Everything</div>
+        <div class="body-text">
+            I notice how your voice changes when you're sleepy.<br>
+            I notice the sparkle when you talk about your dreams.<br>
+            <br>
+            You think I forget?<br>
+            I am <span class="highlight">memorizing</span> every version of you.
+        </div>
     </div>
-</div>
 
     <div class="chapter">
-    <div class="script-text">Your Inner Spark</div>
-    <div class="body-text">
-        The world sees the topper, the dancer, the perfectionist.<br>
-        But I love the <span class="highlight">chaos</span> too.<br>
-        <br>
-        I love the little girl inside you who just wants to be loved.<br>
-        She is safe with me.
-    </div>
-</div>
-
-<div class="chapter">
-    <div class="script-text">Even in the Dark</div>
-    <div class="body-text">
-        You don't always have to be strong.<br>
-        You don't always have to shine.<br>
-        <br>
-        On your lowest days,<br>
-        I will sit in the dark with you until the <span class="highlight">sun comes back</span>.
-    </div>
-</div>
-
-<div class="chapter">
-    <div class="script-text">My Definition of Home</div>
-    <div class="body-text">
-        Home isn't a place with four walls.<br>
-        Home is the feeling I get when I hear your voice.<br>
-        <br>
-        Wherever you are, <span class="highlight">that is where I belong</span>.
-    </div>
-</div>
-
-<div class="chapter">
-    <div class="script-text">The Catalyst</div>
-    <div class="body-text">
-        You are the reason my bad days turn good.<br>
-        You are the spark that lights up my darkest nights.<br>
-        <br>
-        One text from you,<br>
-        and suddenly the world <span class="highlight">makes sense again</span>.
-    </div>
-</div>
-
-<div class="chapter">
-    <div class="script-text">Destiny's Design</div>
-    <div class="body-text">
-        They say an invisible red string connects those<br>
-        who are destined to meet.<br>
-        <br>
-        Mine doesn't just lead to you.<br>
-        It is <span class="highlight">tied around your heart</span>.
-    </div>
-</div>
-
-<div class="chapter">
-    <div class="script-text">Electric Soul</div>
-    <div class="body-text">
-        Even through a screen, you set my soul on fire.<br>
-        If I feel this much now...<br>
-        <br>
-        Imagine the hurricane when there is finally<br>
-        <span class="highlight">zero distance</span> between us.
-    </div>
-</div>
-
-<div class="chapter">
-    <div class="script-text">Your Sanctuary</div>
-    <div class="body-text">
-        The world demands perfection from you.<br>
-        But with me? You can just be.<br>
-        <br>
-        No masks. No pressure. No expectations.<br>
-        Just <span class="highlight">pure, unfiltered Us</span>.
-    </div>
-</div>
-
-<div class="chapter">
-    <div class="script-text">Just the Beginning</div>
-    <div class="body-text">
-        19 is just the start of the movie.<br>
-        I'm not just here for the birthday cake.<br>
-        <br>
-        I'm here for the wrinkles,<br>
-        the gray hair,<br>
-        and the <span class="highlight">forever</span>.
-    </div>
-</div>
-
-        <div class="chapter">
-            <div class="script-text">My 19th Wish</div>
-            <div class="body-text">
-                For this year, I don't just wish you happiness.<br>
-                I wish you <span class="highlight">peace</span>.<br>
-                I wish you moments where you feel like the main character.<br>
-                Because to me, you always are.
-            </div>
+        <div class="script-text">Your Inner Spark</div>
+        <div class="body-text">
+            The world sees the topper, the dancer, the perfectionist.<br>
+            But I love the <span class="highlight">chaos</span> too.<br>
+            <br>
+            I love the little girl inside you who just wants to be loved.<br>
+            She is safe with me.
         </div>
+    </div>
 
-        <div class="chapter">
-            <div class="script-text">The Truth</div>
-            <div class="body-text">
-                You are the poetry I never knew how to write.<br>
-                You are the home I never knew I was looking for.<br>
-                <br>
-                <span class="highlight"> Thank you for existing, Violina.</span>
-            </div>
+    <div class="chapter">
+        <div class="script-text">Even in the Dark</div>
+        <div class="body-text">
+            You don't always have to be strong.<br>
+            You don't always have to shine.<br>
+            <br>
+            On your lowest days,<br>
+            I will sit in the dark with you until the <span class="highlight">sun comes back</span>.
         </div>
+    </div>
+
+    <div class="chapter">
+        <div class="script-text">My Definition of Home</div>
+        <div class="body-text">
+            Home isn't a place with four walls.<br>
+            Home is the feeling I get when I hear your voice.<br>
+            <br>
+            Wherever you are, <span class="highlight">that is where I belong</span>.
+        </div>
+    </div>
+
+    <div class="chapter">
+        <div class="script-text">The Catalyst</div>
+        <div class="body-text">
+            You are the reason my bad days turn good.<br>
+            You are the spark that lights up my darkest nights.<br>
+            <br>
+            One text from you,<br>
+            and suddenly the world <span class="highlight">makes sense again</span>.
+        </div>
+    </div>
+
+    <div class="chapter">
+        <div class="script-text">Destiny's Design</div>
+        <div class="body-text">
+            They say an invisible red string connects those<br>
+            who are destined to meet.<br>
+            <br>
+            Mine doesn't just lead to you.<br>
+            It is <span class="highlight">tied around your heart</span>.
+        </div>
+    </div>
+
+    <div class="chapter">
+        <div class="script-text">Electric Soul</div>
+        <div class="body-text">
+            Even through a screen, you set my soul on fire.<br>
+            If I feel this much now...<br>
+            <br>
+            Imagine the hurricane when there is finally<br>
+            <span class="highlight">zero distance</span> between us.
+        </div>
+    </div>
+
+    <div class="chapter">
+        <div class="script-text">Your Sanctuary</div>
+        <div class="body-text">
+            The world demands perfection from you.<br>
+            But with me? You can just be.<br>
+            <br>
+            No masks. No pressure. No expectations.<br>
+            Just <span class="highlight">pure, unfiltered Us</span>.
+        </div>
+    </div>
+
+    <div class="chapter">
+        <div class="script-text">Just the Beginning</div>
+        <div class="body-text">
+            19 is just the start of the movie.<br>
+            I'm not just here for the birthday cake.<br>
+            <br>
+            I'm here for the wrinkles,<br>
+            the gray hair,<br>
+            and the <span class="highlight">forever</span>.
+        </div>
+    </div>
+
+    <div class="chapter">
+        <div class="script-text">My 19th Wish</div>
+        <div class="body-text">
+            For this year, I don't just wish you happiness.<br>
+            I wish you <span class="highlight">peace</span>.<br>
+            I wish you moments where you feel like the main character.<br>
+            Because to me, you always are.
+        </div>
+    </div>
+
+    <div class="chapter">
+        <div class="script-text">The Truth</div>
+        <div class="body-text">
+            You are the poetry I never knew how to write.<br>
+            You are the home I never knew I was looking for.<br>
+            <br>
+            <span class="highlight"> Thank you for existing, Violina.</span>
+        </div>
+    </div>
 
     </div>
 
@@ -348,8 +290,8 @@
     </div>
 
     <script>
-        // --- 1. DYNAMIC PATH GENERATOR ---
-        function generateJaggedPath() {
+        // --- 1. PRECISE PATH GENERATION ---
+        function initHeartbeat() {
             const svg = document.getElementById('svgLine');
             const path = document.getElementById('heartPath');
             const btn = document.getElementById('nextBtn');
@@ -358,83 +300,99 @@
             const btnRect = btn.getBoundingClientRect();
             const absoluteBtnTop = btnRect.top + window.scrollY;
             
+            // Set SVG container height
             svg.setAttribute('height', absoluteBtnTop);
 
+            // Generate Path String (D)
             const width = window.innerWidth;
             const center = width / 2;
             let d = `M ${center} 0 `; 
-
             const stepSize = 150; 
             const steps = Math.floor(absoluteBtnTop / stepSize);
-            
             let currentY = 0;
 
             for (let i = 0; i < steps; i++) {
                 if (currentY + 100 > absoluteBtnTop) break;
-
                 currentY += 80; 
                 d += `L ${center} ${currentY} `;
-
                 // ECG Spike
                 d += `L ${center - 10} ${currentY + 10} `; 
                 d += `L ${center - 40} ${currentY + 30} `; 
                 d += `L ${center + 40} ${currentY + 50} `; 
                 d += `L ${center + 10} ${currentY + 70} `; 
-                
                 currentY += 70; 
                 d += `L ${center} ${currentY} `; 
             }
-
             d += `L ${center} ${absoluteBtnTop}`;
 
+            // Apply D attribute
             path.setAttribute('d', d);
             
-            const pathLength = path.getTotalLength();
-            path.style.strokeDasharray = pathLength;
-            path.style.strokeDashoffset = pathLength;
+            // Calculate Length
+            const totalLength = path.getTotalLength();
             
-            // --- IPAD FIX: FORCE REPAINT THEN REVEAL ---
-            path.getBoundingClientRect(); // 1. Force Browser to calculate length
+            // --- CRITICAL FIX START ---
+            // 1. Set Dash Array/Offset (Mathematically Hidden)
+            path.style.strokeDasharray = totalLength;
+            path.style.strokeDashoffset = totalLength;
             
-            // 2. Wait a split second before showing it
-            setTimeout(() => {
-                path.style.transition = 'opacity 0.8s ease-in';
-                path.style.opacity = '1';
-            }, 100); 
+            // 2. Force Repaint (Flush changes)
+            path.style.display = 'none'; // Nuclear option to force render engine reset
+            path.offsetHeight; // Trigger reflow
+            path.style.display = 'block'; 
+            
+            // 3. SYNC WITH CURRENT SCROLL (Handles Reloads)
+            updateScroll(path, totalLength);
 
-            return pathLength;
+            // 4. Reveal Color
+            path.style.stroke = "#ffbdc9"; 
+            // --- CRITICAL FIX END ---
+
+            return totalLength;
         }
 
-        let totalLength = 0;
-        
-        window.onload = () => {
-            totalLength = generateJaggedPath();
-        };
-
-        window.addEventListener('resize', () => {
-            totalLength = generateJaggedPath();
-        });
-
-        // --- 2. SCROLL LOGIC ---
-        window.addEventListener('scroll', () => {
-            const path = document.getElementById('heartPath');
-            
+        function updateScroll(path, totalLength) {
             const scrollTop = window.scrollY;
             const docHeight = document.body.scrollHeight - window.innerHeight;
-            const scrollPercent = scrollTop / docHeight;
-
-            // Simple drawing math
-            if(totalLength > 0) {
-                const drawLength = totalLength * scrollPercent;
-                path.style.strokeDashoffset = totalLength - drawLength;
+            
+            // Safety check for division by zero
+            let scrollPercent = 0;
+            if(docHeight > 0) {
+                scrollPercent = scrollTop / docHeight;
             }
 
+            // Math to reveal line
+            const drawLength = totalLength * scrollPercent;
+            path.style.strokeDashoffset = totalLength - drawLength;
+
+            // Show Button Logic
             if(scrollPercent > 0.95) {
                 document.getElementById('nextBtn').classList.add('visible');
             }
+        }
+
+        // --- 2. INITIALIZATION ---
+        let pathLength = 0;
+        
+        // Use Load to ensure layout is final
+        window.addEventListener('load', () => {
+            pathLength = initHeartbeat();
         });
 
-        // --- 3. TEXT ANIMATION ---
+        // Handle Resizing
+        window.addEventListener('resize', () => {
+            pathLength = initHeartbeat();
+        });
+
+        // --- 3. SCROLL LISTENER ---
+        window.addEventListener('scroll', () => {
+            if(pathLength > 0) {
+                const path = document.getElementById('heartPath');
+                updateScroll(path, pathLength);
+            }
+        });
+
+        // --- 4. TEXT ANIMATION ---
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -447,7 +405,7 @@
             observer.observe(el);
         });
 
-        // --- 4. AUDIO ---
+        // --- 5. AUDIO ---
         const audio = document.getElementById('bgMusic');
         audio.volume = 0.5;
 
