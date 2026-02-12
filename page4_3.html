@@ -47,7 +47,11 @@
             stroke-linecap: round;
             stroke-linejoin: round;
             filter: drop-shadow(0 0 8px rgba(255, 77, 109, 0.8));
-            /* No transitions on dashoffset to prevent 'zipping' effect on load */
+            
+            /* --- BRUTE FORCE HIDE --- */
+            visibility: hidden; 
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
         }
 
         /* --- TEXT CONTAINERS --- */
@@ -114,7 +118,7 @@
 
     <div class="svg-container">
         <svg id="svgLine" width="100%" height="100%" preserveAspectRatio="none">
-            <path id="heartPath" d="" stroke-dasharray="200000" stroke-dashoffset="200000" />
+            <path id="heartPath" d="" />
         </svg>
     </div>
 
@@ -287,13 +291,11 @@
     </div>
 
     <script>
-        // --- 1. PRECISE PATH GENERATION ---
         function initHeartbeat() {
             const svg = document.getElementById('svgLine');
             const path = document.getElementById('heartPath');
             const btn = document.getElementById('nextBtn');
             
-            // Get positions
             const btnRect = btn.getBoundingClientRect();
             const absoluteBtnTop = btnRect.top + window.scrollY;
             
@@ -322,37 +324,32 @@
 
             path.setAttribute('d', d);
             
-            // Calculate Length
             const totalLength = path.getTotalLength();
             
-            // --- CRITICAL FIX: RESET LINE TO HIDDEN ---
+            // Set dash array to match length exactly
             path.style.strokeDasharray = totalLength;
             path.style.strokeDashoffset = totalLength;
-            
-            // Force repaint
-            path.getBoundingClientRect(); 
             
             return totalLength;
         }
 
         function updateScroll(path, totalLength) {
             const scrollTop = window.scrollY;
-            
-            // 2. IPAD FIX: SAFETY CHECK FOR TOP OF PAGE
-            // If user is near top (less than 10px), FORCE line to be hidden
-            if (scrollTop < 10) {
-                path.style.strokeDashoffset = totalLength;
-                return; // Stop math here
-            }
-
             const docHeight = document.body.scrollHeight - window.innerHeight;
             
+            // Safety check for top of page
+            if (scrollTop <= 10) {
+                 path.style.strokeDashoffset = totalLength;
+                 return;
+            }
+
             let scrollPercent = 0;
             if(docHeight > 0) {
                 scrollPercent = scrollTop / docHeight;
             }
 
-            // Math to reveal line
+            if(scrollPercent > 1) scrollPercent = 1;
+            
             const drawLength = totalLength * scrollPercent;
             path.style.strokeDashoffset = totalLength - drawLength;
 
@@ -361,20 +358,29 @@
             }
         }
 
-        // --- 2. INITIALIZATION ---
         let pathLength = 0;
         
+        // --- THE BRUTE FORCE DELAY ---
         window.addEventListener('load', () => {
-            pathLength = initHeartbeat();
-            // Run once to set initial position
-            updateScroll(document.getElementById('heartPath'), pathLength);
+            // Wait 500ms to ensure iPad has finished layout
+            setTimeout(() => {
+                pathLength = initHeartbeat();
+                const path = document.getElementById('heartPath');
+                
+                // Force sync with current scroll
+                updateScroll(path, pathLength);
+                
+                // NOW make it visible
+                path.style.visibility = 'visible';
+                path.style.opacity = '1';
+                
+            }, 500);
         });
 
         window.addEventListener('resize', () => {
             pathLength = initHeartbeat();
         });
 
-        // --- 3. SCROLL LISTENER ---
         window.addEventListener('scroll', () => {
             if(pathLength > 0) {
                 const path = document.getElementById('heartPath');
@@ -382,7 +388,6 @@
             }
         });
 
-        // --- 4. TEXT ANIMATION ---
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -395,7 +400,6 @@
             observer.observe(el);
         });
 
-        // --- 5. AUDIO ---
         const audio = document.getElementById('bgMusic');
         audio.volume = 0.5;
 
