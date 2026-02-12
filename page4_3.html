@@ -47,10 +47,7 @@
             stroke-linecap: round;
             stroke-linejoin: round;
             filter: drop-shadow(0 0 8px rgba(255, 77, 109, 0.8));
-            
-            /* --- FIXED: FORCE INVISIBLE START --- */
-            stroke-opacity: 0; 
-            transition: stroke-opacity 0.2s; /* Quick fade in once math is ready */
+            /* No transitions on dashoffset to prevent 'zipping' effect on load */
         }
 
         /* --- TEXT CONTAINERS --- */
@@ -117,7 +114,7 @@
 
     <div class="svg-container">
         <svg id="svgLine" width="100%" height="100%" preserveAspectRatio="none">
-            <path id="heartPath" d="" stroke-dasharray="99999" stroke-dashoffset="99999" />
+            <path id="heartPath" d="" stroke-dasharray="200000" stroke-dashoffset="200000" />
         </svg>
     </div>
 
@@ -300,10 +297,8 @@
             const btnRect = btn.getBoundingClientRect();
             const absoluteBtnTop = btnRect.top + window.scrollY;
             
-            // Set SVG container height
             svg.setAttribute('height', absoluteBtnTop);
 
-            // Generate Path String (D)
             const width = window.innerWidth;
             const center = width / 2;
             let d = `M ${center} 0 `; 
@@ -325,46 +320,39 @@
             }
             d += `L ${center} ${absoluteBtnTop}`;
 
-            // Apply D attribute
             path.setAttribute('d', d);
             
             // Calculate Length
             const totalLength = path.getTotalLength();
             
-            // --- FIX: Force Hidden Initially ---
+            // --- CRITICAL FIX: RESET LINE TO HIDDEN ---
             path.style.strokeDasharray = totalLength;
             path.style.strokeDashoffset = totalLength;
             
-            // Update position immediately before showing
-            updateScroll(path, totalLength);
-
-            // Reveal the line (Visually) only after math is done
-            // Using requestAnimationFrame to ensure it paints in the next frame
-            requestAnimationFrame(() => {
-                path.style.strokeOpacity = '1';
-            });
-
+            // Force repaint
+            path.getBoundingClientRect(); 
+            
             return totalLength;
         }
 
         function updateScroll(path, totalLength) {
             const scrollTop = window.scrollY;
             
-            // MOBILE FIX: Use documentElement for reliable height
-            const docHeight = Math.max(
-                document.body.scrollHeight, 
-                document.documentElement.scrollHeight
-            ) - window.innerHeight;
+            // 2. IPAD FIX: SAFETY CHECK FOR TOP OF PAGE
+            // If user is near top (less than 10px), FORCE line to be hidden
+            if (scrollTop < 10) {
+                path.style.strokeDashoffset = totalLength;
+                return; // Stop math here
+            }
+
+            const docHeight = document.body.scrollHeight - window.innerHeight;
             
             let scrollPercent = 0;
             if(docHeight > 0) {
                 scrollPercent = scrollTop / docHeight;
             }
 
-            // Clamp percent between 0 and 1
-            if(scrollPercent < 0) scrollPercent = 0;
-            if(scrollPercent > 1) scrollPercent = 1;
-
+            // Math to reveal line
             const drawLength = totalLength * scrollPercent;
             path.style.strokeDashoffset = totalLength - drawLength;
 
@@ -376,12 +364,12 @@
         // --- 2. INITIALIZATION ---
         let pathLength = 0;
         
-        // Wait for EVERYTHING to load (images/fonts) so height is correct
         window.addEventListener('load', () => {
             pathLength = initHeartbeat();
+            // Run once to set initial position
+            updateScroll(document.getElementById('heartPath'), pathLength);
         });
 
-        // Recalculate on resize
         window.addEventListener('resize', () => {
             pathLength = initHeartbeat();
         });
