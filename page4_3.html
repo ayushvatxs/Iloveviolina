@@ -24,6 +24,7 @@
             position: relative;
         }
 
+        /* Ambient Grain */
         .noise-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -35,7 +36,10 @@
         /* --- THE DYNAMIC HEARTBEAT LINE --- */
         .svg-container {
             position: absolute; 
-            top: 0; left: 0; width: 100%; z-index: 0;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 0;
             pointer-events: none;
         }
 
@@ -47,63 +51,114 @@
             stroke-linecap: round;
             stroke-linejoin: round;
             filter: drop-shadow(0 0 8px rgba(255, 77, 109, 0.8));
-            
-            /* FAIL SAFE: Start invisible. JS handles the reveal. */
-            opacity: 0;
-            transition: opacity 0.3s ease-out; 
+            transition: stroke-dashoffset 0.1s linear; 
         }
 
         /* --- TEXT CONTAINERS --- */
         .story-container {
-            position: relative; z-index: 5; width: 100%; max-width: 600px;
-            margin: 0 auto; padding-top: 100px; 
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding-top: 100px; 
+            /* Removed bottom padding so button sits tight */
         }
 
         .chapter {
             min-height: 80vh; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            text-align: center; opacity: 0; transform: translateY(30px);
-            transition: all 1s ease-out; padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s ease-out;
+            padding: 0 20px;
         }
 
-        .chapter.visible { opacity: 1; transform: translateY(0); }
+        .chapter.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
         /* Typography */
         .script-text {
-            font-family: 'Pinyon Script', cursive; font-size: 2.8rem; color: #ff4d6d;
-            margin-bottom: 20px; text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
+            font-family: 'Pinyon Script', cursive;
+            font-size: 2.8rem;
+            color: #ff4d6d;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
         }
 
         .body-text {
-            font-size: 1.1rem; line-height: 1.8; color: #e0e0e0;
-            font-weight: 300; max-width: 85%;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #e0e0e0;
+            font-weight: 300;
+            max-width: 85%;
         }
 
         .highlight {
-            color: #ffd700; font-weight: 500; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+            color: #ffd700;
+            font-weight: 500;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
         }
 
-        /* --- NEXT BUTTON --- */
+        /* --- NEXT BUTTON SECTION --- */
         .final-cta-container {
-            width: 100%; height: 200px; display: flex; align-items: flex-start; 
-            justify-content: center; position: relative; z-index: 10; padding-top: 20px; 
+            width: 100%;
+            height: 200px; /* Reduced height */
+            display: flex;
+            align-items: flex-start; /* Align to top so line connects easily */
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+            padding-top: 20px; /* Space for the line to land */
         }
 
         .btn-gold {
-            background: #000; border: 1px solid #ffd700; color: #ffd700;
-            padding: 15px 40px; font-family: 'Cinzel', serif; font-size: 1rem;
-            letter-spacing: 3px; text-transform: uppercase; text-decoration: none;
-            transition: all 0.3s; box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
-            opacity: 0; transform: translateY(20px); position: relative; z-index: 20;
+            background: #000; /* Black bg to cover line if needed */
+            border: 1px solid #ffd700;
+            color: #ffd700;
+            padding: 15px 40px;
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
+            opacity: 0; 
+            transform: translateY(20px);
+            position: relative;
+            z-index: 20;
         }
 
-        .btn-gold.visible { opacity: 1; transform: translateY(0); }
-        .btn-gold:hover { background: #ffd700; color: #000; box-shadow: 0 0 40px rgba(255, 215, 0, 0.6); }
+        .btn-gold.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
+        .btn-gold:hover {
+            background: #ffd700;
+            color: #000;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
+        }
+
+        /* Audio Hint */
         .audio-hint {
-            position: fixed; bottom: 20px; left: 20px; color: rgba(255,255,255,0.3);
-            font-size: 0.7rem; z-index: 10; text-transform: uppercase; letter-spacing: 2px;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.7rem;
+            z-index: 10;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
+
     </style>
 </head>
 <body>
@@ -153,135 +208,136 @@
         </div>
 
     <div class="chapter">
-        <div class="script-text">Future Dr. Violina</div>
-        <div class="body-text">
-            I already see you in that white coat.<br>
-            Saving lives, leading the way.<br>
-            <br>
-            But remember:<br>
-            While you take care of the world,<br>
-            I will be right here <span class="highlight">taking care of you</span>.
-        </div>
+    <div class="script-text">Future Dr. Violina</div>
+    <div class="body-text">
+        I already see you in that white coat.<br>
+        Saving lives, leading the way.<br>
+        <br>
+        But remember:<br>
+        While you take care of the world,<br>
+        I will be right here <span class="highlight">taking care of you</span>.
     </div>
+</div>
 
     <div class="chapter">
-        <div class="script-text">I Notice Everything</div>
-        <div class="body-text">
-            I notice how your voice changes when you're sleepy.<br>
-            I notice the sparkle when you talk about your dreams.<br>
-            <br>
-            You think I forget?<br>
-            I am <span class="highlight">memorizing</span> every version of you.
-        </div>
+    <div class="script-text">I Notice Everything</div>
+    <div class="body-text">
+        I notice how your voice changes when you're sleepy.<br>
+        I notice the sparkle when you talk about your dreams.<br>
+        <br>
+        You think I forget?<br>
+        I am <span class="highlight">memorizing</span> every version of you.
     </div>
+</div>
 
     <div class="chapter">
-        <div class="script-text">Your Inner Spark</div>
-        <div class="body-text">
-            The world sees the topper, the dancer, the perfectionist.<br>
-            But I love the <span class="highlight">chaos</span> too.<br>
-            <br>
-            I love the little girl inside you who just wants to be loved.<br>
-            She is safe with me.
-        </div>
+    <div class="script-text">Your Inner Spark</div>
+    <div class="body-text">
+        The world sees the topper, the dancer, the perfectionist.<br>
+        But I love the <span class="highlight">chaos</span> too.<br>
+        <br>
+        I love the little girl inside you who just wants to be loved.<br>
+        She is safe with me.
     </div>
+</div>
 
-    <div class="chapter">
-        <div class="script-text">Even in the Dark</div>
-        <div class="body-text">
-            You don't always have to be strong.<br>
-            You don't always have to shine.<br>
-            <br>
-            On your lowest days,<br>
-            I will sit in the dark with you until the <span class="highlight">sun comes back</span>.
-        </div>
+<div class="chapter">
+    <div class="script-text">Even in the Dark</div>
+    <div class="body-text">
+        You don't always have to be strong.<br>
+        You don't always have to shine.<br>
+        <br>
+        On your lowest days,<br>
+        I will sit in the dark with you until the <span class="highlight">sun comes back</span>.
     </div>
+</div>
 
-    <div class="chapter">
-        <div class="script-text">My Definition of Home</div>
-        <div class="body-text">
-            Home isn't a place with four walls.<br>
-            Home is the feeling I get when I hear your voice.<br>
-            <br>
-            Wherever you are, <span class="highlight">that is where I belong</span>.
-        </div>
+<div class="chapter">
+    <div class="script-text">My Definition of Home</div>
+    <div class="body-text">
+        Home isn't a place with four walls.<br>
+        Home is the feeling I get when I hear your voice.<br>
+        <br>
+        Wherever you are, <span class="highlight">that is where I belong</span>.
     </div>
+</div>
 
-    <div class="chapter">
-        <div class="script-text">The Catalyst</div>
-        <div class="body-text">
-            You are the reason my bad days turn good.<br>
-            You are the spark that lights up my darkest nights.<br>
-            <br>
-            One text from you,<br>
-            and suddenly the world <span class="highlight">makes sense again</span>.
-        </div>
+<div class="chapter">
+    <div class="script-text">The Catalyst</div>
+    <div class="body-text">
+        You are the reason my bad days turn good.<br>
+        You are the spark that lights up my darkest nights.<br>
+        <br>
+        One text from you,<br>
+        and suddenly the world <span class="highlight">makes sense again</span>.
     </div>
+</div>
 
-    <div class="chapter">
-        <div class="script-text">Destiny's Design</div>
-        <div class="body-text">
-            They say an invisible red string connects those<br>
-            who are destined to meet.<br>
-            <br>
-            Mine doesn't just lead to you.<br>
-            It is <span class="highlight">tied around your heart</span>.
-        </div>
+<div class="chapter">
+    <div class="script-text">Destiny's Design</div>
+    <div class="body-text">
+        They say an invisible red string connects those<br>
+        who are destined to meet.<br>
+        <br>
+        Mine doesn't just lead to you.<br>
+        It is <span class="highlight">tied around your heart</span>.
     </div>
+</div>
 
-    <div class="chapter">
-        <div class="script-text">Electric Soul</div>
-        <div class="body-text">
-            Even through a screen, you set my soul on fire.<br>
-            If I feel this much now...<br>
-            <br>
-            Imagine the hurricane when there is finally<br>
-            <span class="highlight">zero distance</span> between us.
-        </div>
+<div class="chapter">
+    <div class="script-text">Electric Soul</div>
+    <div class="body-text">
+        Even through a screen, you set my soul on fire.<br>
+        If I feel this much now...<br>
+        <br>
+        Imagine the hurricane when there is finally<br>
+        <span class="highlight">zero distance</span> between us.
     </div>
+</div>
 
-    <div class="chapter">
-        <div class="script-text">Your Sanctuary</div>
-        <div class="body-text">
-            The world demands perfection from you.<br>
-            But with me? You can just be.<br>
-            <br>
-            No masks. No pressure. No expectations.<br>
-            Just <span class="highlight">pure, unfiltered Us</span>.
-        </div>
+<div class="chapter">
+    <div class="script-text">Your Sanctuary</div>
+    <div class="body-text">
+        The world demands perfection from you.<br>
+        But with me? You can just be.<br>
+        <br>
+        No masks. No pressure. No expectations.<br>
+        Just <span class="highlight">pure, unfiltered Us</span>.
     </div>
+</div>
 
-    <div class="chapter">
-        <div class="script-text">Just the Beginning</div>
-        <div class="body-text">
-            19 is just the start of the movie.<br>
-            I'm not just here for the birthday cake.<br>
-            <br>
-            I'm here for the wrinkles,<br>
-            the gray hair,<br>
-            and the <span class="highlight">forever</span>.
-        </div>
+<div class="chapter">
+    <div class="script-text">Just the Beginning</div>
+    <div class="body-text">
+        19 is just the start of the movie.<br>
+        I'm not just here for the birthday cake.<br>
+        <br>
+        I'm here for the wrinkles,<br>
+        the gray hair,<br>
+        and the <span class="highlight">forever</span>.
     </div>
+</div>
 
-    <div class="chapter">
-        <div class="script-text">My 19th Wish</div>
-        <div class="body-text">
-            For this year, I don't just wish you happiness.<br>
-            I wish you <span class="highlight">peace</span>.<br>
-            I wish you moments where you feel like the main character.<br>
-            Because to me, you always are.
+        
+       <div class="chapter">
+            <div class="script-text">My 19th Wish</div>
+            <div class="body-text">
+                For this year, I don't just wish you happiness.<br>
+                I wish you <span class="highlight">peace</span>.<br>
+                I wish you moments where you feel like the main character.<br>
+                Because to me, you always are.
+            </div>
         </div>
-    </div>
 
-    <div class="chapter">
-        <div class="script-text">The Truth</div>
-        <div class="body-text">
-            You are the poetry I never knew how to write.<br>
-            You are the home I never knew I was looking for.<br>
-            <br>
-            <span class="highlight"> Thank you for existing, Violina.</span>
+        <div class="chapter">
+            <div class="script-text">The Truth</div>
+            <div class="body-text">
+                You are the poetry I never knew how to write.<br>
+                You are the home I never knew I was looking for.<br>
+                <br>
+                <span class="highlight"> Thank you for existing, Violina.</span>
+            </div>
         </div>
-    </div>
 
     </div>
 
@@ -290,104 +346,89 @@
     </div>
 
     <script>
-        function initHeartbeat() {
+        // --- 1. DYNAMIC PATH (FIXED TO STOP AT BUTTON) ---
+        function generateJaggedPath() {
             const svg = document.getElementById('svgLine');
             const path = document.getElementById('heartPath');
             const btn = document.getElementById('nextBtn');
             
+            // 1. Get exact Y position of the button relative to the page
             const btnRect = btn.getBoundingClientRect();
-            // Use Math.max to avoid negative values if layout shifts
-            const absoluteBtnTop = Math.max(0, btnRect.top + window.scrollY);
+            const absoluteBtnTop = btnRect.top + window.scrollY;
             
+            // Set SVG height to end exactly at the button
             svg.setAttribute('height', absoluteBtnTop);
 
+            // Generator Logic
             const width = window.innerWidth;
             const center = width / 2;
             let d = `M ${center} 0 `; 
+
+            // Calculate spacing
             const stepSize = 150; 
+            // We only generate steps until we reach the button
             const steps = Math.floor(absoluteBtnTop / stepSize);
+            
             let currentY = 0;
 
             for (let i = 0; i < steps; i++) {
+                // Ensure we don't draw past the button
                 if (currentY + 100 > absoluteBtnTop) break;
+
                 currentY += 80; 
                 d += `L ${center} ${currentY} `;
+
                 // ECG Spike
                 d += `L ${center - 10} ${currentY + 10} `; 
                 d += `L ${center - 40} ${currentY + 30} `; 
                 d += `L ${center + 40} ${currentY + 50} `; 
                 d += `L ${center + 10} ${currentY + 70} `; 
+                
                 currentY += 70; 
                 d += `L ${center} ${currentY} `; 
             }
+
+            // Draw final straight line connecting to the button
             d += `L ${center} ${absoluteBtnTop}`;
 
             path.setAttribute('d', d);
             
-            const totalLength = path.getTotalLength();
-            
-            // Set Initial State
-            path.style.strokeDasharray = totalLength;
-            path.style.strokeDashoffset = totalLength;
-            
-            return totalLength;
+            const pathLength = path.getTotalLength();
+            path.style.strokeDasharray = pathLength;
+            path.style.strokeDashoffset = pathLength;
+            return pathLength;
         }
 
-        function updateScroll(path, totalLength) {
+        // Run on load and resize
+        let totalLength = 0;
+        
+        // Wait for page to fully load so button position is correct
+        window.onload = () => {
+            totalLength = generateJaggedPath();
+        };
+
+        window.addEventListener('resize', () => {
+            totalLength = generateJaggedPath();
+        });
+
+        // --- 2. SCROLL LOGIC ---
+        window.addEventListener('scroll', () => {
+            const path = document.getElementById('heartPath');
+            
             const scrollTop = window.scrollY;
             const docHeight = document.body.scrollHeight - window.innerHeight;
-            
-            // --- FAIL SAFE ---
-            // If the user is at the top (less than 100px), FORCE INVISIBLE
-            if (scrollTop < 50) {
-                 path.style.opacity = '0';
-                 // Also reset the line position just in case opacity fails
-                 path.style.strokeDashoffset = totalLength;
-                 return;
-            } else {
-                 // Reveal the line (Fade In)
-                 path.style.opacity = '1';
-            }
+            const scrollPercent = scrollTop / docHeight;
 
-            let scrollPercent = 0;
-            if(docHeight > 0) {
-                scrollPercent = scrollTop / docHeight;
-            }
-
-            // Clamp
-            if(scrollPercent > 1) scrollPercent = 1;
-            if(scrollPercent < 0) scrollPercent = 0;
-            
             const drawLength = totalLength * scrollPercent;
             path.style.strokeDashoffset = totalLength - drawLength;
 
+            // Show Button
             if(scrollPercent > 0.95) {
                 document.getElementById('nextBtn').classList.add('visible');
             }
-        }
-
-        let pathLength = 0;
-        
-        // --- Continuous Update Loop (Fixes iPad loading issues) ---
-        function loop() {
-            if(pathLength === 0) {
-                pathLength = initHeartbeat();
-            }
-            
-            const path = document.getElementById('heartPath');
-            if(path && pathLength > 0) {
-                updateScroll(path, pathLength);
-            }
-            
-            requestAnimationFrame(loop);
-        }
-
-        // Start Loop
-        window.addEventListener('load', () => {
-            loop();
         });
 
-        // Animations
+        // --- 3. TEXT FADE IN ---
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -400,19 +441,25 @@
             observer.observe(el);
         });
 
-        // Audio
-        const audio = document.getElementById('bgMusic');
-        audio.volume = 0.5;
+     // --- 4. AUDIO ---
+const audio = document.getElementById('bgMusic');
+audio.volume = 0.5;
 
-        function playAudio() {
-            audio.play().then(() => {
-                window.removeEventListener('touchstart', playAudio);
-                window.removeEventListener('click', playAudio);
-            }).catch(e => { console.log("Audio waiting..."); });
-        }
+function playAudio() {
+    // This forces the audio to play as soon as the user touches the screen
+    audio.play().then(() => {
+        console.log("Playback started!");
+        // Once it starts playing, we remove the listeners so it doesn't try to restart
+        window.removeEventListener('touchstart', playAudio);
+        window.removeEventListener('click', playAudio);
+    }).catch(e => {
+        console.log("Playback failed:", e);
+    });
+}
 
-        window.addEventListener('touchstart', playAudio, { once: true });
-        window.addEventListener('click', playAudio, { once: true });
+// iPads prefer 'touchstart' over 'click'
+window.addEventListener('touchstart', playAudio, { once: true });
+window.addEventListener('click', playAudio, { once: true });
 
     </script>
 </body>
