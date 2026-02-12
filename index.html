@@ -88,7 +88,11 @@ input:checked + .slider:before { transform: translateX(20px); }
     width:130px; height:130px; margin:0 auto 15px; border-radius:50%; overflow:hidden; 
     border: 5px solid #ffd1e5; transition: transform 0.5s ease; 
 }
-.photo img{ width:100%; height:100%; object-fit:cover; }
+.photo img{ 
+    width:100%; height:100%; object-fit:cover; 
+    /* FIXED SMOOTH TRANSITION */
+    transition: opacity 0.8s ease-in-out; 
+}
 
 h2 { margin: 10px 0 5px; font-size: 1.6rem; color: #111; font-weight: 800; }
 .sub { font-size: 0.95rem; color: #666; margin-bottom: 20px; }
@@ -115,7 +119,7 @@ h2 { margin: 10px 0 5px; font-size: 1.6rem; color: #111; font-weight: 800; }
 
 /* GIFT LAYER (Initially Visible for Code Input) */
 #giftLayer {
-    display: block; /* DEFAULT VISIBLE */
+    display: block; 
     margin-top: 15px;
 }
 
@@ -389,9 +393,24 @@ document.getElementById("openGiftBtn").onclick = () => {
   } else { alert("Wrong code 💔"); }
 };
 
-// Photo Slide
-const photos=["photo1.jpg","photo2.jpg","photo3.jpg"]; let p=0; const img=document.getElementById("photoImg");
-setInterval(()=>{ img.style.opacity=0; setTimeout(()=>{ p=(p+1)%photos.length; img.src=photos[p]; img.style.opacity=1; },350); },4000);
+// Photo Slide - SMOOTH FADE LOGIC
+const photos=["photo1.jpg","photo2.jpg","photo3.jpg"]; 
+let p=0; 
+const img=document.getElementById("photoImg");
+
+setInterval(()=>{ 
+    // 1. Fade Out
+    img.style.opacity = 0; 
+    
+    // 2. Wait for fade (800ms) then swap
+    setTimeout(()=>{ 
+        p = (p + 1) % photos.length; 
+        img.src = photos[p]; 
+        
+        // 3. Fade In
+        img.style.opacity = 1; 
+    }, 800); 
+}, 4000);
 
 </script>
 </body>
