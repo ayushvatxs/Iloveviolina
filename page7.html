@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>THE VIOLINA ERA </title>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bodoni+Moda:ital,wght@0,400;0,900;1,400&family=Syne:wght@400;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CORE --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body {
+            height: 100%; width: 100%; overflow: hidden;
+            background-color: #000; color: #fff; font-family: 'Syne', sans-serif;
+            overscroll-behavior: none;
+            position: fixed; top: 0; left: 0;
+        }
+
+        :root {
+            --neon: #ff003c;
+            --gold: #d4af37;
+            --black: #050505;
+            --yt-red: #ff0000;
+            --insta-blue: #0095f6;
+        }
+
+        /* --- 1. ROTATE OVERLAY --- */
+        #rotate-overlay {
+            position: fixed; inset: 0; z-index: 11000;
+            background: rgba(5, 5, 5, 0.98); 
+            display: none; 
+            flex-direction: column; justify-content: center; align-items: center;
+            text-align: center;
+            border: 2px solid var(--neon);
+        }
+        .rotate-icon { font-size: 3rem; margin-bottom: 20px; color: var(--neon); animation: rotatePhone 2s infinite; }
+        .rotate-msg { font-family: 'Anton'; font-size: 2rem; color: #fff; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; }
+        .btn-overlay-close { background: transparent; border: 1px solid #fff; color: #fff; padding: 15px 40px; font-family: 'Syne'; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        @keyframes rotatePhone { 0% { transform: rotate(0deg); } 50% { transform: rotate(-90deg); } 100% { transform: rotate(0deg); } }
+
+        /* iPad Pro Landscape Detection */
+        @media (orientation: landscape) and (max-width: 1366px) and (hover: none) {
+            #rotate-overlay { display: flex; }
+        }
+
+        /* --- 2. SOUND TOGGLE POPUP --- */
+        #sound-popup {
+            position: fixed; bottom: 30px; right: 30px; z-index: 10000;
+            background: #000; border: 2px solid var(--neon);
+            padding: 20px; box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            display: flex; gap: 15px; align-items: center;
+            transform: translateY(150px); opacity: 0; transition: 0.5s;
+            max-width: 90%;
+        }
+        #sound-popup.visible { transform: translateY(0); opacity: 1; }
+        .sound-text { font-family: 'Anton'; font-size: 1.2rem; line-height: 1; text-transform: uppercase; color: #fff; text-align: left; }
+        .btn-enable-sound { background: var(--neon); color: #fff; border: none; padding: 12px 25px; font-family: 'Syne'; font-weight: 800; text-transform: uppercase; cursor: pointer; }
+        .btn-close-popup { background: transparent; border: 1px solid #333; color: #666; width: 30px; height: 30px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+
+        /* --- SCROLL CONTAINER --- */
+        #magazine {
+            height: 100%; width: 100%;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .page {
+            height: 100%; width: 100%;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            position: relative; overflow: hidden;
+            display: flex; flex-direction: column;
+            background: var(--black);
+            will-change: transform;
+        }
+
+        /* --- ANIMATIONS --- */
+        .rise-up { opacity: 0; transform: translateY(50px); transition: 0.8s ease-out; }
+        .active .rise-up { opacity: 1; transform: translateY(0); }
+        .zoom-slow { width: 100%; height: 100%; object-fit: cover; transform: scale(1.1); transition: transform 10s ease-out; }
+        .active .zoom-slow { transform: scale(1.0); }
+
+        .flash-effect { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; z-index: 50; }
+        .active .flash-effect.paparazzi { animation: flashBurst 0.3s 7; } 
+        .active .flash-effect.single { animation: flashBurst 0.2s 1; }
+        @keyframes flashBurst { 0% { opacity: 0.8; } 50% { opacity: 0; } 100% { opacity: 0; } }
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        .ticker-wrap { position: absolute; width: 100%; overflow: hidden; background: var(--neon); color: #fff; padding: 10px 0; z-index: 10; font-family: 'Anton'; text-transform: uppercase; font-size: 1.5rem; letter-spacing: 2px; }
+        .ticker { display: inline-block; white-space: nowrap; animation: ticker 20s linear infinite; }
+
+        /* --- CONTENT STYLES --- */
+        
+        /* P1 Cover: Black Icon Text */
+        #p1 .masthead { 
+            position: absolute; top: -10px; width: 100%; text-align: center; 
+            font-family: 'Anton'; font-size: 25vw; line-height: 0.8; z-index: 2; 
+            color: #fff; /* UPDATED: Solid white */
+           opacity: 0.8;
+        }
+        .main-head { font-family: 'Bodoni Moda'; font-size: 5rem; font-weight: 900; font-style: italic; line-height: 0.9; margin-bottom: 20px; }
+        
+        #p2 { background: #fff; color: #000; justify-content: center; align-items: center; text-align: center; padding: 40px; }
+        .viral-stat { font-size: 8rem; font-family: 'Anton'; line-height: 1; color: var(--neon); }
+        .tweet-box { border: 2px solid #000; padding: 20px; margin: 10px auto; max-width: 600px; text-align: left; }
+
+        #p3 .yt-ui { position: absolute; bottom: 50px; left: 50px; z-index: 5; }
+        .rec-tag { color: red; font-weight: 800; animation: blink 1s infinite; }
+        .sub-count { font-family: 'Anton'; font-size: 4rem; line-height: 1; }
+
+        .scan-frame { position: absolute; width: 80%; height: 80%; border: 1px solid rgba(255,255,255,0.5); }
+
+        #p5 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; height: 100%; width: 100%; gap: 3px; background: #fff; padding: 3px; }
+        .pap-img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(100%); transition: 0.3s; }
+        .pap-img:hover { filter: grayscale(0%); }
+
+        #p20 { background: #121212; font-family: 'Roboto', sans-serif; padding: 20px; }
+        .yt-header { display: flex; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .yt-logo { font-weight: 900; letter-spacing: -1px; font-size: 1.5rem; display: flex; align-items: center; gap: 5px; }
+        .trending-grid { display: flex; flex-direction: column; gap: 20px; height: 100%; overflow-y: auto; padding-bottom: 100px; }
+        .video-card { display: flex; gap: 15px; flex-shrink: 0; }
+        .vid-thumb { width: 160px; height: 90px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
+        .vid-info h3 { font-size: 1rem; margin-bottom: 5px; color: #fff; }
+        .rank { font-size: 1.5rem; color: #fff; font-weight: 900; margin-right: 15px; opacity: 0.5; }
+
+        /* --- INSTAGRAM REAL UI FIX --- */
+        #p21 { background: #000; align-items: center; justify-content: center; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        .phone-frame { width: 95%; max-width: 400px; height: 85%; border: 1px solid #333; border-radius: 30px; overflow: hidden; background: #000; position: relative; display:flex; flex-direction:column; }
+        
+        .insta-header { padding: 10px 15px; border-bottom: 1px solid #262626; display:flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 1.1rem; }
+        
+        .insta-profile-section { padding: 15px; display: flex; align-items: center; gap: 20px; }
+        .insta-pfp { width: 80px; height: 80px; border-radius: 50%; padding: 2px; border: 2px solid #333; }
+        .insta-pfp img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        
+        .insta-stats-group { display: flex; flex: 1; justify-content: space-around; text-align: center; }
+        .i-stat-num { font-weight: bold; font-size: 1.1rem; display: block; }
+        .i-stat-label { font-size: 0.8rem; color: #fff; }
+
+        .insta-bio { padding: 0 15px 15px 15px; font-size: 0.9rem; }
+        .bio-name { font-weight: bold; }
+        .bio-link { color: #e0f1ff; text-decoration: none; }
+
+        .insta-actions { padding: 0 15px 15px 15px; display: flex; gap: 8px; }
+        .i-btn { flex: 1; background: #fff; color: #000; border-radius: 8px; padding: 7px 0; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; }
+        .i-btn.gray { background: #363636; color: #fff; }
+
+        .insta-tabs { display: flex; justify-content: space-around; border-top: 1px solid #262626; padding: 10px 0; }
+        .i-tab { font-size: 1.5rem; opacity: 0.5; }
+        .i-tab.active { opacity: 1; border-bottom: 1px solid #fff; }
+
+        .insta-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; overflow-y: auto; padding-bottom: 50px; }
+        .insta-square { width: 100%; aspect-ratio: 1; object-fit: cover; }
+
+        /* --- SPOTIFY & NOTIFS --- */
+        #p23 { background: linear-gradient(to bottom, #444, #000); align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; }
+        .spot-card { width: 90%; text-align: center; }
+        .spot-img { width: 250px; height: 250px; object-fit: cover; box-shadow: 0 20px 40px rgba(0,0,0,0.5); margin-bottom: 30px; border-radius:10px;}
+        .spot-bar { width: 100%; height: 4px; background: #555; margin: 20px 0; position: relative; }
+        .spot-fill { width: 30%; height: 100%; background: #fff; }
+
+        #p24 { background-image: url('mag_cover.jpg'); background-size: cover; background-position: center; align-items: center; justify-content: center; }
+        .backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.6); }
+        .notif-stack { position: relative; z-index: 10; width: 90%; display: flex; flex-direction: column; gap: 10px; }
+        .notif { background: rgba(255,255,255,0.95); border-radius: 12px; padding: 15px; color: #000; display: flex; gap: 10px; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .notif-icon { width: 30px; height: 30px; border-radius: 5px; }
+
+        .next-btn {
+            background: #fff; color: #000; padding: 25px 60px; border: none; font-size: 1.2rem;
+            font-family: 'Syne'; font-weight: 800; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 20px;
+        }
+        .next-btn:hover { background: var(--neon); color: #fff; }
+        .top-btn {
+            background: transparent; border: 1px solid #666; color: #666; padding: 10px 20px; 
+            margin-top: 20px; font-size: 0.8rem; cursor: pointer;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <div id="rotate-overlay">
+        <div class="rotate-icon">⟳</div>
+        <div class="rotate-msg">ROTATE DEVICE<br>FOR FULL EXPERIENCE</div>
+        <button class="btn-overlay-close" onclick="closeRotate()">✕ CLOSE</button>
+    </div>
+
+    <div id="sound-popup">
+        <div class="sound-text">ENABLE<br>AUDIO</div>
+        <button class="btn-enable-sound" onclick="unlockAudio()">TURN ON</button>
+        <button class="btn-close-popup" onclick="closePopup()">✕</button>
+    </div>
+
+    <div id="magazine">
+        <div class="page active" id="p1" data-sound="sfx_page.mp3">
+            <div class="masthead">ICON</div>
+            <img src="mag_candid2.jpg" class="zoom-slow" style="position:absolute; inset:0; z-index:0; width: 100%; height: 100%; object-fit: cover; object-position: top center;">
+            <div class="cover-lines rise-up" style="position:absolute; bottom:40px; left:30px; z-index:5;">
+                <div style="background: #fff; color: #000; padding: 5px 15px; font-weight: 800; display: inline-block;">SPECIAL EDITION</div>
+                <div class="main-head">She is the<br>Moment.</div>
+                <p style="font-size: 1.2rem; letter-spacing: 1px;">THE INTERNET'S NEW OBSESSION.</p>
+            </div>
+        </div>
+
+        <div class="page" id="p2" data-sound="sfx_page.mp3">
+            <div class="rise-up">
+                <div class="viral-stat">#1</div>
+                <div style="font-size: 2rem; font-weight: 800; margin-bottom: 40px;">TRENDING WORLDWIDE</div>
+                <div class="tweet-box"><strong>@Adam:</strong> "I don't know who she is but I'm obsessed. How is someone this perfect??"</div>
+                <div class="tweet-box"><strong>@FashionDaily:</strong> "Forget the runway. Violina just posted a selfie and ended modeling forever."</div>
+                <div class="tweet-box"><strong>@GenZ Captures:</strong> "If she starts a YouTube channel, it's over for everyone else."</div>
+                <div class="tweet-box"><strong>@TheAlgorithm:</strong> "Violina isn't following the trends; she is the trend."</div>
+            </div>
+        </div>
+
+        <div class="page" id="p3" data-sound="sfx_page.mp3">
+            <img src="mag_vlog.jpg" class="zoom-slow" style="opacity: 0.6;">
+            <div class="yt-ui rise-up">
+                <span class="rec-tag">● REC 00:04:20</span>
+                <div class="sub-count">10M SUBSCRIBERS</div>
+                <p style="font-size: 1.5rem; color: #ccc;">(Projected Day 1 Stats)</p>
+                <h2 style="margin-top: 20px; font-family:'Bodoni Moda';">"The Vlogs are coming..."</h2>
+            </div>
+        </div>
+
+        <div class="page" id="p4" data-sound="sfx_flash.mp3">
+            <div class="flash-effect single"></div>
+            <img src="mag_beauty.jpg" class="zoom-slow">
+            <div class="scan-frame"></div>
+            <div style="position: absolute; bottom: 100px; width: 100%; text-align: center;" class="rise-up">
+                <h1 style="font-family:'Anton'; font-size: 4rem; color: var(--neon);">100%</h1>
+                <p>LETHAL VISUALS. FACE CARD NEVER DECLINES.</p>
+            </div>
+        </div>
+
+        <div class="page" id="p5" data-sound="sfx_shutter.mp3">
+            <div class="flash-effect paparazzi"></div>
+            <img src="mag_candid.jpg" class="pap-img">
+            <img src="mag_carpet.jpg" class="pap-img">
+            <img src="mag_cover.jpg" class="pap-img">
+            <img src="mag_beauty.jpg" class="pap-img">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; color: #000; padding: 20px; font-weight: 800; font-size: 2rem; white-space: nowrap;">
+                SPOTTED EVERYWHERE
+            </div>
+        </div>
+
+        <div class="page" id="p6" data-sound="sfx_page.mp3" style="justify-content: center; align-items: center;">
+            <div class="rise-up" style="font-family: 'Bodoni Moda'; font-size: 4vw; line-height: 1.2; text-align: center; padding: 40px;">
+                "She didn't chase the spotlight.<br>The spotlight got lost looking for her."
+            </div>
+        </div>
+
+        <div class="page" id="p7" data-sound="sfx_page.mp3" style="background: #f0f0f0; color: #000; padding: 40px; display: flex; align-items: flex-end;">
+            <img src="mag_fashion.jpg" style="position: absolute; top:0; right:0; width: 60%; height: 100%; object-fit: cover;">
+            <div style="position: relative; z-index: 2; width: 50%;" class="rise-up">
+                <p style="letter-spacing: 2px; font-weight: 800;">FASHION WEEK</p>
+                <div style="font-family: 'Bodoni Moda'; font-size: 6rem; line-height: 0.8;">The New<br>Standard.</div>
+            </div>
+        </div>
+
+        <div class="page" id="p8" data-sound="sfx_page.mp3" style="justify-content: center; align-items: center;">
+            <div style="border: 1px solid #333; padding: 60px; max-width: 800px; text-align: center; background: #0a0a0a;" class="rise-up">
+                <h2 style="font-family:'Anton'; font-size: 3rem; color: var(--neon); margin-bottom: 20px;">CONSPIRACY THEORY #4</h2>
+                <p style="font-size: 1.5rem; line-height: 1.6;">"Is she actually real? No one can be this photogenic from every angle. Critics suggest she might be a government experiment to lower global stress levels."</p>
+            </div>
+        </div>
+
+        <div class="page" id="p9" data-sound="sfx_page.mp3">
+            <img src="mag_eyes.jpg" class="zoom-slow" style="filter: brightness(0.6) contrast(1.2);">
+            <div style="position: absolute; bottom: 100px; width: 100%; text-align: center;" class="rise-up">
+                <h1 style="font-family:'Bodoni Moda'; font-size: 5rem; color: #fff;">Hypnotic.</h1>
+                <p>DO NOT LOOK DIRECTLY FOR MORE THAN 5 SECONDS.</p>
+            </div>
+        </div>
+
+        <div class="page" id="p10" style="background: #222;" data-sound="sfx_page.mp3">
+            <div class="ticker-wrap" style="top: 40%;">
+                <div class="ticker">
+                    UPLOAD COMPLETE  //  VLOG 1 LIVE  //  SERVER CRASH IMMINENT  //  UPLOAD COMPLETE  //  VLOG 1 LIVE  //
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 50px;" class="rise-up">
+                <h1 style="font-size: 4rem; font-weight: 800;">THE YOUTUBE TAKEOVER</h1>
+                <p style="color: #888;">(And changing ours in the process)</p>
+            </div>
+        </div>
+
+        <div class="page" id="p11" style="justify-content: center; align-items: center; background: #fff; color: #000;" data-sound="sfx_page.mp3">
+            <div class="rise-up" style="text-align: center;">
+                <div style="font-family:'Anton'; font-size: 10rem; line-height: 0.8;">GOAT</div>
+                <p style="font-size: 1.5rem; letter-spacing: 5px; margin-top: 20px;">GREATEST OF ALL TIME</p>
+            </div>
+        </div>
+
+        <div class="page" id="p12" data-sound="sfx_page.mp3">
+            <img src="mag_bw.jpg" class="zoom-slow" style="filter: grayscale(100%);">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 4px solid #fff; padding: 40px;" class="rise-up">
+                <h1 style="font-family:'Bodoni Moda'; font-size: 3rem;">CINEMA.</h1>
+            </div>
+        </div>
+
+        <div class="page" id="p13" style="background: #0a0a0a; padding: 60px;" data-sound="sfx_page.mp3">
+            <div class="rise-up">
+                <h2 style="font-family:'Anton'; font-size: 4rem; color: #333;">INFLUENCE</h2>
+                <h2 style="font-family:'Anton'; font-size: 4rem; color: #555;">INFLUENCE</h2>
+                <h2 style="font-family:'Anton'; font-size: 4rem; color: #777;">INFLUENCE</h2>
+                <h2 style="font-family:'Anton'; font-size: 4rem; color: #fff;">VIOLINA</h2>
+                <p style="margin-top: 30px; font-size: 1.2rem; max-width: 500px;">She wears a hoodie? Hoodies sell out. She drinks tea? Coffee stocks crash. This isn't influence, it's power.</p>
+            </div>
+        </div>
+
+        <div class="page" id="p14" style="background: var(--neon); color: #fff; justify-content: center; align-items: center;" data-sound="sfx_page.mp3">
+            <div class="rise-up" style="text-align: center;">
+                <h1 style="font-size: 4rem; font-weight: 800;">WHO IS SHE?</h1>
+                <p style="font-size: 1.5rem;">The world wants to know everything.</p>
+            </div>
+        </div>
+
+        <div class="page" id="p15" data-sound="sfx_page.mp3">
+            <img src="mag_cover.jpg" style="width:100%; height:60%; object-fit:cover;">
+            <div class="rise-up" style="padding: 40px; text-align: center;">
+                <div style="font-family:'Anton'; font-size: 3rem; color: var(--gold);">TIMES SQUARE</div>
+                <p style="font-size: 1.2rem;">All Screens. One Face.</p>
+            </div>
+        </div>
+
+        <div class="page" id="p16" data-sound="sfx_page.mp3" style="background: #fff; color: #000; justify-content: center; align-items: center;">
+            <div style="text-align: center;" class="rise-up">
+                <div style="font-family: 'Bodoni Moda'; font-size: 4rem; margin-bottom: 20px; letter-spacing: -2px;">GUCCI</div>
+                <img src="mag_luxury.jpg" style="width: 300px; margin: 20px 0;">
+                <div style="font-size: 1.5rem; letter-spacing: 5px;">THE NEW MUSE</div>
+                <p style="font-family:'Bodoni Moda'; margin-top: 15px; color: #555; max-width: 300px; margin-left: auto; margin-right: auto;">"The face of the new century. Timeless. Elegant. Unapologetic. The Violina Collection."</p>
+            </div>
+        </div>
+
+        <div class="page" id="p17" data-sound="sfx_shutter.mp3">
+            <div class="flash-effect paparazzi"></div>
+            <img src="mag_carpet.jpg" class="zoom-slow" style="opacity: 0.7;">
+            <div style="position: absolute; bottom: 15%; left: 5%;" class="rise-up">
+                <div style="font-family: 'Anton'; font-size: 6rem; line-height: 0.8; color: var(--gold); mix-blend-mode: exclusion;">MET GALA</div>
+                <p style="font-size: 1.2rem; margin-top: 10px; max-width: 80%;">"Critics are speechless. The red dress that stopped the show."</p>
+            </div>
+        </div>
+
+        <div class="page" id="p18" data-sound="sfx_page.mp3" style="background: #f4f4f4; color: #000;">
+            <div style="padding: 40px;" class="rise-up">
+                <h1 style="font-family:'Anton'; font-size: 4rem;">"UNBOTHERED"</h1>
+                <p>Paparazzi caught her getting tea. She didn't even blink.</p>
+            </div>
+            <img src="mag_candid2.jpg" style="flex-grow: 1; object-fit: cover; filter: sepia(30%);">
+        </div>
+
+        <div class="page" id="p19" data-sound="sfx_page.mp3">
+            <img src="mag_eyes.jpg" class="zoom-slow" style="filter: contrast(1.3);">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #fff; padding: 20px;" class="rise-up">
+                <div style="font-family:'Bodoni Moda'; font-size: 2rem;">"A gaze that starts wars."</div>
+            </div>
+        </div>
+
+        <div class="page" id="p20">
+            <div class="yt-header">
+                <div class="yt-logo"><span>▼</span>YouTube Trending</div>
+            </div>
+            <div class="trending-grid rise-up" style="padding: 0 40px;">
+                <div class="video-card">
+                    <div class="rank">1</div>
+                    <img src="mag_vlog.jpg" class="vid-thumb">
+                    <div class="vid-info">
+                        <h3>A Day In My Life (Revealing Secrets)</h3>
+                        <p>Violina Vlogs • 45M views • 2 hours ago</p>
+                    </div>
+                </div>
+                <div class="video-card"><div class="rank">2</div><img src="mag_fashion.jpg" class="vid-thumb"><div class="vid-info"><h3>My Gucci Photoshoot</h3><p>Violina Vlogs • 22M views</p></div></div>
+                <div class="video-card"><div class="rank">3</div><img src="mag_candid.jpg" class="vid-thumb"><div class="vid-info"><h3>Q&A: Addressing Rumors</h3><p>Violina Vlogs • 18M views</p></div></div>
+                <div class="video-card"><div class="rank">4</div><img src="mag_beauty.jpg" class="vid-thumb"><div class="vid-info"><h3>Skincare Routine</h3><p>Violina Vlogs • 15M views</p></div></div>
+                <div class="video-card"><div class="rank">5</div><img src="mag_carpet.jpg" class="vid-thumb"><div class="vid-info"><h3>Met Gala Prep</h3><p>Violina Vlogs • 12M views</p></div></div>
+                <div class="video-card"><div class="rank">6</div><img src="mag_cover.jpg" class="vid-thumb"><div class="vid-info"><h3>Fan Edits Reaction</h3><p>Violina Vlogs • 10M views</p></div></div>
+            </div>
+        </div>
+
+        <div class="page" id="p21">
+            <div class="phone-frame rise-up">
+                <div class="insta-header">
+                    <i class="fas fa-lock"></i> violina_official
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div class="insta-profile-section">
+                    <div class="insta-pfp"><img src="mag_cover.jpg"></div>
+                    <div class="insta-stats-group">
+                        <div><span class="i-stat-num">124</span><span class="i-stat-label">Posts</span></div>
+                        <div><span class="i-stat-num">189M</span><span class="i-stat-label">Followers</span></div>
+                        <div><span class="i-stat-num">1</span><span class="i-stat-label">Following</span></div>
+                    </div>
+                </div>
+                <div class="insta-bio">
+                    <div class="bio-name">Violina Sharma</div>
+                    <div>Digital Creator<br>She/Her<br>Living in the moment ☁️</div>
+                    <a href="#" class="bio-link">www.violina.com</a>
+                </div>
+                <div class="insta-actions">
+                    <button class="i-btn" style="background:#0095f6; color:#fff;">Follow</button>
+                    <button class="i-btn gray">Message</button>
+                    <button class="i-btn gray">Email</button>
+                </div>
+                <div class="insta-tabs">
+                    <i class="fas fa-th i-tab active"></i>
+                    <i class="fas fa-video i-tab"></i>
+                    <i class="fas fa-user-tag i-tab"></i>
+                </div>
+                <div class="insta-grid">
+                    <img src="mag_fashion.jpg" class="insta-square">
+                    <img src="mag_candid.jpg" class="insta-square">
+                    <img src="mag_beauty.jpg" class="insta-square">
+                    <img src="mag_cover.jpg" class="insta-square">
+                    <img src="mag_vlog.jpg" class="insta-square">
+                    <img src="mag_candid2.jpg" class="insta-square">
+                    <img src="mag_luxury.jpg" class="insta-square">
+                    <img src="mag_bw.jpg" class="insta-square">
+                    <img src="mag_eyes.jpg" class="insta-square">
+                    <img src="mag_carpet.jpg" class="insta-square">
+                    <img src="mag_candid.jpg" class="insta-square">
+                    <img src="mag_cover.jpg" class="insta-square">
+                </div>
+            </div>
+            <div style="margin-top:20px; font-family:'Anton'; font-size:2rem; text-align:center;">SHE IS THE FEED.</div>
+        </div>
+
+        <div class="page" id="p23" data-sound="sfx_notification.mp3">
+            <div class="spot-card rise-up">
+                <div style="font-weight: bold; margin-bottom: 20px;">PLAYING FROM ARTIST</div>
+                <img src="mag_cover.jpg" class="spot-img">
+                <div style="font-size: 2rem; font-weight: bold;">"The Muse"</div>
+                <div style="color: #bbb;">Violina • Top Hits</div>
+                <div class="spot-bar"><div class="spot-fill"></div></div>
+                <div style="font-size: 3rem;">⏮ ⏸ ⏭</div>
+            </div>
+        </div>
+
+        <div class="page" id="p24" data-sound="sfx_burst">
+            <div class="backdrop"></div>
+            <div class="notif-stack rise-up">
+                <div style="font-size: 5rem; text-align: center; margin-bottom: 40px; font-weight: 300;">11:11</div>
+                <div class="notif">
+                    <div class="notif-icon" style="background: red;"></div>
+                    <div><strong>YouTube</strong><br>Violina just uploaded: "My Truth"</div>
+                </div>
+                <div class="notif">
+                    <div class="notif-icon" style="background: linear-gradient(45deg, purple, orange);"></div>
+                    <div><strong>Instagram</strong><br>@violina_official started a live video</div>
+                </div>
+                <div class="notif">
+                    <div class="notif-icon" style="background: #fff; color: #000; text-align: center; font-weight: bold;">N</div>
+                    <div><strong>News</strong><br>TRENDING: Who is the girl in the red dress?</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="p25" style="background: #fff; color: #000; justify-content: center; align-items: center; padding: 40px;" data-sound="sfx_page.mp3">
+            <div class="rise-up" style="text-align: center; width: 100%;">
+                <div style="font-family:'Anton'; font-size: 2rem; color: #000;">V.ERA</div>
+                <h1 style="font-size: 3rem; font-family:'Bodoni Moda'; margin: 30px 0;">The Show Must Go On.</h1>
+                
+                <button class="next-btn" onclick="window.location.href='page8.html'">ENTER THE MUSICAL PORTRAIT ></button>
+                <button class="top-btn" onclick="document.getElementById('magazine').scrollTo(0,0);">↑ BACK TO TOP</button>
+                
+                <div style="font-size: 0.8rem; color: #888; margin-top: 50px;">VOL 1 // THE VIRAL ISSUE // 2025</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 1. SINGLE AUDIO MANAGER (Permanent Pool) ---
+        let audioEnabled = false;
+        let activeKey = null; // Track current sound key
+        let burstTimeouts = [];
+
+        // Preload Audio Objects (Burst channels separated)
+        const tracks = {
+            'sfx_page.mp3': new Audio('sfx_page.mp3'),
+            'sfx_shutter.mp3': new Audio('sfx_shutter.mp3'),
+            'sfx_flash.mp3': new Audio('sfx_flash.mp3'),
+            'sfx_notification.mp3': new Audio('sfx_notification.mp3'),
+            // Separate Burst Channels
+            'burst_1': new Audio('sfx_notification.mp3'),
+            'burst_2': new Audio('sfx_notification.mp3'),
+            'burst_3': new Audio('sfx_notification.mp3')
+        };
+
+        // --- 2. SILENT UNLOCK (Fixes Explosion) ---
+        function unlockAudio() {
+            // Play all silently to whitelist them on iOS
+            Object.values(tracks).forEach(track => {
+                track.volume = 0; // Silent
+                track.play().then(() => {
+                    track.pause();
+                    track.currentTime = 0;
+                }).catch(e => {});
+            });
+
+            audioEnabled = true;
+            closePopup();
+
+            // Play first sound loudly to confirm (after short delay)
+            setTimeout(() => {
+                const startSound = tracks['sfx_page.mp3'];
+                startSound.volume = 1.0;
+                startSound.play().catch(e=>{});
+                activeKey = 'sfx_page.mp3';
+            }, 100);
+        }
+
+        function closePopup() {
+            document.getElementById('sound-popup').classList.remove('visible');
+        }
+        
+        function closeRotate() {
+            document.getElementById('rotate-overlay').style.display = 'none';
+        }
+
+        setTimeout(() => {
+            document.getElementById('sound-popup').classList.add('visible');
+        }, 1500);
+
+        // --- 3. SMART PLAYER (Scroll Logic) ---
+        function playOneSound(key) {
+            if (!audioEnabled || !key) return;
+
+            // Resolve filename key
+            let realKey = key;
+            if (key === 'sfx_burst') realKey = 'sfx_notification.mp3';
+
+            // IF SAME KEY: RE-TRIGGER (Don't ignore)
+            // This ensures page turns sound every time
+            if (activeKey === realKey && key !== 'sfx_burst') {
+                const audio = tracks[realKey];
+                audio.pause();
+                audio.currentTime = 0; // Reset
+                audio.volume = 1.0;
+                audio.play().catch(e=>{});
+                return;
+            }
+
+            // Stop ALL tracks (Clean slate)
+            Object.values(tracks).forEach(track => {
+                track.pause();
+                track.currentTime = 0;
+            });
+            
+            // Clear Bursts
+            burstTimeouts.forEach(t => clearTimeout(t));
+            burstTimeouts = [];
+
+            // Burst Logic (Dedicated channels)
+            if (key === 'sfx_burst') {
+                // Play 1st immediately
+                tracks['burst_1'].volume = 1.0;
+                tracks['burst_1'].play().catch(()=>{});
+                
+                // Play 2nd after 250ms
+                burstTimeouts.push(setTimeout(() => {
+                    tracks['burst_2'].volume = 1.0; 
+                    tracks['burst_2'].play().catch(()=>{});
+                }, 250));
+                
+                // Play 3rd after 500ms
+                burstTimeouts.push(setTimeout(() => {
+                    tracks['burst_3'].volume = 1.0; 
+                    tracks['burst_3'].play().catch(()=>{});
+                }, 500));
+                return;
+            }
+
+            // Normal Play Logic
+            const currentAudio = tracks[realKey];
+            if (currentAudio) {
+                currentAudio.volume = 1.0;
+                currentAudio.play().catch(e => {});
+                activeKey = realKey;
+            }
+        }
+
+        // --- 4. SCROLL OBSERVER ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    
+                    // Trigger sound ONLY on entry
+                    const soundKey = entry.target.getAttribute('data-sound');
+                    if (soundKey) {
+                        playOneSound(soundKey);
+                    }
+                } else {
+                    entry.target.classList.remove('active');
+                }
+            });
+        }, { threshold: 0.5 }); // 50% visible to trigger
+
+        document.querySelectorAll('.page').forEach(page => { observer.observe(page); });
+
+    </script>
+
+</body>
+</html>

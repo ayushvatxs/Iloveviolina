@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Our Cinematic Story</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- GLOBAL & VINTAGE FILM EFFECT --- */
+        body {
+            margin: 0;
+            background: #111;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            overflow-y: auto; /* SCROLLING ENABLED */
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centers content horizontally */
+            padding-bottom: 50px;
+        }
+
+        /* The Grain Overlay */
+        .film-grain {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0.15;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* --- TITLE --- */
+        .cinema-header {
+            text-align: center;
+            color: #e0c097; /* Vintage Gold */
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin: 50px 0 10px; /* Reduced bottom margin for sub-text */
+            font-style: italic;
+            text-shadow: 0 0 15px rgba(224, 192, 151, 0.4);
+            z-index: 2;
+            position: relative;
+        }
+
+        /* --- NEW SUB-TEXT --- */
+        .cinema-subtext {
+            text-align: center;
+            color: #e0c097;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 40px;
+            opacity: 0.8;
+            z-index: 2;
+            position: relative;
+        }
+
+        /* --- FILM STRIP CONTAINER --- */
+        .strip-container {
+            width: 100%;
+            overflow: hidden;
+            padding: 15px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* The Moving Track */
+        .film-track {
+            display: flex;
+            gap: 20px;
+            width: max-content;
+        }
+
+        /* FILM FRAME STYLE */
+        .film-frame {
+            position: relative;
+            width: 280px;  
+            height: 180px;
+            background: #000;
+            padding: 15px 5px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            border: 2px solid #333;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        /* Sprocket Holes Effect */
+        .film-frame::before, .film-frame::after {
+            content: "";
+            position: absolute;
+            left: 0; right: 0;
+            height: 10px;
+            background-image: repeating-linear-gradient(90deg, transparent 0, transparent 10px, #222 10px, #222 20px);
+        }
+        .film-frame::before { top: 2px; }
+        .film-frame::after { bottom: 2px; }
+
+        .film-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: sepia(30%) contrast(1.1); 
+            transition: filter 0.3s;
+        }
+        .film-frame:hover img { filter: sepia(0%) contrast(1); }
+
+        /* --- ANIMATIONS --- */
+        .scroll-left { animation: scrollL 25s linear infinite; }
+        .scroll-right { animation: scrollR 25s linear infinite; }
+
+        @keyframes scrollL { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        @keyframes scrollR { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
+
+        /* --- EXPANDED MODAL --- */
+        .overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            display: none; align-items: center; justify-content: center;
+            z-index: 50; backdrop-filter: blur(8px);
+        }
+        .overlay.active { display: flex; }
+
+        .expanded-card {
+            position: relative;
+            width: 90%; max-width: 500px;
+            background: #000;
+            padding: 10px;
+            border: 1px solid #e0c097; /* Matching Gold Border */
+            box-shadow: 0 0 40px rgba(224, 192, 151, 0.2);
+            animation: zoomIn 0.4s ease;
+        }
+        @keyframes zoomIn { from {transform:scale(0.8); opacity:0;} to {transform:scale(1); opacity:1;} }
+
+        .expanded-card img { width: 100%; height: auto; display: block; }
+
+        /* --- MUSIC VISUALIZER (FIXED) --- */
+        .music-corner {
+            position: absolute;
+            bottom: 15px; /* Tucked closer to bottom */
+            right: 15px;  /* Tucked closer to right */
+            display: flex; 
+            gap: 4px;
+            align-items: flex-end;
+            /* Subtler background for the corner */
+            background: rgba(0,0,0,0.4); 
+            padding: 6px; 
+            border-radius: 6px;
+            /* FIXED HEIGHT to prevent shaking during animation */
+            height: 30px; 
+            box-sizing: border-box;
+            z-index: 10;
+        }
+        .bar {
+            width: 4px; background: #e0c097; /* Gold bars */
+            animation: bounce 0.5s infinite ease-in-out;
+        }
+        .bar:nth-child(1) { height: 10px; animation-delay: 0s; }
+        .bar:nth-child(2) { height: 18px; animation-delay: 0.1s; }
+        .bar:nth-child(3) { height: 12px; animation-delay: 0.2s; }
+
+        @keyframes bounce { 
+            0%, 100% { height: 5px; } 
+            50% { height: 20px; } 
+        }
+
+        /* --- CAPTION IN MODAL --- */
+        .modal-caption {
+            color: #e0c097; text-align: center; margin-top: 15px;
+            font-family: 'Playfair Display', serif; font-size: 1.4rem; font-style: italic;
+        }
+
+        /* --- VINTAGE ARROW (SCROLLABLE VERSION) --- */
+        .next-btn {
+            position: relative; /* Scrolls with page now! */
+            margin: 50px auto 20px; /* Space above and below */
+            z-index: 100;
+            text-decoration: none;
+            
+            /* Cinema Style Button */
+            width: 60px;
+            height: 60px;
+            border: 2px solid #e0c097; 
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.6); 
+            color: #e0c097;
+            font-size: 1.8rem;
+            
+            /* Glow Effect */
+            box-shadow: 0 0 15px rgba(224, 192, 151, 0.3), inset 0 0 10px rgba(224, 192, 151, 0.1);
+            transition: all 0.3s ease;
+            animation: pulseGold 2s infinite;
+        }
+
+        .next-btn:active {
+            transform: scale(0.95);
+            background: #e0c097;
+            color: #000;
+        }
+
+        @keyframes pulseGold {
+            0% { box-shadow: 0 0 10px rgba(224, 192, 151, 0.3); }
+            50% { box-shadow: 0 0 25px rgba(224, 192, 151, 0.6); }
+            100% { box-shadow: 0 0 10px rgba(224, 192, 151, 0.3); }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            .film-frame { width: 200px; height: 140px; }
+            .cinema-header { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="film-grain"></div>
+
+    <div class="cinema-header">A Musical Portrait 🎬</div>
+    <div class="cinema-subtext">Tap any frame to hear the story 🎵... </div>
+
+    <div class="strip-container">
+        <div class="film-track scroll-left" id="track1"></div>
+    </div>
+
+    <div style="height: 20px;"></div>
+
+    <div class="strip-container">
+        <div class="film-track scroll-right" id="track2"></div>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="closeModal()">
+        <div class="expanded-card" onclick="event.stopPropagation()">
+            <img id="modalImg" src="">
+            
+            <div class="music-corner">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+
+            <div class="modal-caption" id="modalCaption"></div>
+        </div>
+    </div>
+
+    <a href="page9.html" class="next-btn">&#10095;</a>
+
+    <script>
+        // --- 8 PHOTOS CONFIGURATION ---
+        const photos = [
+            { id: 1, caption: "Scene One: The Beginning" },
+            { id: 2, caption: "Scene Two: That Smile" },
+            { id: 3, caption: "Scene Three: Adventures" },
+            { id: 4, caption: "Scene Four: Magic" },
+            { id: 5, caption: "Scene Five: Elegance" },
+            { id: 6, caption: "Scene Six: My Heart" },
+            { id: 7, caption: "Scene Seven: Dreams" },
+            { id: 8, caption: "Scene Eight: Forever" }
+        ];
+
+        const track1 = document.getElementById('track1');
+        const track2 = document.getElementById('track2');
+        const overlay = document.getElementById('overlay');
+        const modalImg = document.getElementById('modalImg');
+        const modalCaption = document.getElementById('modalCaption');
+        const nextBtn = document.querySelector('.next-btn'); // Grab the arrow button
+        let currentAudio = null;
+
+        // --- GENERATE STRIPS ---
+        const topSet = [...photos.slice(0, 4), ...photos.slice(0, 4)];
+        const bottomSet = [...photos.slice(4, 8), ...photos.slice(4, 8)];
+
+        function createFrame(data) {
+            const div = document.createElement('div');
+            div.className = 'film-frame';
+            div.innerHTML = `<img src="p${data.id}.jpg">`;
+            div.onclick = () => openModal(data);
+            return div;
+        }
+
+        topSet.forEach(data => track1.appendChild(createFrame(data)));
+        bottomSet.forEach(data => track2.appendChild(createFrame(data)));
+
+        // --- INTERACTION LOGIC ---
+        function openModal(data) {
+            track1.style.animationPlayState = 'paused';
+            track2.style.animationPlayState = 'paused';
+
+            // HIDE ARROW
+            nextBtn.style.display = 'none';
+
+            modalImg.src = `p${data.id}.jpg`;
+            modalCaption.innerText = data.caption;
+            overlay.classList.add('active');
+
+            if(currentAudio) currentAudio.pause();
+            currentAudio = new Audio(`m${data.id}.mp3`);
+            currentAudio.play().catch(e => console.log("Audio play failed"));
+        }
+
+        function closeModal() {
+            overlay.classList.remove('active');
+            
+            // SHOW ARROW AGAIN
+            nextBtn.style.display = 'flex';
+
+            track1.style.animationPlayState = 'running';
+            track2.style.animationPlayState = 'running';
+
+            if(currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+        }
+    </script>
+</body>
+</html>

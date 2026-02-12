@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Happy Birthday 💗</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --pink:#ffe6ef;
+  --frame:#ffffff; /* White Frame */
+}
+
+*{box-sizing:border-box}
+
+/* --- SCALING FIX --- */
+html, body {
+  width: 100%;
+  overflow-x: hidden; /* Forces browser to cut off overflowing blobs instead of zooming out */
+  margin: 0; 
+  padding: 0;
+}
+
+body{
+  background:var(--pink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto;
+  display:flex;
+  justify-content:center;
+  align-items: center;     /* Centers vertically */
+  min-height: 100vh;       /* Full Height */
+  padding:12px;
+}
+
+  .blob{
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.45;
+  z-index: 1;
+}
+
+.blob.pink{
+  width: 220px;
+  height: 220px;
+  background: #ffd1e6;
+  top: 120px;
+  left: -80px;
+}
+
+.blob.peach{
+  width: 260px;
+  height: 260px;
+  background: #ffe6c9;
+  bottom: 120px;
+  right: -100px;
+}
+
+
+/* MAIN */
+.stage{
+  width:min(420px,100%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  position: relative; 
+}
+
+/* TITLE */
+.title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-family:"Baloo 2",sans-serif;
+  font-weight:800;
+  font-size:clamp(26px,6vw,40px);
+  letter-spacing:2px;
+  color:#16b8ff;
+  margin:6px 0 12px;
+  white-space:nowrap;
+}
+
+/* PHOTOS */
+.photo{
+  width:160px; /* REVERTED TO ORIGINAL SIZE */
+  aspect-ratio:3/4;
+  background:#fff;
+  border-radius:14px;
+  border:5px solid var(--frame); 
+  overflow:hidden;
+  box-shadow:0 12px 28px rgba(0,0,0,.08);
+}
+
+.photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* LEFT PHOTO */
+.photo-left{
+  align-self:flex-start;
+  margin-bottom:12px;
+  margin-top:-6px; 
+}
+
+/* MESSAGE BOX */
+.center-box{
+  width:92%;
+  max-width:380px;
+  background:rgba(255,255,255,.45);
+  backdrop-filter:blur(12px);
+  border-radius:22px;
+  box-shadow:0 22px 40px rgba(0,0,0,.08);
+  padding:34px 22px; 
+  text-align:center;
+  margin-bottom:14px;
+  position: relative;   
+}
+
+.center-box p{
+  margin:0;
+  font-size:13px;
+  line-height:1.2;
+}
+
+  .balloon-sticker{
+  position: absolute;
+  top: -120px;       
+  right: -22px;      
+  width: 120px;
+  pointer-events: none;
+  z-index: 3;
+  animation: balloon-float 4s ease-in-out infinite;
+}
+
+@keyframes balloon-float{
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+
+
+/* RIGHT PHOTO */
+.photo-right{
+  align-self:flex-end;
+  margin-bottom:14px;
+}
+
+/* CLICKABLE ARROW */
+.arrow-wrap{
+  margin-top:6px; 
+  cursor:pointer;
+}
+
+.arrow{
+  width:18px;
+  height:18px;
+  border-top:4px solid #000;
+  border-right:4px solid #000;
+  transform:rotate(45deg);
+  animation:bounce 1.2s infinite;
+}
+
+@keyframes bounce{
+  0%,100%{transform:translateX(0) rotate(45deg)}
+  50%{transform:translateX(6px) rotate(45deg)}
+}
+
+  .heart{
+  position:absolute;
+  width:14px;
+  height:14px;
+  background:#ff7aa2;
+  transform: rotate(45deg);
+  opacity:0.6;
+  animation: floatUp 6s infinite ease-in;
+}
+
+.heart::before,
+.heart::after{
+  content:"";
+  position:absolute;
+  width:14px;
+  height:14px;
+  background:#ff7aa2;
+  border-radius:50%;
+}
+
+.heart::before{ top:-7px; left:0; }
+.heart::after{ left:-7px; top:0; }
+
+@keyframes floatUp{
+  0%{ transform: translateY(0) rotate(45deg); opacity:0; }
+  30%{ opacity:0.6; }
+  100%{ transform: translateY(-160px) rotate(45deg); opacity:0; }
+}
+
+
+  .box-glow{
+  position:absolute;
+  inset:-30px;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,160,200,0.25), transparent 60%),
+    radial-gradient(circle at 70% 70%, rgba(255,200,220,0.3), transparent 65%);
+  z-index:-1;
+  filter: blur(18px);
+}
+
+
+/* MOBILE */
+@media(max-width:480px){
+  .photo{width:140px;} /* REVERTED TO ORIGINAL SIZE */
+  .center-box{width:94%}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="stage">
+
+
+<div class="heart" style="left:20%; bottom:120px;"></div>
+<div class="heart" style="left:60%; bottom:80px; animation-delay:2s;"></div>
+<div class="heart" style="left:80%; bottom:140px; animation-delay:4s;"></div>
+
+<div class="blob pink"></div>
+<div class="blob peach"></div>
+
+
+  <div class="title">
+  🎈 HAPPY BIRTHDAY
+</div>
+
+
+  <div class="photo photo-left">
+    <img src="photo-left.jpg" alt="">
+  </div>
+
+  <div class="center-box">
+    <img src="balloon.png" class="balloon-sticker" alt="balloons">
+
+    <div class="box-glow"></div>
+
+    <p>
+  <strong style="font-size:17px;">
+    HAPPIEST BIRTHDAY 🎂🎈
+  </strong><br><br>
+
+  to the most beautiful soul in the universe.  
+  Another year of you in this world — and honestly, that’s my favorite reason to celebrate.<br><br>
+
+  May this year give you more love, more laughter, and moments that remind you how special you truly are ✨💞<br><br>
+
+  Today is a reminder that the world got brighter the moment you arrived in it 🎀  
+  Not just today — the whole year belongs to you.<br><br>
+
+  Every dream, every laugh, every little win — may they always find their way to you 💖
+</p>
+  </div>
+
+  <div class="photo photo-right">
+    <img src="photo-right.jpg" alt="">
+  </div>
+
+  <a href="page3.html" class="arrow-wrap" style="display:block; text-decoration:none;">
+    <div class="arrow"></div>
+  </a>
+
+</div>
+
+</body>
+</html>

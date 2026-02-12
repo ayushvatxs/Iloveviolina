@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>19 Years of Magic</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- SCALING & FULL SCREEN FIX --- */
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Prevents horizontal zooming */
+        }
+
+        body {
+            background: linear-gradient(180deg, #ffe6ee 0%, #f8bbd0 100%);
+            font-family: 'Fredoka', sans-serif;
+            text-align: center;
+            color: #880e4f;
+            
+            /* Center content vertically and horizontally */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; 
+            
+            /* Remove fixed padding that pushes content off-center */
+            padding: 10px; 
+            box-sizing: border-box;
+        }
+
+        /* --- BACKGROUND PARTICLES --- */
+        .floating-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .floater {
+            position: absolute;
+            bottom: -100px;
+            animation: floatUp linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-110vh) rotate(20deg); opacity: 0; }
+        }
+
+        .f1 { left: 10%; animation-duration: 8s; animation-delay: 0s; font-size: 40px;}
+        .f2 { left: 30%; animation-duration: 12s; animation-delay: 2s; font-size: 30px;}
+        .f3 { left: 50%; animation-duration: 10s; animation-delay: 5s; font-size: 35px;}
+        .f4 { left: 70%; animation-duration: 15s; animation-delay: 1s; font-size: 25px;}
+        .f5 { left: 90%; animation-duration: 9s; animation-delay: 3s; font-size: 45px;}
+        .f6 { left: 20%; animation-duration: 11s; animation-delay: 7s; font-size: 30px;}
+
+
+        /* --- HEADER --- */
+        h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            color: #4facfe;
+            font-size: clamp(2rem, 7vw, 2.8rem); 
+            margin: 5px 0 5px 0;
+            line-height: 1.2;
+            text-shadow: 2px 2px 0px #fff;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .sub-text {
+            font-size: 0.9rem;
+            color: #555;
+            margin: 0 0 15px 0;
+            font-weight: 500;
+            z-index: 10;
+        }
+
+        /* --- TIMER --- */
+        .timer-box {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 400px; 
+            border: 3px solid #fff;
+            z-index: 10;
+            margin-bottom: 10px;
+        }
+
+        .timer-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            color: #d81b60;
+        }
+
+        .time-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .time-grid .bottom-row {
+            grid-column: span 3;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .time-unit {
+            background: #fff;
+            padding: 10px;
+            border-radius: 12px;
+            min-width: 65px;
+        }
+
+        .number {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #d81b60;
+            display: block;
+        }
+
+        .label {
+            font-size: 0.75rem;
+            color: #777;
+        }
+
+        /* --- PHOTOS --- */
+        .photo-container {
+            position: relative;
+            height: 250px; 
+            width: 100%;
+            max-width: 400px;
+            z-index: 10;
+            margin-top: 10px;
+        }
+
+        .photo-frame {
+            position: absolute;
+            width: 140px;
+            padding: 6px;
+            background: white;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+
+        .photo1 {
+            left: 15%;
+            top: 10px;
+            transform: rotate(-8deg);
+            z-index: 2;
+        }
+
+        .photo2 {
+            right: 15%;
+            top: 50px;
+            transform: rotate(8deg);
+            z-index: 3;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            border-radius: 4px;
+            display: block;
+        }
+
+        /* --- MESSAGE & ARROW --- */
+        .message {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            font-style: italic;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+
+        .next-btn {
+            font-size: 2.5rem;
+            color: #333;
+            text-decoration: none;
+            display: block;
+            line-height: 1;
+            margin-top: 15px;
+            animation: bounce 2s infinite;
+            z-index: 10;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="floating-container">
+        <div class="floater f1">🎈</div>
+        <div class="floater f2">🎀</div>
+        <div class="floater f3">✨</div>
+        <div class="floater f4">🎈</div>
+        <div class="floater f5">🎀</div>
+        <div class="floater f6">✨</div>
+    </div>
+
+    <div>
+        <h1>OFFICIALLY 19! 🎀</h1>
+        <p class="sub-text">The world got lucky on Feb 13, 2007</p>
+    </div>
+
+    <div class="timer-box">
+        <div class="timer-title">Time You've Been Loved</div>
+        <div class="time-grid" id="timer">
+            </div>
+    </div>
+
+    <div class="photo-container">
+        <div class="photo-frame photo1">
+            <img src="time1.jpg" alt="Moment 1">
+        </div>
+        <div class="photo-frame photo2">
+            <img src="time2.jpg" alt="Moment 2">
+        </div>
+    </div>
+
+    <div class="message">
+        "19 years of making the world brighter. Every second on this clock is a moment to be cherished." ❤️
+    </div>
+    
+    <a href="page4.html" class="next-btn">&#10095;</a>
+
+    <script>
+        const birthDate = new Date(2007, 1, 13, 14, 35, 0); 
+
+        function updateTimer() {
+            const now = new Date();
+            const diff = now - birthDate;
+
+            const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+            const days = Math.floor((diff % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            const timerContainer = document.getElementById('timer');
+            timerContainer.innerHTML = `
+                <div class="time-unit"><span class="number">${years}</span><span class="label">Years</span></div>
+                <div class="time-unit"><span class="number">${days}</span><span class="label">Days</span></div>
+                <div class="time-unit"><span class="number">${hours}</span><span class="label">Hours</span></div>
+                <div class="bottom-row">
+                    <div class="time-unit"><span class="number">${minutes}</span><span class="label">Mins</span></div>
+                    <div class="time-unit"><span class="number">${seconds}</span><span class="label">Secs</span></div>
+                </div>
+            `;
+        }
+        setInterval(updateTimer, 1000);
+        updateTimer();
+    </script>
+
+</body>
+</html>

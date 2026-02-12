@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE FEATURE FILM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- RESET --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #080808;
+            height: 100vh; width: 100vw; overflow: hidden;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            color: #e0e0e0;
+            font-family: 'Limelight', cursive;
+        }
+
+        /* --- VINTAGE FILTER --- */
+        .film-overlay {
+            position: absolute; inset: 0; pointer-events: none; z-index: 100;
+            background: rgba(255, 240, 200, 0.02);
+            box-shadow: inset 0 0 10vw rgba(0,0,0,1);
+        }
+        .film-overlay::before {
+            content: ""; position: absolute; inset: 0;
+            background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+            opacity: 0.3; animation: grain-dance 0.2s steps(4) infinite;
+        }
+
+        /* --- 1. COUNTDOWN LEADER --- */
+        .countdown-container {
+            position: absolute; inset: 0; background: #111;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 50; animation: fade-out 0.1s forwards 4s;
+        }
+        .countdown-circle {
+            width: 300px; height: 300px; border: 4px solid #fff; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; position: relative;
+        }
+        .countdown-circle::after {
+            content: ''; position: absolute; top: 0; left: 50%; width: 2px; height: 50%;
+            background: #fff; transform-origin: bottom center; animation: clock-sweep 1s infinite linear;
+        }
+        .countdown-number { font-size: 10rem; color: #fff; font-family: 'Courier Prime', monospace; }
+
+        /* --- 2. MAIN CONTENT (Center) --- */
+        .main-content {
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; animation: fade-in 0.5s forwards 4.1s;
+            z-index: 10;
+            pointer-events: none; /* Let clicks pass */
+        }
+
+        /* HER PHOTO */
+        .star-photo {
+            height: 45vh; /* Reduced slightly to ensure clearance */
+            border: 6px solid #fff;
+            box-shadow: 0 0 80px rgba(255,255,255,0.1);
+            filter: grayscale(100%) contrast(1.1); margin-bottom: 20px;
+            z-index: 20; position: relative;
+            background: #000;
+            pointer-events: auto;
+        }
+
+        .title-card { text-align: center; text-transform: uppercase; z-index: 20; }
+        .production-text { font-family: 'Courier Prime', monospace; font-size: 0.8rem; letter-spacing: 5px; margin-bottom: 10px; color: #888; }
+        .star-name { font-size: 3.5rem; letter-spacing: 3px; text-shadow: 0 0 30px rgba(255,255,255,0.8); margin-bottom: 20px;}
+
+        /* --- 3. DYNAMIC REVIEW CONTAINER --- */
+        #review-sky {
+            position: absolute; inset: 0; pointer-events: none; z-index: 5; overflow: hidden;
+        }
+
+        /* Generated Reviews */
+        .dynamic-review {
+            position: absolute;
+            font-family: 'Courier Prime', monospace;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.4);
+            white-space: nowrap;
+            opacity: 0;
+            animation: slow-reveal 7s forwards; 
+            max-width: 25vw; /* Strict width limit */
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .gold-review { 
+            color: #d4af37; 
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.6); 
+            font-weight: bold; 
+            opacity: 1; 
+        }
+
+        /* --- BUTTON --- */
+        .next-reel-btn {
+            background: transparent; border: 1px solid #fff; color: #fff;
+            padding: 10px 30px; font-family: 'Courier Prime'; cursor: pointer;
+            opacity: 0; z-index: 30; animation: fade-in 2s forwards 8s; transition: 0.3s; pointer-events: auto;
+        }
+        .next-reel-btn:hover { background: #fff; color: #000; }
+
+        /* --- KEYFRAMES --- */
+        @keyframes grain-dance { 0% { transform: translate(0,0); } 100% { transform: translate(5px, 5px); } }
+        @keyframes clock-sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes fade-out { to { opacity: 0; visibility: hidden; } }
+        @keyframes fade-in { to { opacity: 1; } }
+
+        @keyframes slow-reveal {
+            0% { opacity: 0; transform: scale(0.95); }
+            10% { opacity: 1; transform: scale(1); } 
+            85% { opacity: 1; transform: scale(1); } 
+            100% { opacity: 0; transform: scale(1.02) translateY(-5px); } 
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .star-name { font-size: 2.5rem; }
+            .star-photo { height: 35vh; }
+            .countdown-circle { width: 200px; height: 200px; }
+            .countdown-number { font-size: 6rem; }
+            .dynamic-review { font-size: 0.6rem !important; max-width: 35vw; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="film-overlay"></div>
+
+    <div class="countdown-container">
+        <div class="countdown-circle">
+            <div class="countdown-number" id="count">3</div>
+        </div>
+    </div>
+
+    <div id="review-sky"></div>
+
+    <div class="main-content">
+        <div class="title-card">
+            <div class="production-text">A VIOLINA PRODUCTION</div>
+        </div>
+        
+        <img src="mag_bw.jpg" onerror="this.src='mag_cover.jpg'" class="star-photo">
+        
+        <div class="title-card">
+            <div class="production-text">STARRING</div>
+            <div class="star-name">VIOLINA</div>
+        </div>
+
+        <button class="next-reel-btn" onclick="window.location.href='page11.html'">
+            START CREDIT SCENE >
+        </button>
+    </div>
+
+    <script>
+        // --- COUNTDOWN ---
+        const countEl = document.getElementById('count');
+        let timeLeft = 3;
+        const timer = setInterval(() => {
+            timeLeft--;
+            if (timeLeft > 0) countEl.innerText = timeLeft;
+            else clearInterval(timer);
+        }, 1000);
+
+        // --- REVIEWS DATA ---
+        const reviews = [
+            { text: "A MASTERPIECE - VOGUE", type: "gold" },
+            { text: "★★★★★ - THE NY TIMES", type: "gold" },
+            { text: "PURE CINEMA - A24", type: "normal" },
+            { text: "THE ICON - TIME", type: "gold" },
+            { text: "SHE IS THE MOMENT - ELLE", type: "normal" },
+            { text: "UNTOUCHABLE - ROLLING STONE", type: "normal" },
+            { text: "BEST PICTURE - OSCARS", type: "gold" },
+            { text: "100% ROTTEN TOMATOES", type: "normal" },
+            { text: "VISUAL PERFECTION - IMAX", type: "normal" },
+            { text: "LEGENDARY - VANITY FAIR", type: "normal" },
+            { text: "A TRIUMPH - WARNER BROS", type: "normal" },
+            { text: "THE NEW STANDARD - GUCCI", type: "normal" },
+            { text: "BREATHTAKING - SUNDANCE", type: "normal" },
+            { text: "PALME D'OR - CANNES", type: "gold" },
+            { text: "GENERATIONAL TALENT - MTV", type: "normal" },
+            { text: "HER BEST WORK - PITCHFORK", type: "normal" },
+            { text: "SOLD OUT WORLDWIDE", type: "gold" },
+            { text: "MUST WATCH - NETFLIX", type: "normal" },
+            { text: "GLAMOUR DEFINED - BAZAAR", type: "normal" },
+            { text: "CRITICS CHOICE WINNER", type: "gold" },
+            { text: "CINEMATIC GOLD - PARAMOUNT", type: "normal" },
+            { text: "ART IN MOTION - MOMA", type: "normal" },
+            { text: "RECORD BREAKING - BILLBOARD", type: "normal" },
+            { text: "THE FACE OF 2025 - GQ", type: "gold" },
+            { text: "NO SKIPS - SPOTIFY", type: "normal" },
+            { text: "DIRECTOR'S CUT - SONY", type: "normal" },
+            { text: "FASHION WEEK FAVORITE", type: "normal" },
+            { text: "STUNNING - THE GUARDIAN", type: "normal" },
+            { text: "GLOBAL PHENOMENON - CNN", type: "normal" },
+            { text: "TIMELESS BEAUTY - DIOR", type: "normal" },
+            { text: "BLOCKBUSTER - UNIVERSAL", type: "normal" },
+            { text: "5 STARS - LETTERBOXD", type: "normal" },
+            { text: "THE FINAL BOSS - IGN", type: "normal" },
+            { text: "TOP TIER - HYPEBEAST", type: "normal" },
+            { text: "AWARD WINNING - GRAMMYS", type: "gold" },
+            { text: "HIGH ART - MET GALA", type: "gold" },
+            { text: "FLAWLESS - COSMOPOLITAN", type: "normal" },
+            { text: "THE BLUEPRINT - FORBES", type: "normal" },
+            { text: "HISTORY MAKER - BBC", type: "normal" },
+            { text: "INSTANT CLASSIC - HBO", type: "normal" },
+            { text: "THE MUSE - VERSACE", type: "normal" },
+            { text: "WORLD CLASS - OLYMPICS", type: "normal" },
+            { text: "CULTURE SHIFT - VICE", type: "normal" },
+            { text: "10/10 - VARIETY", type: "gold" }
+        ];
+
+        // --- THE SLOT SYSTEM ENGINE (Strict Perimeter) ---
+        const sky = document.getElementById('review-sky');
+
+        // KEY CHANGE: Removed all Center/Bottom slots.
+        // Left Column: 2% - 15% Width
+        // Right Column: 85% - 98% Width
+        // Top Row: 2% - 15% Height (Above Image)
+        // ALIGNMENT: Left slots align left. Right slots align right. This prevents inward growth.
+
+        let slots = [
+            // --- LEFT COLUMN (Safe Zone) ---
+            {t: 10, l: 3, a: 'l', busy: false}, 
+            {t: 25, l: 5, a: 'l', busy: false}, 
+            {t: 40, l: 2, a: 'l', busy: false}, 
+            {t: 55, l: 4, a: 'l', busy: false},
+            {t: 70, l: 3, a: 'l', busy: false},
+            {t: 85, l: 5, a: 'l', busy: false}, // Bottom corners are fine if far left
+
+            // --- RIGHT COLUMN (Safe Zone) ---
+            {t: 15, l: 97, a: 'r', busy: false}, 
+            {t: 30, l: 95, a: 'r', busy: false}, 
+            {t: 45, l: 98, a: 'r', busy: false}, 
+            {t: 60, l: 96, a: 'r', busy: false}, 
+            {t: 75, l: 95, a: 'r', busy: false},
+            {t: 90, l: 97, a: 'r', busy: false}, // Bottom corners are fine if far right
+
+            // --- TOP ROW (Safe Zone) ---
+            {t: 3, l: 20, a: 'c', busy: false}, 
+            {t: 5, l: 50, a: 'c', busy: false}, 
+            {t: 3, l: 80, a: 'c', busy: false}
+        ];
+
+        function spawnReview() {
+            const availableSlots = slots.filter(s => !s.busy);
+            if (availableSlots.length === 0) return;
+
+            const slotIndex = Math.floor(Math.random() * availableSlots.length);
+            const chosenSlot = availableSlots[slotIndex];
+            const data = reviews[Math.floor(Math.random() * reviews.length)];
+
+            chosenSlot.busy = true;
+
+            const el = document.createElement('div');
+            el.innerText = data.text;
+            el.classList.add('dynamic-review');
+            if(data.type === 'gold') el.classList.add('gold-review');
+
+            el.style.top = chosenSlot.t + '%';
+
+            // ALIGNMENT LOGIC to prevent overlapping image
+            if(chosenSlot.a === 'l') {
+                el.style.left = chosenSlot.l + '%';
+                el.style.textAlign = 'left';
+            } else if (chosenSlot.a === 'r') {
+                el.style.right = (100 - chosenSlot.l) + '%'; 
+                el.style.left = 'auto';
+                el.style.textAlign = 'right';
+            } else {
+                el.style.left = chosenSlot.l + '%';
+                el.style.transform = 'translateX(-50%)'; 
+                el.style.textAlign = 'center';
+            }
+
+            const size = Math.random() * 0.4 + 0.7; // Smaller range
+            el.style.fontSize = size + 'rem';
+
+            sky.appendChild(el);
+
+            setTimeout(() => { 
+                el.remove(); 
+                chosenSlot.busy = false; 
+            }, 7000); 
+        }
+
+        setTimeout(() => {
+            setInterval(spawnReview, 900);
+        }, 4100);
+
+        const audio = new Audio('sfx_projector.mp3');
+        audio.loop = true;
+        window.addEventListener('click', () => { audio.play().catch(()=>{}); }, {once:true});
+
+    </script>
+
+</body>
+</html>

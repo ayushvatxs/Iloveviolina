@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>System Login | V.SHARMA</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- RESET & CORE --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #000;
+            color: #ff003c;
+            font-family: 'Share Tech Mono', monospace;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            user-select: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        :root {
+            --pink: #ff003c; /* Neon Red/Pink */
+            --dark: #0a0002;
+            --grid-color: rgba(255, 0, 60, 0.2);
+        }
+
+        /* --- 1. ROTATION MESSAGE (Mobile Only) --- */
+        #rotate-msg {
+            position: fixed; inset: 0; z-index: 10000;
+            background: rgba(0,0,0,0.95);
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            justify-content: center; align-items: center;
+            text-align: center;
+        }
+        .rotate-content {
+            border: 2px solid var(--pink);
+            padding: 30px;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 0 20px var(--pink);
+        }
+        .rotate-icon { font-size: 3rem; animation: spin 2s linear infinite; margin-bottom: 20px; }
+        .rotate-text { font-family: 'Orbitron'; font-size: 1.2rem; margin-bottom: 20px; color: #fff; }
+        .close-rotate {
+            position: absolute; top: -15px; right: -15px;
+            width: 30px; height: 30px;
+            background: var(--pink); color: #000;
+            border: none; font-weight: bold; font-size: 1.2rem;
+            cursor: pointer; clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
+        }
+
+        /* --- 2. START SCREEN --- */
+        #start-screen {
+            position: fixed; inset: 0; z-index: 9000;
+            background: #000;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .btn-start {
+            background: rgba(255, 0, 60, 0.1); border: 2px solid var(--pink);
+            color: var(--pink); padding: 20px 60px;
+            font-family: 'Orbitron'; font-size: 1.5rem; letter-spacing: 4px;
+            cursor: pointer; box-shadow: 0 0 30px var(--pink);
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+            transition: 0.3s;
+        }
+        .btn-start:hover { background: var(--pink); color: #000; box-shadow: 0 0 60px var(--pink); }
+
+        /* --- 3. TUNNEL BACKGROUND --- */
+        #ui-layer { position: fixed; inset: 0; display: none; width: 100%; height: 100%; }
+
+        .tunnel-grid {
+            position: absolute; width: 200%; height: 100vh; left: -50%;
+            perspective: 500px;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        /* Ceiling & Floor Grids */
+        .grid-plane {
+            position: absolute; width: 100%; height: 50%;
+            background: 
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px),
+                linear-gradient(0deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform-style: preserve-3d;
+        }
+        /* REMOVED BORDERS to eliminate the middle line */
+        .grid-top { top: 0; transform: rotateX(60deg); transform-origin: bottom; animation: gridMove 5s linear infinite; }
+        .grid-bottom { bottom: 0; transform: rotateX(-60deg); transform-origin: top; animation: gridMove 5s linear infinite; }
+
+        @keyframes gridMove { from { background-position: 0 0; } to { background-position: 0 50px; } }
+
+        /* --- 4. MAIN UI LAYOUT --- */
+        .main-frame {
+            position: absolute; inset: 20px;
+            border: 2px solid rgba(255,0,60,0.3);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Corner Brackets */
+        .corner { position: absolute; width: 50px; height: 50px; border: 5px solid var(--pink); box-shadow: 0 0 15px var(--pink); }
+        .tl { top: -2px; left: -2px; border-right: 0; border-bottom: 0; }
+        .tr { top: -2px; right: -2px; border-left: 0; border-bottom: 0; }
+        .bl { bottom: -2px; left: -2px; border-right: 0; border-top: 0; }
+        .br { bottom: -2px; right: -2px; border-left: 0; border-top: 0; }
+
+        /* Top/Bottom Decorative Lines */
+        .deco-line { position: absolute; height: 4px; background: var(--pink); left: 10%; right: 10%; box-shadow: 0 0 10px var(--pink); }
+        .line-top { top: 10px; }
+        .line-bottom { bottom: 10px; }
+
+
+        /* --- LEFT PANEL (SYSTEM LOG) --- */
+        .panel-left {
+            width: 350px;
+            margin-left: 80px;
+            border: 1px solid rgba(255,0,60,0.4);
+            background: rgba(0,0,0,0.7);
+            padding: 20px;
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+        .panel-header {
+            font-family: 'Orbitron'; font-size: 1.2rem; 
+            border-bottom: 2px solid var(--pink);
+            display: inline-block; padding-bottom: 5px; margin-bottom: 15px;
+            text-shadow: 0 0 10px var(--pink);
+        }
+        .stat-list { font-size: 0.9rem; color: #ff99aa; line-height: 1.8; margin-bottom: 30px; }
+
+        /* The 4 Rectangles */
+        .grid-boxes {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 30px;
+        }
+        .g-box {
+            height: 60px;
+            border: 1px solid var(--pink);
+            background: rgba(255,0,60,0.05);
+            /* Cut Corners logic */
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+        }
+
+        /* The Circles (CPU/RAM) */
+        .gauges { display: flex; gap: 15px; }
+        .gauge-circle {
+            width: 50px; height: 50px; border-radius: 50%;
+            border: 1px solid var(--pink);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; color: #fff;
+            box-shadow: inset 0 0 10px rgba(255,0,60,0.3);
+            position: relative;
+        }
+        .gauge-circle::before {
+            content:''; position: absolute; inset: 4px; border-radius: 50%;
+            border: 2px solid transparent; border-top-color: var(--pink); border-right-color: var(--pink);
+            animation: spin 3s linear infinite;
+        }
+
+        /* --- RIGHT PANEL (THE CIRCLE) --- */
+        .panel-right {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column; /* Allow button below */
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* REDUCED SIZE of the main circle */
+        .main-circle {
+            width: 350px; height: 350px; /* Was 450px */
+            border-radius: 50%;
+            border: 2px solid rgba(255,0,60,0.3);
+            position: relative;
+            display: flex; justify-content: center; align-items: center;
+        }
+        
+        /* Outer Rings */
+        .ring-1 { position: absolute; inset: -20px; border: 2px dashed var(--pink); border-radius: 50%; animation: spin 20s linear infinite; opacity: 0.5; }
+        .ring-2 { position: absolute; inset: 20px; border: 1px solid var(--pink); border-radius: 50%; box-shadow: 0 0 20px var(--pink); }
+        .ring-3 { position: absolute; inset: 100px; border: 4px solid var(--pink); border-radius: 50%; border-left-color: transparent; border-right-color: transparent; animation: spin 4s linear infinite; }
+
+        /* --- FIND THIS CLASS IN YOUR CSS AND REPLACE IT --- */
+.core-text {
+    font-family: 'Orbitron'; 
+    font-size: 1.5rem; 
+    letter-spacing: 2px;
+    text-align: center; 
+    z-index: 20;
+    
+    /* NEW STYLES START HERE */
+    color: #fff;                          /* 1. Makes text white */
+    -webkit-text-stroke: 1px var(--pink); /* 2. Adds a crisp pink border */
+    text-shadow: 0 0 15px var(--pink);    /* 3. Keeps the neon glow effect */
+}
+
+        /* Floating Text */
+        .float-text { position: absolute; color: rgba(255,0,60,0.4); font-size: 0.8rem; animation: float 4s ease-in-out infinite; }
+
+        /* --- BUTTONS & STATES --- */
+        .btn-action {
+            margin-top: 15px; background: transparent; border: 1px solid #fff; color: #fff;
+            padding: 10px 30px; font-family: 'Share Tech Mono'; cursor: pointer;
+            transition: 0.3s; font-size: 1rem;
+        }
+        .btn-action:hover { background: #fff; color: #000; }
+
+        .scanner {
+            width: 100px; height: 140px; border: 2px solid var(--pink); border-radius: 10px;
+            margin-top: 10px; position: relative; overflow: hidden; cursor: pointer;
+            background: rgba(0,0,0,0.6);
+        }
+        .fingerprint { width: 100%; height: 100%; background: url('https://img.icons8.com/ios/100/ff003c/fingerprint.png') center/70% no-repeat; opacity: 0.6; }
+        .laser { position: absolute; width: 100%; height: 2px; background: #fff; box-shadow: 0 0 10px #fff; top: 0; animation: scan 1.5s linear infinite; display: none; }
+
+        /* --- FINAL BUTTON (Below Circle) --- */
+        #final-btn-container {
+            margin-top: 40px; /* Space below circle */
+            display: none; /* Hidden initially */
+            animation: fadeIn 1s forwards;
+        }
+        .btn-proceed {
+            color: #fff; text-decoration: none; border: 1px solid var(--pink);
+            padding: 15px 40px; font-family: 'Orbitron'; font-size: 1.2rem;
+            letter-spacing: 3px; background: rgba(0,0,0,0.8);
+            box-shadow: 0 0 15px var(--pink); transition: 0.3s;
+        }
+        .btn-proceed:hover { background: var(--pink); color: #000; box-shadow: 0 0 40px var(--pink); }
+
+        /* --- ANIMATIONS --- */
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes scan { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- RESPONSIVE / MOBILE --- */
+        @media (max-width: 900px) {
+            .content-grid { grid-template-columns: 1fr; }
+            .panel-left { display: none; } /* Hide log on small screens to focus on circle */
+            /* REDUCED SIZE for mobile */
+            .main-circle { width: 250px; height: 250px; } /* Was 300px */
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="rotate-msg">
+        <div class="rotate-content">
+            <button class="close-rotate" onclick="closeRotateMsg()">×</button>
+            <div class="rotate-icon"><i class="fas fa-mobile-alt"></i></div>
+            <div class="rotate-text">ROTATE DEVICE<br>FOR BETTER EXPERIENCE</div>
+        </div>
+    </div>
+
+    <div id="start-screen">
+        <button class="btn-start" onclick="initialize()">INITIALIZE SYSTEM</button>
+    </div>
+
+    <div id="ui-layer">
+        
+        <div class="tunnel-grid">
+            <div class="grid-plane grid-top"></div>
+            <div class="grid-plane grid-bottom"></div>
+        </div>
+
+        <div class="main-frame">
+            <div class="corner tl"></div><div class="corner tr"></div>
+            <div class="corner bl"></div><div class="corner br"></div>
+            <div class="deco-line line-top"></div>
+            <div class="deco-line line-bottom"></div>
+
+            <div class="panel-left">
+                <div class="panel-header">SYSTEM_LOG</div>
+                <div class="stat-list">
+                    > MEM_ALLOC: 98%<br>
+                    > ENCRYPTION: AES-256<br>
+                    > PROXY_CHAIN: ACTIVE<br>
+                    > LATENCY: 12ms
+                </div>
+                <div class="grid-boxes">
+                    <div class="g-box"></div><div class="g-box"></div>
+                    <div class="g-box"></div><div class="g-box"></div>
+                </div>
+                <div class="gauges">
+                    <div class="gauge-circle">CPU</div>
+                    <div class="gauge-circle">RAM</div>
+                </div>
+            </div>
+
+            <div class="panel-right">
+                
+                <div class="float-text" style="top: 20%; left: 10%;">0101</div>
+                <div class="float-text" style="top: 80%; right: 10%;">HEX</div>
+                <div class="float-text" style="top: 15%; right: 20%;">NULL</div>
+
+                <div class="main-circle">
+                    <div class="ring-1"></div>
+                    <div class="ring-2"></div>
+                    <div class="ring-3"></div>
+                    
+                    <div id="p1" class="core-text">SYSTEM STARTUP</div>
+                    
+                    <div id="p2" style="display:none; text-align:center; z-index:20;">
+                        <div class="core-text" style="font-size:1.2rem;">SERVER READY</div>
+                        <button class="btn-action" onclick="triggerDeny()">CONNECT ></button>
+                    </div>
+
+                    <div id="p3" style="display:none; text-align:center; z-index:20;">
+                        <i class="fas fa-exclamation-triangle" style="font-size:3rem; color:red; margin-bottom:10px;"></i>
+                        <div class="core-text" style="color:red;">ACCESS DENIED</div>
+                        <div style="font-size:0.8rem; margin-top:5px; border:1px solid red; padding:2px 5px; display:inline-block;">PROTECTED BY AYUSH</div>
+                    </div>
+
+                    <div id="p4" style="display:none; flex-direction:column; align-items:center; z-index:20;">
+                        <div class="scanner" id="scanPad">
+                            <div class="fingerprint"></div>
+                            <div class="laser" id="laser"></div>
+                        </div>
+                        <div class="core-text" style="font-size:0.9rem; margin-top:10px;">HOLD TO VERIFY</div>
+                    </div>
+
+                    <div id="p5" class="core-text" style="display:none;">ACCESS GRANTED</div>
+
+                </div>
+
+                <div id="final-btn-container">
+                    <a href="page5_2.html" class="btn-proceed">PROCEED TO DATABASE ></a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- AUDIO SETUP ---
+        const audio = {
+            scan: new Audio('scan.mp3'),
+            alert: new Audio('alert.mp3'),
+            grant: new Audio('granted.mp3')
+        };
+        audio.scan.loop = true;
+
+        // --- ROTATION CHECKER ---
+        let rotateMsgClosed = false; // Flag to track if user closed the message
+
+        function checkRotation() {
+            if (rotateMsgClosed) return; // Do nothing if already closed
+
+            // Increased breakpoint to 900px to include tablets like iPad in portrait
+            // Also ensure it's actually a touch device or small screen
+            const isPortrait = window.innerHeight > window.innerWidth;
+            const isSmallScreen = window.innerWidth < 900;
+
+            if (isSmallScreen && isPortrait) {
+                document.getElementById('rotate-msg').style.display = 'flex';
+            } else {
+                document.getElementById('rotate-msg').style.display = 'none';
+            }
+        }
+        
+        // Run on load and resize
+        window.addEventListener('load', checkRotation);
+        window.addEventListener('resize', checkRotation);
+
+        function closeRotateMsg() {
+            document.getElementById('rotate-msg').style.display = 'none';
+            rotateMsgClosed = true; // Set flag so it doesn't reappear
+        }
+
+
+        // --- MAIN LOGIC ---
+
+        function initialize() {
+            // Prime audio
+            audio.alert.play().catch(()=>{}); audio.alert.pause();
+            audio.scan.play().catch(()=>{}); audio.scan.pause();
+            audio.grant.play().catch(()=>{}); audio.grant.pause();
+
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('ui-layer').style.display = 'block';
+            
+            // Re-check rotation after UI is revealed, just in case
+            setTimeout(checkRotation, 100);
+            
+            runSequence();
+        }
+
+        function runSequence() {
+            const txt = document.getElementById('p1');
+            const seq = [
+                "SYSTEM STARTUP", "INITIALIZING...", "HEY!", 
+                "WELCOME TO VIOLINA'S DATABASE", "LOADING...", 
+                "DECRYPTING DATA...", "BYPASSING FIREWALL...", 
+                "TRYING TO CONNECT..."
+            ];
+            
+            let i = 0;
+            const t = setInterval(() => {
+                if(i >= seq.length) {
+                    clearInterval(t);
+                    document.getElementById('p1').style.display = 'none';
+                    document.getElementById('p2').style.display = 'block';
+                } else {
+                    txt.innerText = seq[i];
+                    i++;
+                }
+            }, 1500);
+        }
+
+        function triggerDeny() {
+            document.getElementById('p2').style.display = 'none';
+            document.getElementById('p3').style.display = 'block';
+            audio.alert.currentTime = 0; audio.alert.play();
+            
+            setTimeout(() => {
+                document.getElementById('p3').style.display = 'none';
+                document.getElementById('p4').style.display = 'flex';
+            }, 3000);
+        }
+
+        // Scanner Logic
+        const pad = document.getElementById('scanPad');
+        const laser = document.getElementById('laser');
+        let scanTimer;
+
+        pad.addEventListener('mousedown', startScan);
+        pad.addEventListener('mouseup', stopScan);
+        pad.addEventListener('touchstart', (e) => { e.preventDefault(); startScan(); });
+        pad.addEventListener('touchend', stopScan);
+
+        function startScan() {
+            laser.style.display = 'block';
+            audio.scan.currentTime = 0; audio.scan.play();
+            scanTimer = setTimeout(grantAccess, 2000);
+        }
+
+        function stopScan() {
+            clearTimeout(scanTimer);
+            laser.style.display = 'none';
+            audio.scan.pause();
+        }
+
+        function grantAccess() {
+            audio.scan.pause(); audio.grant.play();
+            document.getElementById('p4').style.display = 'none';
+            
+            // Show Granted inside circle
+            document.getElementById('p5').style.display = 'block';
+            
+            // Show Button below circle
+            document.getElementById('final-btn-container').style.display = 'block';
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE FINALE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;900&family=Monoton&display=swap" rel="stylesheet">
+    <style>
+        /* --- RESET --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #000;
+            height: 100vh; width: 100vw; overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            color: #fff;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* --- 1. START OVERLAY (The Fix) --- */
+        #startOverlay {
+            position: absolute; inset: 0; z-index: 200;
+            background: rgba(0,0,0,0.8);
+            display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(10px);
+            transition: opacity 0.8s;
+        }
+        
+        .start-btn {
+            background: transparent;
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem; letter-spacing: 5px;
+            padding: 20px 50px;
+            border: 1px solid rgba(255,255,255,0.3);
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+        .start-btn:hover {
+            background: #fff; color: #000; box-shadow: 0 0 30px #fff;
+        }
+
+        /* --- 2. BACKGROUND MONTAGE --- */
+        .montage-container {
+            position: absolute; inset: 0; z-index: 0;
+            opacity: 0.4; filter: blur(8px) grayscale(60%);
+        }
+
+        .montage-slide {
+            position: absolute; inset: 0;
+            background-size: cover; background-position: center;
+            opacity: 0;
+            animation: slide-cycle 20s infinite;
+        }
+
+        .slide-1 { background-image: url('mag_bw.jpg'); animation-delay: 0s; }
+        .slide-2 { background-image: url('mag_beauty.jpg'); animation-delay: 5s; }
+        .slide-3 { background-image: url('mag_cover.jpg'); animation-delay: 10s; }
+        .slide-4 { background-image: url('mag_candid.jpg'); animation-delay: 15s; }
+
+        /* --- 3. OVERLAYS --- */
+        .grain {
+            position: absolute; inset: 0; z-index: 1;
+            background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+            opacity: 0.3; pointer-events: none;
+            animation: grain-dance 0.2s steps(4) infinite;
+        }
+
+        .vignette {
+            position: absolute; inset: 0; z-index: 2;
+            background: radial-gradient(circle, transparent 40%, #000 100%);
+        }
+
+        /* --- 4. SCROLLING CREDITS --- */
+        .credits-wrapper {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10;
+            display: flex; justify-content: center;
+            perspective: 500px;
+            mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+        }
+
+        .credits-content {
+            text-align: center;
+            width: 80%; max-width: 600px;
+            transform: translateY(100vh);
+            /* PAUSED UNTIL CLICK */
+            animation: roll-credits 55s linear forwards; 
+            animation-play-state: paused; 
+        }
+
+        .role-group { margin-bottom: 50px; }
+        .role { font-size: 0.9rem; color: #888; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 5px; }
+        .name { font-size: 1.8rem; font-weight: 600; color: #fff; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+
+        /* --- DIRECTOR STYLE --- */
+        .director-group { margin-bottom: 100px; transform: scale(1.1); }
+        .director-role { font-size: 1rem; color: #d4af37; letter-spacing: 5px; text-transform: uppercase; margin-bottom: 15px; }
+        .director-name {
+            font-family: 'Monoton', cursive; font-size: 3rem; color: #d4af37; text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.6), 0 0 40px rgba(212, 175, 55, 0.4);
+            animation: name-pulse 2s infinite alternate;
+        }
+
+        .final-logo { font-size: 4rem; font-weight: 900; margin-top: 50px; margin-bottom: 300px; color: #fff; letter-spacing: 5px; opacity: 0.8; }
+
+        /* --- 5. ENDING --- */
+        .flash-overlay { position: absolute; inset: 0; background: #fff; z-index: 100; opacity: 0; pointer-events: none; }
+        
+        .final-message { position: absolute; z-index: 101; text-align: center; opacity: 0; }
+        .message-text { font-size: 2rem; font-weight: 300; letter-spacing: 5px; margin-bottom: 20px; }
+        .sub-message { font-size: 3rem; font-weight: 900; color: #d4af37; }
+        
+        .replay-btn {
+            margin-top: 40px; background: transparent; border: 1px solid #555; color: #555;
+            padding: 10px 20px; font-size: 0.8rem; cursor: pointer; transition: 0.3s;
+        }
+        .replay-btn:hover { border-color: #fff; color: #fff; }
+
+        /* --- ANIMATIONS --- */
+        @keyframes slide-cycle { 0% { opacity: 0; transform: scale(1); } 5% { opacity: 1; } 25% { opacity: 1; } 30% { opacity: 0; transform: scale(1.1); } 100% { opacity: 0; } }
+        @keyframes grain-dance { 0% { background-position: 0 0; } 100% { background-position: 10px 10px; } }
+        @keyframes roll-credits { 0% { transform: translateY(110vh); } 100% { transform: translateY(-170%); } }
+        @keyframes flash-bang { 0% { opacity: 0; } 10% { opacity: 1; } 100% { opacity: 0; } }
+        @keyframes fade-in-slow { to { opacity: 1; } }
+        @keyframes name-pulse { from { text-shadow: 0 0 20px rgba(212, 175, 55, 0.6); } to { text-shadow: 0 0 40px rgba(212, 175, 55, 1); transform: scale(1.05); } }
+
+        @media (max-width: 600px) {
+            .name { font-size: 1.4rem; }
+            .director-name { font-size: 2rem; }
+            .start-btn { padding: 15px 30px; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="startOverlay">
+        <button class="start-btn" onclick="startFinale()">PLAY FINALE ></button>
+    </div>
+
+    <div class="montage-container">
+        <div class="montage-slide slide-1"></div>
+        <div class="montage-slide slide-2"></div>
+        <div class="montage-slide slide-3"></div>
+        <div class="montage-slide slide-4"></div>
+    </div>
+    
+    <div class="vignette"></div>
+    <div class="grain"></div>
+
+    <div class="credits-wrapper" id="creditsWrapper">
+        <div class="credits-content" id="creditsContent">
+            
+            <div class="role-group"><div class="role">The Vision</div><div class="name">Violina</div></div>
+            <div class="role-group"><div class="role">Executive Producer</div><div class="name">Fate</div></div>
+            <div class="role-group"><div class="role">Chief Lighting Officer</div><div class="name">Her Smile</div></div>
+            <div class="role-group"><div class="role">Soundtrack By</div><div class="name">Her Laugh</div></div>
+            <div class="role-group"><div class="role">Screenplay By</div><div class="name">Our Conversations</div></div>
+            <div class="role-group"><div class="role">Director of Photography</div><div class="name">Every Mirror</div></div>
+            <div class="role-group"><div class="role">Lead Visual Effects</div><div class="name">Her Eyes</div></div>
+            <div class="role-group"><div class="role">Stunt Double</div><div class="name">None</div></div>
+            <div class="role-group"><div class="role">Filmed On Location</div><div class="name">My Mind</div></div>
+            <div class="role-group"><div class="role">Production Design</div><div class="name">Effortless Style</div></div>
+            <div class="role-group"><div class="role">Casting Director</div><div class="name">My Heart</div></div>
+            <div class="role-group"><div class="role">Special Thanks To</div><div class="name">The Internet</div>
+            <div class="role" style="margin-top:5px; font-size:0.7rem;">(For connecting us)</div></div>
+
+            <div class="director-group">
+                <div class="director-role">Directed By</div>
+                <div class="director-name">AYUSH</div>
+            </div>
+
+            <div class="final-logo">VIOLINA</div>
+        </div>
+    </div>
+
+    <div class="flash-overlay" id="flash"></div>
+
+    <div class="final-message" id="endCard">
+        <div class="message-text">TO BE CONTINUED...</div>
+        <div class="sub-message">WITH YOU.</div>
+        <button class="replay-btn" onclick="location.reload()">REPLAY MEMORY</button>
+    </div>
+
+    <script>
+        const audio = new Audio('final_theme.mp3');
+        const overlay = document.getElementById('startOverlay');
+        const credits = document.getElementById('creditsContent');
+        const flash = document.getElementById('flash');
+        const endCard = document.getElementById('endCard');
+        const wrapper = document.getElementById('creditsWrapper');
+
+        function startFinale() {
+            // 1. Play Audio
+            audio.play().catch(e => console.log("Audio needed interaction"));
+            
+            // 2. Remove Start Screen
+            overlay.style.opacity = '0';
+            setTimeout(() => { overlay.style.display = 'none'; }, 800);
+
+            // 3. Start Scrolling
+            credits.style.animationPlayState = 'running';
+
+            // 4. Set Timer for Ending (50 Seconds)
+            setTimeout(() => {
+                triggerEnding();
+            }, 50000);
+        }
+
+        function triggerEnding() {
+            flash.style.animation = "flash-bang 2s forwards";
+            wrapper.style.display = 'none';
+            setTimeout(() => {
+                endCard.style.animation = "fade-in-slow 2s forwards";
+            }, 1000);
+        }
+    </script>
+
+</body>
+</html>

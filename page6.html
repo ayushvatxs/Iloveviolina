@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VIOLINA DATABASE | FINAL CINEMATIC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- CORE --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            background-color: #000; overflow: hidden; 
+            width: 100%; height: 100%;
+            font-family: 'Share Tech Mono', monospace; user-select: none;
+            /* iPad Scroll Fixes */
+            position: fixed; top: 0; left: 0; overscroll-behavior: none;
+        }
+
+        /* --- CAMERA RIG (FIXED TRANSITION) --- */
+        #camera-rig {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: block; 
+            transform-style: preserve-3d;
+            
+            /* UPDATED: Added transform-origin to will-change */
+            will-change: transform, transform-origin;
+            
+            /* UPDATED: Added transition for transform-origin so it glides instead of snaps */
+            transition: transform 2.5s cubic-bezier(0.25, 1, 0.5, 1), transform-origin 2.5s cubic-bezier(0.25, 1, 0.5, 1); 
+            
+            z-index: 10;
+        }
+
+        /* CANVAS - Force Full Screen Overlay */
+        canvas {
+            display: block;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            filter: drop-shadow(0 0 4px #ff003c);
+            opacity: 0; transition: opacity 1s;
+        }
+
+        /* --- UI OVERLAYS --- */
+        .ui-layer {
+            position: absolute; width: 100%; text-align: center; pointer-events: none; z-index: 100;
+        }
+
+        #intro-text {
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: #ff003c; font-family: 'Orbitron'; font-size: 2rem; letter-spacing: 6px;
+            text-shadow: 0 0 20px #ff003c;
+            opacity: 1; transition: opacity 0.5s;
+            width: 100%;
+        }
+
+        #bottom-ui {
+            bottom: 30px; opacity: 0; transition: opacity 2s; pointer-events: auto;
+            width: 100%; display: flex; flex-direction: column; align-items: center;
+            padding-bottom: env(safe-area-inset-bottom); /* iPhone X+ safety */
+        }
+        .status-main { font-family: 'Orbitron'; font-size: clamp(1.2rem, 4vw, 2.5rem); color: #fff; text-shadow: 0 0 30px #ff003c; margin-bottom: 8px; }
+        .status-sub { color: #ff003c; font-size: clamp(0.7rem, 2.5vw, 1rem); letter-spacing: 3px; margin-bottom: 25px; text-align: center; }
+
+        .btn-final {
+            background: transparent; border: 2px solid #ff003c; color: #ff003c;
+            font-family: 'Orbitron'; font-size: 1.2rem; padding: 15px 50px;
+            cursor: pointer; box-shadow: 0 0 20px rgba(255, 0, 60, 0.2);
+            transition: 0.3s; clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+            background: rgba(0,0,0,0.8); /* Readability bg */
+        }
+        .btn-final:hover { background: #ff003c; color: #000; box-shadow: 0 0 60px #ff003c; }
+
+        /* --- FX --- */
+        .stars { position: fixed; inset: 0; z-index: -1; background: radial-gradient(white 1px, transparent 1px); background-size: 60px 60px; opacity: 0.15; }
+        .vignette { position: fixed; inset: 0; z-index: 5; background: radial-gradient(circle, transparent 10%, #000 130%); pointer-events: none; }
+        
+        .ring { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ff003c; border-radius: 50%; opacity: 0; transition: opacity 2s; pointer-events: none; z-index: 5; }
+        .r1 { width: 600px; height: 600px; border-style: dashed; animation: spin 60s linear infinite; }
+        .r2 { width: 750px; height: 750px; border: 1px solid rgba(255,0,60,0.3); animation: pulse 3s infinite; }
+        
+        /* Mobile adjustment for rings - Centered higher up to match photo */
+        @media (max-width: 768px) {
+            .ring { top: 40%; } /* Match the photo offset */
+            .r1 { width: 85vw; height: 85vw; }
+            .r2 { width: 105vw; height: 105vw; }
+        }
+
+        @keyframes spin { 100% { transform: translate(-50%,-50%) rotate(360deg); } }
+        @keyframes pulse { 0% { transform: translate(-50%,-50%) scale(0.95); opacity:0.1; } 50% { opacity:0.3; } 100% { transform: translate(-50%,-50%) scale(1.05); opacity:0.1; } }
+
+    </style>
+</head>
+<body>
+
+    <div class="stars"></div>
+    <div class="vignette"></div>
+
+    <div class="ui-layer" id="intro-text">INITIALIZING...</div>
+
+    <div id="camera-rig">
+        <div class="ring r1" id="ring1"></div>
+        <div class="ring r2" id="ring2"></div>
+        <canvas id="holoCanvas"></canvas>
+    </div>
+
+    <div class="ui-layer" id="bottom-ui">
+        <div class="status-main">SYSTEM STATUS: ETERNAL</div>
+        <div class="status-sub">PROJECT VIOLINA: SUCCESSFULLY RESTORED</div>
+        <button class="btn-final" onclick="window.location.href='page7.html'">FINALIZE PROJECT ></button>
+    </div>
+
+    <script>
+        /* --- CONFIG --- */
+        const IMAGE_URL = 'violina_reassembly.jpg';
+        const DENSITY = 2; 
+        
+        // Retina Fix
+        const dpr = window.devicePixelRatio || 1;
+        // Increase particle size slightly for visibility on high-res screens
+        const PARTICLE_SIZE = dpr > 1 ? 2.5 : 1.6; 
+        
+        /* --- AUDIO --- */
+        const sfx = {
+            vacuum: new Audio('sfx_vacuum.mp3'),
+            part: new Audio('sfx_grid.mp3'),
+            impact: new Audio('sfx_impact.mp3'),
+            heart: new Audio('sfx_heartbeat.mp3')
+        };
+        sfx.heart.loop = true;
+
+        /* --- GLOBALS --- */
+        const canvas = document.getElementById('holoCanvas');
+        const ctx = canvas.getContext('2d');
+        const rig = document.getElementById('camera-rig');
+        const txt = document.getElementById('intro-text');
+        
+        let particles = [];
+        let activeClusters = new Set();
+        let isFinalized = false;
+        let particlesVisible = false;
+        
+        let imgW = 0, imgH = 0;
+
+        function resize() {
+            // Set canvas logic size to match screen pixels
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            ctx.scale(dpr, dpr);
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        /* --- IMAGE PROCESSING --- */
+        const img = new Image();
+        img.src = IMAGE_URL;
+        img.onload = () => {
+            // Mobile Optimization: Smaller image width for phones to ensure it fits
+            const isMobile = window.innerWidth < 768;
+            let finalW = Math.min(window.innerWidth * (isMobile ? 0.8 : 0.6), 420);
+            
+            const aspect = img.height / img.width;
+            const finalH = finalW * aspect;
+            
+            imgW = finalW;
+            imgH = finalH;
+
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = finalW;
+            tempCanvas.height = finalH;
+            const tCtx = tempCanvas.getContext('2d');
+            tCtx.drawImage(img, 0, 0, finalW, finalH);
+            const data = tCtx.getImageData(0, 0, finalW, finalH).data;
+
+            // Coordinate System: Relative to (0,0) center of image
+            for(let y=0; y<finalH; y+=DENSITY) {
+                for(let x=0; x<finalW; x+=DENSITY) {
+                    const i = (y * finalW + x) * 4;
+                    const brightness = (data[i] + data[i+1] + data[i+2]) / 3;
+
+                    if(brightness > 20) {
+                        const cluster = getCluster(x, y, finalW, finalH);
+                        // Store relative to center
+                        const rx = x - finalW/2;
+                        const ry = y - finalH/2;
+                        particles.push(new Particle(rx, ry, brightness, cluster));
+                    }
+                }
+            }
+
+            loop();
+            runDirectorCut();
+        };
+
+        function getCluster(x, y, w, h) {
+            const nx = x / w;
+            const ny = y / h;
+            if (ny < 0.5 && nx > 0.3 && nx < 0.7) return 99; // Face
+            if(ny > 0.65) return 0; // Dress
+            if(nx < 0.35) return 1; // Left
+            if(nx > 0.65) return 2; // Right
+            return 3; 
+        }
+
+        /* --- PARTICLE CLASS --- */
+        class Particle {
+            constructor(rx, ry, brightness, cluster) {
+                this.rx = rx; 
+                this.ry = ry; 
+                this.cluster = cluster;
+                this.color = `rgba(255, 0, 60, ${brightness/255})`;
+
+                const spread = Math.max(window.innerWidth, window.innerHeight) * 1.5;
+                this.x = (Math.random() - 0.5) * spread;
+                this.y = (Math.random() - 0.5) * spread;
+                this.vx = (Math.random() - 0.5) * 15;
+                this.vy = (Math.random() - 0.5) * 15;
+            }
+
+            update() {
+                if(!particlesVisible) return;
+
+                if(isFinalized) {
+                    this.x = this.rx + (Math.random()-0.5)*0.5;
+                    this.y = this.ry + (Math.random()-0.5)*0.5;
+                    return;
+                }
+
+                if(activeClusters.has(this.cluster)) {
+                    const dx = this.rx - this.x;
+                    const dy = this.ry - this.y;
+                    this.x += dx * 0.12; 
+                    this.y += dy * 0.12;
+                } else {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    if(Math.abs(this.x) > 1000) this.vx *= -1;
+                    if(Math.abs(this.y) > 1000) this.vy *= -1;
+                }
+            }
+
+            draw() {
+                if(!particlesVisible) return;
+                
+                // Screen Center X
+                const screenCX = window.innerWidth / 2;
+                
+                // Screen Center Y - WITH LIFT
+                const isLandscape = window.innerWidth > window.innerHeight;
+                const liftFactor = isLandscape ? 0.38 : 0.42; // Lift more in landscape
+                const screenCY = window.innerHeight * liftFactor;
+
+                ctx.fillStyle = this.color;
+                ctx.fillRect(screenCX + this.x, screenCY + this.y, PARTICLE_SIZE, PARTICLE_SIZE);
+            }
+        }
+
+        function loop() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(loop);
+        }
+
+        /* --- CINEMATIC SEQUENCE --- */
+        async function runDirectorCut() {
+            const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+            const isSmallScreen = window.innerWidth < 768;
+            const BASE_SCALE = isSmallScreen ? 2.8 : 4.5; 
+
+            // 1. TEXT PHASE
+            await sleep(2000);
+            txt.innerText = "LOADING MEMORY FRAGMENTS...";
+            await sleep(2500);
+            txt.innerText = "PREPARING HOLOGRAPHIC MATRIX...";
+            await sleep(2500);
+            
+            // 2. CHAOS PHASE
+            txt.style.opacity = '0';
+            canvas.style.opacity = '1';
+            particlesVisible = true;
+            sfx.vacuum.play().catch(()=>{});
+            await sleep(3500);
+
+            // 3. ASSEMBLY
+            rig.style.transform = `scale(${BASE_SCALE})`;
+
+            // Bottom
+            rig.style.transformOrigin = "50% 70%"; 
+            activeClusters.add(0);
+            try{ sfx.part.currentTime=0; sfx.part.play(); } catch(e){}
+            await sleep(4000);
+
+            // Left
+            rig.style.transformOrigin = isSmallScreen ? "45% 55%" : "42% 55%";
+            activeClusters.add(1);
+            try{ sfx.part.currentTime=0; sfx.part.play(); } catch(e){}
+            await sleep(4000);
+
+            // Right
+            rig.style.transformOrigin = isSmallScreen ? "55% 55%" : "58% 55%";
+            activeClusters.add(2);
+            try{ sfx.part.currentTime=0; sfx.part.play(); } catch(e){}
+            await sleep(4000);
+
+            // Top
+            rig.style.transformOrigin = "50% 40%";
+            activeClusters.add(3);
+            try{ sfx.part.currentTime=0; sfx.part.play(); } catch(e){}
+            await sleep(4000);
+
+            // Face
+            rig.style.transformOrigin = "50% 48%";
+            activeClusters.add(99); 
+            try{ sfx.part.currentTime=0; sfx.part.play(); } catch(e){}
+            await sleep(5000);
+
+            // 5. ZOOM OUT
+            rig.style.transform = "scale(1.0)";
+            rig.style.transformOrigin = "50% 50%";
+            
+            sfx.vacuum.pause();
+            sfx.impact.play().catch(()=>{});
+            sfx.heart.play().catch(()=>{});
+            isFinalized = true;
+
+            await sleep(2000); 
+            
+            document.getElementById('ring1').style.opacity = '0.5';
+            document.getElementById('ring2').style.opacity = '0.3';
+            document.getElementById('bottom-ui').style.opacity = '1';
+        }
+
+    </script>
+</body>
+</html>

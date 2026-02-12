@@ -5,7 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For Violina 💗</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=Outfit:wght@400;600;800&family=Montserrat:wght@900&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
 <style>
+/* ================= GLOBAL ================= */
 *{box-sizing:border-box}
 body{
   margin:0;
@@ -14,299 +21,369 @@ body{
   justify-content:center;
   align-items:center;
   background:linear-gradient(180deg,#fff,#ffd6e8);
-  font-family:"Segoe UI",system-ui;
+  font-family: 'Outfit', sans-serif;
   overflow:hidden;
+  transition: background 1s ease;
 }
+
+/* --- MUSIC POPUP (Bottom Right) --- */
+#audioToast {
+    position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+    background: white; padding: 15px 25px; border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    display: flex; align-items: center; gap: 15px;
+    animation: slideIn 0.5s ease-out;
+}
+.toast-text { font-weight: 700; color: #333; font-size: 0.95rem; }
+
+/* Toggle Switch */
+.switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: #ff003c; }
+input:checked + .slider:before { transform: translateX(20px); }
+
+@keyframes slideIn { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+/* --- BIG FINAL COUNTDOWN OVERLAY --- */
+#finalCountdown {
+    position: fixed; inset: 0; z-index: 5000;
+    display: none; /* Hidden until last 5 seconds */
+    justify-content: center; align-items: center;
+    background: rgba(255, 255, 255, 0.98);
+}
+.big-number {
+    font-size: 15rem; font-weight: 900;
+    font-family: 'Montserrat', sans-serif;
+    animation: popNumber 0.9s infinite;
+}
+.n-5 { color: #ff003c; }
+.n-4 { color: #ffae00; }
+.n-3 { color: #00d9ff; }
+.n-2 { color: #d000ff; }
+.n-1 { color: #2bff00; }
+
+@keyframes popNumber {
+    0% { transform: scale(0.5); opacity: 0; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 0; }
+}
+
+/* --- STANDARD UI --- */
+#bg-decor { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; display: none; }
+.float-item {
+    position: absolute; bottom: -100px; font-size: 2rem; opacity: 0.6;
+    animation: floatUp linear infinite;
+}
+@keyframes floatUp { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: 0.8; } 100% { transform: translateY(-110vh); opacity: 0; } }
 
 .card{
-  width:92%;
-  max-width:420px;
-  background:white;
-  border-radius:22px;
-  padding:22px;
-  text-align:center;
-  box-shadow:0 25px 70px rgba(255,120,170,.3);
-  z-index:2;
+  width:92%; max-width:420px; background:white; border-radius:24px; padding:25px 20px 30px; 
+  text-align:center; box-shadow:0 25px 70px rgba(255,120,170,.2); position:relative; z-index:2;
+  transition: all 0.5s ease;
 }
 
-/* PHOTO FADE */
-.photo{
-  width:140px;
-  height:140px;
-  margin:0 auto 12px;
-  border-radius:50%;
-  overflow:hidden;
-  border:5px solid #ffd1e5;
-  position:relative;
+.photo{ 
+    width:130px; height:130px; margin:0 auto 15px; border-radius:50%; overflow:hidden; 
+    border: 5px solid #ffd1e5; transition: transform 0.5s ease; 
 }
-.photo img{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  opacity:0;
-  transition:opacity 1.6s ease;
-}
-.photo img.active{opacity:1}
+.photo img{ width:100%; height:100%; object-fit:cover; }
 
-.sub{font-size:.95rem;color:#555}
-.date{
-  margin:6px 0 10px;
-  font-weight:600;
-  color:black;
-  text-shadow:0 0 12px #ff9acb;
-}
+h2 { margin: 10px 0 5px; font-size: 1.6rem; color: #111; font-weight: 800; }
+.sub { font-size: 0.95rem; color: #666; margin-bottom: 20px; }
+.date { margin: 10px 0 20px; font-weight: 700; color: #333; }
 
 /* TIMER */
-.timer{
-  display:flex;
-  justify-content:center;
-  gap:8px;
-  margin-bottom:10px;
-}
-.box{
-  background:#fff5fa;
-  padding:8px 10px;
-  border-radius:10px;
-  min-width:54px;
-}
-.num{font-weight:700}
-.lbl{font-size:.65rem;color:#666}
-
-.bday{
-  margin:6px auto 12px;
-  padding:8px 18px;
-  border-radius:20px;
-  border:none;
-  background:#eee;
-  color:#999;
-  cursor:not-allowed;
+.timer { display:flex; justify-content:center; gap:12px; margin-bottom:25px; }
+.box { 
+    background:#fff0f6; padding:12px 16px; border-radius:14px; font-weight:700; color: #333; 
+    min-width: 60px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);
 }
 
-/* GIFT */
-.gift{
-  font-size:52px;
-  cursor:pointer;
-  animation:float 2.8s ease-in-out infinite;
+/* PARTY ELEMENTS (Hidden initially) */
+#birthdayTitle {
+    display: none; margin: 20px 0; font-family: 'Fredoka', sans-serif; font-size: 3rem;
+    background: linear-gradient(45deg, #FF69B4, #40E0D0, #FFD700);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 4px 0px rgba(0,0,0,0.1));
+    animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-@keyframes float{
-  50%{transform:translateY(-6px)}
-}
-.note{font-size:.85rem;color:#444;margin-top:6px}
+@keyframes popIn { 0% { transform: scale(0); opacity: 0; } 80% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); } }
 
-/* PASSCODE MODAL */
-.modal{
-  position:fixed;
-  inset:0;
-  display:none;
-  justify-content:center;
-  align-items:center;
-  background:rgba(255,200,225,.45);
-  backdrop-filter:blur(6px);
-  z-index:5;
-}
-.modalBox{
-  background:white;
-  padding:22px;
-  border-radius:18px;
-  width:80%;
-  max-width:300px;
-}
-input{
-  width:100%;
-  padding:10px;
-  font-size:1rem;
-  margin-bottom:10px;
-}
+.time-msg, .time-sub, .queen-sub, #giftLayer, #queenCrown { display: none; }
 
-/* OVERLAY */
-.overlay{
-  position:fixed;
-  inset:0;
-  display:none;
-  justify-content:center;
-  align-items:center;
-  background:rgba(255,210,230,.55);
-  backdrop-filter:blur(10px);
-  z-index:10;
+.bday {
+  margin:10px auto; padding:14px 40px; border-radius:50px; border:none; 
+  background:#eee; color:#999; font-weight:700; font-size:1rem; cursor:not-allowed;
 }
-.messageBox{
-  background:white;
-  width:85%;
-  max-width:360px;
-  margin:0;
-  padding:22px;
-  border-radius:20px;
-  position:relative;
-  box-shadow:0 30px 80px rgba(255,120,170,.35);
+.bday.active-party {
+  background: linear-gradient(135deg, #ff5e9a 0%, #ff8fbe 100%) !important;
+  color: white !important; cursor: pointer !important;
+  font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1.1rem;
+  box-shadow: 0 8px 20px rgba(255, 94, 154, 0.4); animation: gentlePulse 2s infinite;
 }
-.close{
-  position:absolute;
-  top:10px;
-  right:12px;
-  cursor:pointer;
-}
+@keyframes gentlePulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-/* EFFECT LAYER */
-#effects{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:15;
-}
-.particle{
-  position:absolute;
-  animation:rise linear forwards;
-}
-@keyframes rise{
-  from{transform:translateY(40px) scale(.6);opacity:0}
-  30%{opacity:1}
-  to{transform:translateY(-120vh) scale(1.2);opacity:0}
-}
+/* Modals */
+#codeModal, #messageBox { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; align-items:center; justify-content:center; z-index:20; }
+.codeCard { background:white; padding:22px; border-radius:18px; width:90%; max-width:320px; text-align:center; position:relative; }
+.codeCard input { width:100%; padding:10px; margin:10px 0; border:1px solid #ddd; border-radius:8px; }
+#closeModal, #closeMsg { position:absolute; top:10px; right:15px; cursor:pointer; font-size:1.2rem; }
+
+body.party-mode { background: #ffe6f2; }
 </style>
 </head>
-
 <body>
 
-<div class="card">
-  <div class="photo">
-    <img src="photo1.jpg" class="active">
-    <img src="photo2.jpg">
-    <img src="photo3.jpg">
+  <div id="finalCountdown">
+      <div id="bigNum" class="big-number">5</div>
   </div>
 
-  <h2>💌 A Special Day Is Almost Here</h2>
-  <div class="sub">Because the girl who means everything to me deserves to be celebrated by the world</div>
-  <div class="date">13 February</div>
+  <div id="bg-decor"></div>
 
-  <div class="timer" id="timer"></div>
-
-  <button class="bday" id="bdayBtn">Happy Birthday 🎉</button>
-
-  <div class="gift" id="gift">🎁</div>
-  <div class="note" id="note">Only Violina can open this</div>
-</div>
-
-<div class="modal" id="modal">
-  <div class="modalBox">
-    <h3>Secret Code 💕</h3>
-    <input id="code" placeholder="Enter secret code" autocomplete="off">
-    <button onclick="checkCode()">Open</button>
+  <div id="audioToast">
+      <span class="toast-text">🎵 Enable Sound?</span>
+      <label class="switch">
+          <input type="checkbox" id="soundToggle" onchange="toggleSound(this)">
+          <span class="slider round"></span>
+      </label>
   </div>
-</div>
 
-<div class="overlay" id="overlay">
-  <div class="messageBox">
-    <div class="close" onclick="closeOverlay()">❌</div>
-    <p>
-  Only 2 days left now, and my heart is already doing countdown mode for you 🥹🎂💗
-Every little thought somehow finds its way back to you — like it’s your permanent address now.
+  <div class="card" id="mainCard">
+    
+    <div class="photo" id="mainPhoto">
+      <img id="photoImg" src="photo1.jpg">
+    </div>
 
-And today is Teddy Day 🧸, so let me say this clearly and publicly — you are my teddy 😤❤️
-My soft place, my comfort hug, the one I want to hold when the world feels too much and also when everything feels perfect 🫶
-Cute, warm, slightly annoying (in the best way 😌), and impossible to let go of.
+    <div id="textContainer">
+        <div id="preText">
+            <h2>💌 A Special Day Is Almost Here</h2>
+            <div class="sub">Because the girl who means everything to me deserves to be celebrated by the world</div>
+            <div class="date">13 February</div>
+        </div>
+        
+        <div class="time-msg" id="timeMsg">🎂 The Time has come</div>
+        <div class="time-sub" id="timeSub">The moment we have all been waiting for is finally here</div>
+    </div>
 
-I don’t know how you do it, but you’ve turned these days before your birthday into something special just by existing ✨
-So here’s me, smiling like an idiot, waiting for your big day, loving you a little more with every passing hour 💕
+    <div class="timer" id="timer"></div>
 
-Happy almost birthday, my teddy 🧸💖
-Just 2 days to go… and I already know, nothing’s going to be cuter than you 🎉🥹
-</div>
-<div id="effects"></div>
+    <div id="birthdayTitle">HAPPY BIRTHDAY</div>
+    
+    <div class="queen-sub" id="queenSub">The Queen has arrived 👑</div>
+
+    <div class="actions" id="actionsArea">
+      <button class="bday" id="bdayBtn" disabled>Happy Birthday 🎉</button>
+
+      <div id="giftLayer">
+        <div class="gift" id="gift" onclick="openSecret()">🎁</div>
+        <div id="giftText">Only for Violina 💗</div>
+      </div>
+      
+      <div id="queenCrown">👑</div>
+    </div>
+
+  </div>
+
+  <div id="codeModal"><div class="codeCard"><span id="closeModal">✖</span><h3>Secret Code 💕</h3><input type="password" id="secretInput" placeholder="Enter code"><button id="openGiftBtn">Open</button></div></div>
+  <div id="messageBox"><div class="codeCard"><span id="closeMsg">✖</span><p style="text-align:left;color:#555;">Ayoo 😭 only a few days left...</p></div></div>
+  
+  <audio id="popSound" src="confetti-pop.mp3"></audio> 
+  <audio id="loudMusic" src="happy-birthday.mp3"></audio>
+  <audio id="tickSound" src="countdown-beep.mp3"></audio>
 
 <script>
+// ==========================================
+// 🟢 TEST MODE: True = Starts Timer at 10 Seconds
+const TEST_MODE = true; 
+// ==========================================
 
-  /* PHOTO FADE */
-const imgs=document.querySelectorAll(".photo img");
-let p=0;
-setInterval(()=>{
-  imgs[p].classList.remove("active");
-  p=(p+1)%imgs.length;
-  imgs[p].classList.add("active");
-},4000);
+// Default Real Birthday Date
+let targetDate = new Date("February 13, 2026 00:00:00").getTime();
 
-/* TIMER */
-const target=new Date(new Date().getFullYear(),1,13);
-const timer=document.getElementById("timer");
-const bdayBtn=document.getElementById("bdayBtn");
-
-setInterval(()=>{
-  const diff=target-new Date();
-  if(diff<=0){
-    timer.innerHTML="<div class='box'><div class='num'>00</div><div class='lbl'>Done</div></div>";
-    bdayBtn.disabled=false;
-    bdayBtn.style.background="#ff8fbe";
-    bdayBtn.style.color="#fff";
-    bdayBtn.style.cursor="pointer";
-    return;
-  }
-  const d=Math.floor(diff/86400000);
-  const h=Math.floor(diff/3600000)%24;
-  const m=Math.floor(diff/60000)%60;
-  const s=Math.floor(diff/1000)%60;
-  timer.innerHTML=`
-  <div class="box"><div class="num">${d}</div><div class="lbl">Days</div></div>
-  <div class="box"><div class="num">${h}</div><div class="lbl">Hrs</div></div>
-  <div class="box"><div class="num">${m}</div><div class="lbl">Min</div></div>
-  <div class="box"><div class="num">${s}</div><div class="lbl">Sec</div></div>`;
-},1000);
-
-/* GIFT STATE */
-const today=new Date().toDateString();
-let giftOpened=localStorage.getItem("openedDay")===today;
-
-const gift=document.getElementById("gift");
-const note=document.getElementById("note");
-
-if(giftOpened){
-  gift.textContent="🎀";
-  gift.style.animation="none";
-  note.innerHTML="Opened 💗<br>Come back tomorrow";
+// If Testing, override to 10 seconds from now
+if (TEST_MODE) {
+    const now = new Date().getTime();
+    targetDate = now + 10500; // 10.5 seconds buffer
 }
 
-/* CLICK */
-gift.onclick=()=>{
-  if(giftOpened){openMessage();return;}
-  document.getElementById("modal").style.display="flex";
+const timerEl = document.getElementById("timer");
+const finalCountdownOverlay = document.getElementById("finalCountdown");
+const bigNum = document.getElementById("bigNum");
+const mainCard = document.getElementById("mainCard");
+
+// Elements to toggle
+const preText = document.getElementById("preText");
+const timeMsg = document.getElementById("timeMsg");
+const timeSub = document.getElementById("timeSub");
+const bTitle = document.getElementById("birthdayTitle");
+const queenSub = document.getElementById("queenSub");
+const crown = document.getElementById("queenCrown");
+const bdayBtn = document.getElementById("bdayBtn");
+const bgDecor = document.getElementById("bg-decor");
+const giftLayer = document.getElementById("giftLayer");
+
+let bigCountdownStarted = false;
+let audioEnabled = false;
+
+// Audio Toggle Function
+function toggleSound(checkbox) {
+    const m = document.getElementById("loudMusic");
+    const t = document.getElementById("tickSound");
+    const p = document.getElementById("popSound");
+
+    if(checkbox.checked) {
+        audioEnabled = true;
+        // Unlock ALL audio contexts immediately so they play on time
+        [m, t, p].forEach(audio => {
+            audio.play().then(() => {
+                audio.pause();
+                audio.currentTime = 0;
+            }).catch(()=>{});
+        });
+    } else {
+        audioEnabled = false;
+        m.pause();
+    }
+}
+
+// Timer Logic
+const timerInterval = setInterval(checkTime, 100); 
+
+function checkTime() {
+    let now = new Date().getTime();
+    let distance = targetDate - now;
+
+    // 1. If between 0 and 5 seconds -> TRIGGER BIG COUNTDOWN
+    if (distance <= 5000 && distance > 0 && !bigCountdownStarted) {
+        startBigCountdown();
+    } 
+    // 2. If time is up -> SHOW PARTY
+    else if (distance <= 0) {
+        clearInterval(timerInterval);
+        if(finalCountdownOverlay.style.display === 'flex') {
+            // Let the big countdown finish naturally via its own interval
+        } else {
+            launchBirthdayParty(); // Fallback
+        }
+    } 
+    // 3. Normal Timer Display
+    else if (!bigCountdownStarted) {
+        let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        timerEl.innerHTML = `<div class="box">${days}d</div><div class="box">${hours}h</div><div class="box">${minutes}m</div><div class="box">${seconds}s</div>`;
+    }
+}
+
+function startBigCountdown() {
+    bigCountdownStarted = true;
+    mainCard.style.display = 'none'; // Hide main card
+    finalCountdownOverlay.style.display = 'flex'; // Show overlay
+    
+    let count = 5;
+    bigNum.innerText = count;
+    bigNum.className = `big-number n-${count}`;
+    
+    // Play initial Tick
+    if(audioEnabled) document.getElementById("tickSound").play().catch(()=>{});
+
+    // Update big number every second
+    const bigInterval = setInterval(() => {
+        count--;
+        if(count > 0) {
+            bigNum.innerText = count;
+            bigNum.className = `big-number n-${count}`;
+            // Play Tick on 4, 3, 2, 1
+            if(audioEnabled) {
+                const t = document.getElementById("tickSound");
+                t.currentTime = 0;
+                t.play().catch(()=>{});
+            }
+        } else {
+            clearInterval(bigInterval);
+            finalCountdownOverlay.style.display = 'none'; // Hide overlay
+            mainCard.style.display = 'block'; // Show card back
+            launchBirthdayParty();
+        }
+    }, 1000);
+}
+
+function launchBirthdayParty() {
+    // Visual Changes
+    document.body.classList.add("party-mode");
+    timerEl.style.display = "none";
+    preText.style.display = "none";
+    giftLayer.style.display = "none";
+
+    // Show Party Elements
+    bTitle.style.display = "block";
+    timeMsg.style.display = "block";
+    timeSub.style.display = "block";
+    queenSub.style.display = "block";
+    crown.style.display = "block";
+    bgDecor.style.display = "block";
+    
+    // Activate Button
+    bdayBtn.disabled = false;
+    bdayBtn.classList.add("active-party");
+    bdayBtn.innerHTML = "ENTER WORLD 🎂";
+    bdayBtn.onclick = () => window.location.href = "birthday.html";
+
+    // FX
+    spawnParticles();
+    
+    // Hide audio toggle after party starts
+    document.getElementById("audioToast").style.display = 'none';
+
+    if(audioEnabled) {
+        document.getElementById("popSound").play().catch(()=>{});
+        document.getElementById("loudMusic").play().catch(()=>{});
+    }
+    
+    fireConfetti();
+}
+
+function spawnParticles() {
+    const symbols = ['🎈', '🎀', '🎉', '✨', '🎂'];
+    for(let i=0; i<20; i++) {
+        const div = document.createElement('div');
+        div.classList.add('float-item');
+        div.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+        div.style.left = Math.random() * 100 + 'vw';
+        div.style.animationDuration = (Math.random() * 5 + 5) + 's'; 
+        div.style.animationDelay = Math.random() * 5 + 's';
+        document.getElementById('bg-decor').appendChild(div);
+    }
+}
+
+function fireConfetti() {
+  var duration = 3 * 1000; var end = Date.now() + duration;
+  (function frame() {
+    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#40E0D0', '#FFD700', '#FF69B4'] });
+    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#40E0D0', '#FFD700', '#FF69B4'] });
+    if (Date.now() < end) { requestAnimationFrame(frame); }
+  }());
+}
+
+// Modals
+const codeModal = document.getElementById("codeModal");
+const messageBox = document.getElementById("messageBox");
+function openSecret() { codeModal.style.display = "flex"; }
+document.getElementById("closeModal").onclick = () => codeModal.style.display = "none";
+document.getElementById("closeMsg").onclick = () => messageBox.style.display = "none";
+document.getElementById("openGiftBtn").onclick = () => {
+  if (document.getElementById("secretInput").value === "1313") {
+    codeModal.style.display = "none"; messageBox.style.display = "flex"; 
+  } else { alert("Wrong code 💔"); }
 };
 
-function checkCode(){
-  if(document.getElementById("code").value!=="My teddy 🫶🏻")return;
-  giftOpened=true;
-  localStorage.setItem("openedDay",today);
-  document.getElementById("modal").remove();
-  gift.textContent="🎀";
-  gift.style.animation="none";
-  note.innerHTML="Opened 💗<br>Come back tomorrow";
-  openMessage();
-}
+// Photo Slide
+const photos=["photo1.jpg","photo2.jpg","photo3.jpg"]; let p=0; const img=document.getElementById("photoImg");
+setInterval(()=>{ img.style.opacity=0; setTimeout(()=>{ p=(p+1)%photos.length; img.src=photos[p]; img.style.opacity=1; },350); },4000);
 
-/* MESSAGE + PREMIUM EFFECT */
-function openMessage(){
-  document.getElementById("overlay").style.display="flex";
-  const fx=document.getElementById("effects");
-  let count=0;
-  const emit=setInterval(()=>{
-    if(count++>45){clearInterval(emit);return;}
-    const p=document.createElement("div");
-    p.className="particle";
-    p.textContent=Math.random()>.7?"✨":"💗";
-    p.style.left=Math.random()*100+"%";
-    p.style.bottom="-20px";
-    p.style.fontSize=12+Math.random()*22+"px";
-    p.style.animationDuration=6+Math.random()*4+"s";
-    fx.appendChild(p);
-    setTimeout(()=>p.remove(),10000);
-  },120);
-}
-
-function closeOverlay(){
-  document.getElementById("overlay").style.display="none";
-}
 </script>
-
-
-
 </body>
 </html>
