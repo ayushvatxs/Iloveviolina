@@ -48,9 +48,9 @@
             stroke-linejoin: round;
             filter: drop-shadow(0 0 8px rgba(255, 77, 109, 0.8));
             
-            /* CRITICAL FIX: Start completely invisible */
+            /* FAIL SAFE: Start invisible. JS handles the reveal. */
             opacity: 0;
-            transition: opacity 0.5s ease-in;
+            transition: opacity 0.3s ease-out; 
         }
 
         /* --- TEXT CONTAINERS --- */
@@ -290,15 +290,13 @@
     </div>
 
     <script>
-        // --- 1. DYNAMIC PATH GENERATOR ---
         function initHeartbeat() {
             const svg = document.getElementById('svgLine');
             const path = document.getElementById('heartPath');
             const btn = document.getElementById('nextBtn');
             
-            // Get positions
             const btnRect = btn.getBoundingClientRect();
-            // Use Math.max to handle potential loading glitches
+            // Use Math.max to avoid negative values if layout shifts
             const absoluteBtnTop = Math.max(0, btnRect.top + window.scrollY);
             
             svg.setAttribute('height', absoluteBtnTop);
@@ -328,13 +326,10 @@
             
             const totalLength = path.getTotalLength();
             
-            // HIDE LINE
+            // Set Initial State
             path.style.strokeDasharray = totalLength;
             path.style.strokeDashoffset = totalLength;
             
-            // Force browser repaint
-            path.getBoundingClientRect();
-
             return totalLength;
         }
 
@@ -342,10 +337,16 @@
             const scrollTop = window.scrollY;
             const docHeight = document.body.scrollHeight - window.innerHeight;
             
-            // SAFETY: Force hide if at top
-            if (scrollTop <= 10) {
+            // --- FAIL SAFE ---
+            // If the user is at the top (less than 100px), FORCE INVISIBLE
+            if (scrollTop < 50) {
+                 path.style.opacity = '0';
+                 // Also reset the line position just in case opacity fails
                  path.style.strokeDashoffset = totalLength;
                  return;
+            } else {
+                 // Reveal the line (Fade In)
+                 path.style.opacity = '1';
             }
 
             let scrollPercent = 0;
@@ -353,6 +354,7 @@
                 scrollPercent = scrollTop / docHeight;
             }
 
+            // Clamp
             if(scrollPercent > 1) scrollPercent = 1;
             if(scrollPercent < 0) scrollPercent = 0;
             
@@ -366,32 +368,26 @@
 
         let pathLength = 0;
         
-        window.addEventListener('load', () => {
-            // 1. Calculate geometry (Path is currently invisible via CSS)
-            pathLength = initHeartbeat();
+        // --- Continuous Update Loop (Fixes iPad loading issues) ---
+        function loop() {
+            if(pathLength === 0) {
+                pathLength = initHeartbeat();
+            }
             
             const path = document.getElementById('heartPath');
-            
-            // 2. Sync to current scroll position (still invisible)
-            updateScroll(path, pathLength);
-            
-            // 3. REVEAL: Wait 100ms to ensure the "Hidden" state is painted first
-            setTimeout(() => {
-                path.style.opacity = '1';
-            }, 100);
-        });
-
-        window.addEventListener('resize', () => {
-            pathLength = initHeartbeat();
-        });
-
-        window.addEventListener('scroll', () => {
-            if(pathLength > 0) {
-                const path = document.getElementById('heartPath');
+            if(path && pathLength > 0) {
                 updateScroll(path, pathLength);
             }
+            
+            requestAnimationFrame(loop);
+        }
+
+        // Start Loop
+        window.addEventListener('load', () => {
+            loop();
         });
 
+        // Animations
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -404,6 +400,7 @@
             observer.observe(el);
         });
 
+        // Audio
         const audio = document.getElementById('bgMusic');
         audio.volume = 0.5;
 
