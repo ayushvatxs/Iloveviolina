@@ -51,7 +51,14 @@
             stroke-linecap: round;
             stroke-linejoin: round;
             filter: drop-shadow(0 0 8px rgba(255, 77, 109, 0.8));
-            transition: stroke-dashoffset 0.1s linear; 
+            
+            /* --- IPAD FIX START --- */
+            opacity: 0; /* Hidden initially to prevent glitches */
+            transform: translateZ(0); /* Force Hardware Acceleration */
+            -webkit-transform: translateZ(0);
+            will-change: stroke-dashoffset;
+            transition: opacity 0.5s ease-in; /* Smooth reveal */
+            /* --- IPAD FIX END --- */
         }
 
         /* --- TEXT CONTAINERS --- */
@@ -319,7 +326,7 @@
 </div>
 
         
-       <div class="chapter">
+        <div class="chapter">
             <div class="script-text">My 19th Wish</div>
             <div class="body-text">
                 For this year, I don't just wish you happiness.<br>
@@ -396,6 +403,14 @@
             const pathLength = path.getTotalLength();
             path.style.strokeDasharray = pathLength;
             path.style.strokeDashoffset = pathLength;
+            
+            // --- FIX START: FORCE BROWSER TO CALCULATE LENGTH BEFORE SHOWING ---
+            path.getBoundingClientRect(); // Magic trigger for iPad repaint
+            
+            // Now reveal it
+            path.style.opacity = '1';
+            // --- FIX END ---
+            
             return pathLength;
         }
 
