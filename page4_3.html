@@ -37,6 +37,8 @@
             position: absolute; 
             top: 0; left: 0; width: 100%; z-index: 0;
             pointer-events: none;
+            /* TRANSITION FOR SMOOTH REVEAL */
+            transition: opacity 0.5s ease-in;
         }
 
         /* The Glowing Line */
@@ -47,7 +49,6 @@
             stroke-linecap: round;
             stroke-linejoin: round;
             filter: drop-shadow(0 0 8px rgba(255, 77, 109, 0.8));
-            /* No transitions on dashoffset to prevent glitches */
         }
 
         /* --- TEXT CONTAINERS --- */
@@ -112,9 +113,9 @@
         <source src="heartbeat.mp3" type="audio/mpeg">
     </audio>
 
-    <div class="svg-container">
+    <div class="svg-container" id="mainSvgContainer" style="opacity: 0;">
         <svg id="svgLine" width="100%" height="100%" preserveAspectRatio="none">
-            <path id="heartPath" d="" stroke-dasharray="999999" stroke-dashoffset="999999" />
+            <path id="heartPath" d="" />
         </svg>
     </div>
 
@@ -291,6 +292,7 @@
             const svg = document.getElementById('svgLine');
             const path = document.getElementById('heartPath');
             const btn = document.getElementById('nextBtn');
+            const container = document.getElementById('mainSvgContainer');
             
             const btnRect = btn.getBoundingClientRect();
             // Use Math.max to avoid negative values
@@ -321,11 +323,22 @@
 
             path.setAttribute('d', d);
             
+            // Get REAL length
             const totalLength = path.getTotalLength();
             
-            // Re-apply dash array to match REAL length
+            // HIDE LINE
             path.style.strokeDasharray = totalLength;
+            path.style.strokeDashoffset = totalLength;
             
+            // SYNC POSITION
+            updateScroll(path, totalLength);
+
+            // NOW REVEAL THE CONTAINER (The Nuclear Reveal)
+            // We use setTimeout to ensure the DOM has painted the 'hidden' state first
+            setTimeout(() => {
+                container.style.opacity = '1';
+            }, 100);
+
             return totalLength;
         }
 
@@ -333,7 +346,7 @@
             const scrollTop = window.scrollY;
             const docHeight = document.body.scrollHeight - window.innerHeight;
             
-            // iPad Safety: If near top, FORCE HIDDEN
+            // If near top, FORCE HIDDEN
             if (scrollTop <= 10) {
                  path.style.strokeDashoffset = totalLength;
                  return;
@@ -344,7 +357,9 @@
                 scrollPercent = scrollTop / docHeight;
             }
 
+            // Clamp
             if(scrollPercent > 1) scrollPercent = 1;
+            if(scrollPercent < 0) scrollPercent = 0;
             
             const drawLength = totalLength * scrollPercent;
             path.style.strokeDashoffset = totalLength - drawLength;
@@ -356,15 +371,10 @@
 
         let pathLength = 0;
         
-        // Wait for EVERYTHING to load
+        // --- MASTER INITIALIZATION ---
+        // We wait for window load (images/styles ready)
         window.addEventListener('load', () => {
             pathLength = initHeartbeat();
-            
-            const path = document.getElementById('heartPath');
-            
-            // Set initial hidden state based on logic
-            path.style.strokeDashoffset = pathLength;
-            updateScroll(path, pathLength);
         });
 
         window.addEventListener('resize', () => {
