@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You ❤️</title>
+    <style>
+        /* Calming, slow-moving pastel gradient background */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(-45deg, #fbc2eb, #a6c1ee, #fddb92, #d4fc79);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #4a4a4a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Glassmorphism card effect */
+        .container {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 40px 30px;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        h1 { 
+            color: #6a5acd; 
+            margin-top: 0;
+            margin-bottom: 10px; 
+            font-size: 2.2em; 
+            letter-spacing: 1px;
+        }
+
+        p.subtitle { 
+            font-size: 1.1em; 
+            color: #666; 
+            margin-bottom: 30px; 
+            line-height: 1.5;
+        }
+
+        /* Soft, pill-shaped buttons */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #a6c1ee;
+            border-radius: 50px;
+            padding: 14px 24px;
+            font-size: 1.05em;
+            font-weight: bold;
+            color: #6a5acd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(166, 193, 238, 0.3);
+        }
+
+        button:hover { 
+            background: #a6c1ee; 
+            color: #fff; 
+            transform: translateY(-3px); 
+            box-shadow: 0 6px 20px rgba(166, 193, 238, 0.5);
+        }
+
+        /* Dynamic message display area */
+        #message-box {
+            margin-top: 30px;
+            min-height: 60px;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            font-size: 1.1em;
+            color: #555;
+            line-height: 1.6;
+            animation: fadeIn 0.6s ease;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        /* CSS-only breathing circle animation */
+        .breathe-container {
+            height: 140px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: -10px;
+        }
+
+        .breathe-circle {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #a6c1ee 0%, #fbc2eb 100%);
+            border-radius: 50%;
+            animation: breatheAnim 8s infinite ease-in-out;
+            box-shadow: 0 0 20px rgba(166, 193, 238, 0.6);
+        }
+
+        @keyframes breatheAnim {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.6); opacity: 0.3; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Hey Ammai ❤️</h1>
+        <p class="subtitle">I know today feels a bit heavy. I built this tiny, quiet corner of the internet just for you, so you can rest for a second.</p>
+        
+        <div class="btn-group">
+            <button onclick="showReminder()">A Little Reminder</button>
+            <button onclick="showHug()">Need a Hug?</button>
+            <button onclick="toggleBreathe()">Breathe With Me</button>
+        </div>
+
+        <div class="breathe-container" id="breathe-container">
+            <div class="breathe-circle"></div>
+        </div>
+
+        <div id="message-box"></div>
+    </div>
+
+    <script>
+        // Array of comforting messages
+        const messages = [
+            "You are the strongest girl I know. Take all the time you need today.",
+            "I'm so proud of you, and I am right here with you.",
+            "It's okay if all you did today was simply survive. That's enough.",
+            "Drink a little water, put on your comfiest clothes, and just rest.",
+            "You are my whole world. This heavy feeling will pass, but my love won't.",
+            "Whenever you're ready, I'm here. Even if we just sit in silence together."
+        ];
+
+        const messageBox = document.getElementById('message-box');
+        const breatheContainer = document.getElementById('breathe-container');
+
+        function hideBreathe() {
+            breatheContainer.style.display = 'none';
+        }
+
+        function showReminder() {
+            hideBreathe();
+            // Pick a random message from the array
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            messageBox.innerHTML = "✨ <strong>" + messages[randomIndex] + "</strong> ✨";
+            messageBox.style.display = 'block';
+        }
+
+        function showHug() {
+            hideBreathe();
+            messageBox.innerHTML = "🫂 <strong>Sending you the biggest, warmest virtual hug!</strong><br><br>Imagine me wrapping my arms around you tightly until you feel safe. I've got you.";
+            messageBox.style.display = 'block';
+        }
+
+        function toggleBreathe() {
+            messageBox.style.display = 'none';
+            messageBox.innerHTML = "<em>Inhale slowly as the circle grows...<br>Exhale as it shrinks. Take your time.</em>";
+            messageBox.style.display = 'block';
+            breatheContainer.style.display = 'flex';
+        }
+    </script>
+
+</body>
+</html>
